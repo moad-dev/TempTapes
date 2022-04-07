@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/style2.css">
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script src="../js/another.js"></script>
+    <script>if (window.module) module = window.module;</script>
+</head>
+<body>
+<div>
+<div id="text" class="text">
+    <h1 id="lorem">lorem ipsum</h1>
+</div>
+<object data="../../рисунок.svg" type="image/svg+xml"></object>
+</div>
+<button type="button" class="btn btn-primary">Primary</button>
+<script>
+    document.getElementById("text").addEventListener("wheel", addOnWheel);
+    var pos_y = 0;
+    var pos_x = 0;
+    var scale = 0.5;
+    function addOnWheel(e) {
+        var delta = e.deltaY || e.detail || e.wheelDelta;
+        // отмасштабируем при помощи CSS
+        if (delta > 0)
+        {
+            pos_y += 20;
+            pos_x -= 6;
+            scale += 0.04;
+        }
+        else
+        {
+            pos_y -= 20;
+            pos_x += 6;
+            scale -= 0.04;
+        }
+
+        lorem.style.transform = lorem.style.WebkitTransform = lorem.style.MsTransform = 'translate('+ pos_x + 'px,' + pos_y + 'px)' + ' scale(' + scale + ')';
+        // lorem.style.transform = lorem.style.WebkitTransform = lorem.style.MsTransform = 'scale(' + scale + ')';
+        // отменим прокрутку
+        e.preventDefault();
+    }
+    // document.getElementById("yiy").addEventListener("wheel", myFunction);
+    // var pos_y = 35;
+    // function myFunction() {
+    //     document.getElementById("lorem").style.fontSize = "100px";
+    // }
+</script>
+</body>
+</html>

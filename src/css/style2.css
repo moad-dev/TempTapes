@@ -1,0 +1,18 @@
+@import url(../../node_modules/bootstrap/dist/css/bootstrap.css);
+object {
+  position: relative;
+  z-index: 1; }
+
+.text {
+  z-index: 2;
+  position: absolute;
+  height: 100%;
+  width: 100%; }
+
+h1 {
+  position: absolute;
+  left: 235px;
+  transform: scale(0.5);
+  z-index: 3; }
+
+/*# sourceMappingURL=style2.css.map */
