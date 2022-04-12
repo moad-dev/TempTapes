@@ -37,18 +37,17 @@
         const loader = new THREE.TextureLoader();
         var cube;
 
+        var temp = new THREE.MeshBasicMaterial({color: color});
         const group = new THREE.Group();
         let k = 0
         for (let i = 0; i < 2; i++)
         {
             if (i === 0)
             {
-                var temp = new THREE.MeshBasicMaterial({color: color});
                 material = [temp, temp, temp, temp, new THREE.MeshBasicMaterial({color: color, map: loader.load('../../picture.png')}), temp];
             }
             else
             {
-                var temp = new THREE.MeshBasicMaterial({color: color});
                 material = [temp, temp, temp, temp, temp, temp];
             }
             cube = new THREE.Mesh( geometry, material );
@@ -60,7 +59,6 @@
         let posy = 0.05
         for (let i = 0; i < 15; i++)
         {
-            var temp = new THREE.MeshBasicMaterial({color: color});
             material = [temp, temp, temp, temp, temp, temp];
             cube = new THREE.Mesh( geometry, material );
             cube.position.z = k;
@@ -71,7 +69,7 @@
             rot += 0.1;
             posy += rot;
         }
-        group.id = id;
+        group.name = "group " + id;
         group.position.setX(posX)
 
         var canvas1 = document.createElement('canvas');
@@ -94,14 +92,58 @@
         mesh1.position.set(1.15, -1.85, 0.9);
         mesh1.rotation.x = -0.2;
         mesh1.name = "name";
-
         group.add(mesh1);
         scene.add(group);
+    }
+
+    function editGroup(color, ico, id, newText)
+    {
+        var selectedGroup = scene.getObjectByName("group " + id);
+        var temp = new THREE.MeshBasicMaterial({color: color});
+        var material = [temp, temp, temp, temp, temp, temp];
+        const loader = new THREE.TextureLoader();
+        var facematerial = [temp, temp, temp, temp, new THREE.MeshBasicMaterial({color: color, map: loader.load('../../picture.png')}), temp];
+        let i = 0;
+        selectedGroup.traverse(function (child)
+        {
+            if ((child instanceof THREE.Mesh) && (child.name !== "name"))
+            {
+                if (i === 0)
+                {
+                    child.material = facematerial;
+                    i++
+                }
+                else
+                {
+                    child.material = material;
+                }
+            }
+            else
+            {
+                var canvas1 = document.createElement('canvas');
+                var context1 = canvas1.getContext('2d');
+                context1.font = "Bold 10px Arial";
+                context1.fillStyle = "rgb(0,0,0)";
+                context1.fillText(newText, 0, 10);
+                var texture1 = new THREE.Texture(canvas1)
+                texture1.needsUpdate = true;
+                var material1 = new THREE.MeshBasicMaterial({ map: texture1, side: THREE.DoubleSide });
+                material1.transparent = true;
+                child.material = material1;
+            }
+        });
+    }
+
+    function deleteGroup(id)
+    {
+        scene.remove( scene.getChildByName(id) );
     }
 
     createGroup(0x00ff00, 0x00ff00, 0, 'lorem ipsum', -1)
     createGroup(0x00ffff, 0x00ff00, 1, 'lorem ipsum', 0)
     createGroup(0x00cfff, 0x00ff00, 2, 'lorem ipsum', 1)
+    createGroup(0x00cfff, 0x00ff00, 3, 'lorem ipsum', 2)
+    editGroup(0xff00ff, 0xccffff, 3, 'Вода')
 
     camera.position.z = 4;
     camera.position.y = 2;
