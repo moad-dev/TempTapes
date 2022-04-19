@@ -25,7 +25,7 @@ function createGroup(color, ico, id, text, posX)
     let points;
     let line_geometry;
     let line;
-    
+
     const geometry = new THREE.BoxGeometry();
     let material;
 
@@ -39,7 +39,7 @@ function createGroup(color, ico, id, text, posX)
     {
         if (i === 0)
         {
-            material = [temp, temp, temp, temp, new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/picture.png')}), temp];
+            material = [temp, temp, temp, temp, new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/' + ico)}), temp];
         }
         else
         {
@@ -48,18 +48,19 @@ function createGroup(color, ico, id, text, posX)
         cube = new THREE.Mesh( geometry, material );
         cube.position.z = k;
         points = [];
-        points.push( new THREE.Vector3( -0.5, 0.51, zl ) );
-        points.push( new THREE.Vector3( 0.5, 0.51, zl ) );
+        points.push( new THREE.Vector3( -0.5, 0.501, zl ) );
+        points.push( new THREE.Vector3( 0.5, 0.501, zl ) );
         zl--;
         k--;
         line_geometry = new THREE.BufferGeometry().setFromPoints( points );
         line = new THREE.Line( line_geometry, line_material );
+        line.name = "line";
         group.add(line);
-        group.add( cube );
+        group.add(cube);
     }
     let rot = 0.05
     let posy = 0.05
-    let yl = 0.51
+    let yl = 0.508
     for (let i = 0; i < 15; i++)
     {
         if (i < 12)
@@ -69,6 +70,7 @@ function createGroup(color, ico, id, text, posX)
             points.push( new THREE.Vector3( 0.5, posy + yl, zl ) );
             line_geometry = new THREE.BufferGeometry().setFromPoints( points );
             line = new THREE.Line( line_geometry, line_material );
+            line.name = "line";
             group.add(line);
         }
 
@@ -107,6 +109,7 @@ function createGroup(color, ico, id, text, posX)
     mesh1.position.set(1.15, -1.85, 0.9);
     mesh1.rotation.x = -0.2;
     mesh1.name = "name";
+
     group.add(mesh1);
     scene.add(group);
 }
@@ -117,34 +120,37 @@ function editGroup(color, ico, id, newText)
     let temp = new THREE.MeshBasicMaterial({color: color});
     let material = [temp, temp, temp, temp, temp, temp];
     const loader = new THREE.TextureLoader();
-    let facematerial = [temp, temp, temp, temp, new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/picture.png')}), temp];
+    let facematerial = [temp, temp, temp, temp, new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/' + ico)}), temp];
     let i = 0;
     selectedGroup.traverse(function (child)
     {
-        if ((child instanceof THREE.Mesh) && (child.name !== "name"))
+        if (child.name !== "line")
         {
-            if (i === 0)
+            if ((child instanceof THREE.Mesh) && (child.name !== "name"))
             {
-                child.material = facematerial;
-                i++
+                if (i === 0)
+                {
+                    child.material = facematerial;
+                    i++
+                }
+                else
+                {
+                    child.material = material;
+                }
             }
             else
             {
-                child.material = material;
+                let canvas1 = document.createElement('canvas');
+                let context1 = canvas1.getContext('2d');
+                context1.font = "Bold 10px Arial";
+                context1.fillStyle = "rgb(0,0,0)";
+                context1.fillText(newText, 0, 10);
+                let texture1 = new THREE.Texture(canvas1)
+                texture1.needsUpdate = true;
+                let material1 = new THREE.MeshBasicMaterial({ map: texture1, side: THREE.DoubleSide });
+                material1.transparent = true;
+                child.material = material1;
             }
-        }
-        else
-        {
-            let canvas1 = document.createElement('canvas');
-            let context1 = canvas1.getContext('2d');
-            context1.font = "Bold 10px Arial";
-            context1.fillStyle = "rgb(0,0,0)";
-            context1.fillText(newText, 0, 10);
-            let texture1 = new THREE.Texture(canvas1)
-            texture1.needsUpdate = true;
-            let material1 = new THREE.MeshBasicMaterial({ map: texture1, side: THREE.DoubleSide });
-            material1.transparent = true;
-            child.material = material1;
         }
     });
 }
@@ -153,12 +159,6 @@ function deleteGroup(id)
 {
     scene.remove( scene.getChildByName(id) );
 }
-
-createGroup(0x00ff00, 0x00ff00, 0, 'lorem ipsum', -1)
-createGroup(0x00ffff, 0x00ff00, 1, 'lorem ipsum', 0)
-createGroup(0x00cfff, 0x00ff00, 2, 'lorem ipsum', 1)
-// createGroup(0x00cfff, 0x00ff00, 3, 'lorem ipsum', 2)
-// editGroup(0xff00ff, 0xccffff, 3, 'Вода')
 
 camera.position.z = 4;
 camera.position.y = 2;
