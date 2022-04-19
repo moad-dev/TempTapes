@@ -1,11 +1,12 @@
 const sqlite3 = require("sqlite3");
 const {promisify} = require("util");
-
+const path = require("path")
 let db;
 
 function Init(startup) {
+    // console.log(`Current directory: ${process.cwd() + "\\database\\database.db"}`);
     db = new sqlite3.Database(
-        process.env.PWD + "/database/database.db",
+        path.join(process.cwd() + "\\database\\database.db"),
         sqlite3.OPEN_READWRITE | sqlite3.OPEN,
         err => {
             if (err && err.code == "SQLITE_CANTOPEN") {
@@ -24,7 +25,7 @@ function Init(startup) {
 
 function createDatabase(startup) {
     db = new sqlite3.Database(
-        process.env.PWD + "/database/database.db",
+        path.join(process.cwd() + "\\database\\database.db"),
         err => {
             if (err) {
                 console.log("SQLITE DB CREATE ERROR: " + err);

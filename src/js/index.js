@@ -5,7 +5,7 @@
 const {app, BrowserWindow} = require("electron");
 
 const path = require("path");
-const database = require(path.join(process.cwd(), "database/database_module"));
+const database = require(path.join(process.cwd(), "\\database\\database_module"));
 
 function main(db) {
     function createWindow() {
@@ -17,7 +17,9 @@ function main(db) {
                 contextIsolation: false
             }
         });
-        window.loadFile(path.join(process.cwd(), "src/html/index.html"));
+        console.log('suck')
+
+        window.loadFile(path.join(process.cwd(), "\\src\\html\\index.html"));
     }
     app.on("ready", createWindow);
 }
