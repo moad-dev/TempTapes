@@ -1,24 +1,3 @@
-// let jsdom = require("jsdom");
-// $ = require('jquery')(new jsdom.JSDOM().window);
-window.addEventListener( 'resize', onWindowResize, false );
-//мастшабирование дороги(через событие onWindowResize)
-function onWindowResize(){
-
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize( window.innerWidth, window.innerHeight );
-
-}
-
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xffffff)
-
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
-
 function createGroup(color, ico, id, text, posX)
 {
     const line_material = new THREE.LineBasicMaterial( { color: 0x000000 } );
@@ -48,8 +27,8 @@ function createGroup(color, ico, id, text, posX)
         cube = new THREE.Mesh( geometry, material );
         cube.position.z = k;
         points = [];
-        points.push( new THREE.Vector3( -0.5, 0.501, zl ) );
-        points.push( new THREE.Vector3( 0.5, 0.501, zl ) );
+        points.push( new THREE.Vector3( -0.5, 0.51, zl ) );
+        points.push( new THREE.Vector3( 0.5, 0.51, zl ) );
         zl--;
         k--;
         line_geometry = new THREE.BufferGeometry().setFromPoints( points );
@@ -60,7 +39,7 @@ function createGroup(color, ico, id, text, posX)
     }
     let rot = 0.05
     let posy = 0.05
-    let yl = 0.508
+    let yl = 0.51
     for (let i = 0; i < 15; i++)
     {
         if (i < 12)
@@ -70,7 +49,7 @@ function createGroup(color, ico, id, text, posX)
             points.push( new THREE.Vector3( 0.5, posy + yl, zl ) );
             line_geometry = new THREE.BufferGeometry().setFromPoints( points );
             line = new THREE.Line( line_geometry, line_material );
-            line.name = "line";
+            line.name = "line " + i;
             group.add(line);
         }
 
@@ -84,7 +63,7 @@ function createGroup(color, ico, id, text, posX)
         k--;
         rot += 0.1;
         posy += rot;
-        yl += 0.026
+        yl += 0.03
     }
     group.name = "group " + id;
     group.position.setX(posX)
@@ -157,17 +136,8 @@ function editGroup(color, ico, id, newText)
 
 function deleteGroup(id)
 {
-    scene.remove( scene.getChildByName(id) );
+    scene.remove( scene.getObjectByName("group " + id) );
 }
-
-camera.position.z = 4;
-camera.position.y = 2;
-camera.position.x = 0
-camera.lookAt(camera.position.x, 1.5, 0)
-function animate() {
-    requestAnimationFrame( animate );
-    // cube.rotation.x += 0.01;
-    // cube.rotation.y += 0.01;
-    renderer.render( scene, camera );
-}
-animate();
+module.exports.createGroup = createGroup
+module.exports.editGroup = editGroup
+module.exports.deleteGroup = deleteGroup
