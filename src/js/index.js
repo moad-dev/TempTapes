@@ -1,10 +1,25 @@
 // import $ from 'jquery';
 // global.jQuery = $;
 // global.$ = $;
-const {app, BrowserWindow} = require('electron')
-function createWindow () {
-    window = new BrowserWindow({width: 800, height: 600, minHeight: 600, minWidth: 800, webPreferences: {nodeIntegration:true, contextIsolation:false}})
-    window.loadFile('src/html/index.html')
 
+const {app, BrowserWindow} = require("electron");
+
+const path = require("path");
+const database = require(path.join(process.cwd(), "database/database_module"));
+
+function main(db) {
+    function createWindow() {
+        window = new BrowserWindow({
+            width: 800,
+            height: 600,
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false
+            }
+        });
+        window.loadFile(path.join(process.cwd(), "src/html/index.html"));
+    }
+    app.on("ready", createWindow);
 }
-app.on('ready', createWindow);
+
+database.Init(main);
