@@ -16,7 +16,7 @@ function Init(startup) {
                 console.log("SQLITE DB OPEN ERROR: " + err);
                 exit(1);
             } else {
-                startup(db);
+                startup();
             }
             return;
         }
@@ -112,7 +112,7 @@ function createTables(db, startup) {
                 console.log(err);
                 exit(1);
             }
-            startup(db);
+            startup();
         }
     );
 }
@@ -169,6 +169,7 @@ function makePath(name, color, icon = null, parent_id = null) {
 }
 
 module.exports = {
+    db: db,
     Init: Init,
     getAllPaths: getAllPaths,
     getRootPaths: getRootPaths,

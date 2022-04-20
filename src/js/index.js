@@ -7,7 +7,7 @@ const {app, BrowserWindow} = require("electron");
 const path = require("path");
 const database = require(path.join(process.cwd(), "/database/database_module"));
 
-function main(db) {
+function main() {
     function createWindow() {
         window = new BrowserWindow({
             width: 800,
@@ -20,17 +20,13 @@ function main(db) {
         });
         window.loadFile(path.join(process.cwd(), "src/html/index.html"));
     }
-    ipcMain.on("asynchronous-message", (event, request) => {
-        var text = "";
-        database.getAllPaths((err, rows) => {
-            text += "Тропинки\n";
-            rows.forEach(row => {
-                text +=
-                    row.name + "\t" + row.color + "\t" + row.parent_id + "\n";
-            });
-            event.reply("asynchronous-reply", text);
-        });
-    });
+
+    runEventsListeners = require(path.join(
+        process.cwd(),
+        "src/js/mainEvents.js"
+    ));
+    runEventsListeners(database, ipcMain);
+
     app.on("ready", createWindow);
 }
 database.Init(main);
