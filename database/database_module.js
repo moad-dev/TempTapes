@@ -1,11 +1,13 @@
 const sqlite3 = require("sqlite3");
 const {promisify} = require("util");
+const path = require("path");
+
 
 let db;
 
 function Init(startup) {
     db = new sqlite3.Database(
-        process.env.PWD + "/database/database.db",
+        "database\\database.db",
         sqlite3.OPEN_READWRITE | sqlite3.OPEN,
         err => {
             if (err && err.code == "SQLITE_CANTOPEN") {
@@ -24,7 +26,7 @@ function Init(startup) {
 
 function createDatabase(startup) {
     db = new sqlite3.Database(
-        process.env.PWD + "/database/database.db",
+        path.join(process.cwd() + "\\database\\database.db"),
         err => {
             if (err) {
                 console.log("SQLITE DB CREATE ERROR: " + err);
@@ -97,8 +99,6 @@ function createTables(db, startup) {
     // DEBUG
     */
 
-    /*
-
     insert into paths (name, color, parent_id)
         values ('path1', '#000000', null),
                ('path2', '#000001', null);
@@ -106,8 +106,6 @@ function createTables(db, startup) {
     insert into paths (name, color, parent_id)
         values ('path3', '#000000', 1);
 
-
-    */
 
         `,
         err => {
@@ -159,9 +157,9 @@ function getEventsByPath(path_id, callback) {
 function makePath(name, color, icon = null, parent_id = null) {
     db.run(
         `
-        insert into paths (name, color, icon, parent_id)
-        values (?1, ?2, ?3, ?4);
-       `,
+            insert into paths (name, color, icon, parent_id)
+            values (?1, ?2, ?3, ?4);
+        `,
         {
             1: name,
             2: color,
