@@ -5,13 +5,20 @@ const addText = (selector, text) => {
     if (element) element.innerText += text;
 };
 
+ipcRenderer.on("asynchronous-reply", (event, reply) => {
+    reply = JSON.parse(reply);
+    switch (reply["command"]) {
+        case "send roads":
+            reply["roads"].forEach(road => {
+                addText("test", road["name"] + "\n");
+            });
+            break;
+    }
+});
+
 window.addEventListener("DOMContentLoaded", () => {
-
-    ipcRenderer.on("asynchronous-reply", (event, text) => {
-        addText("test", text);
-    });
-
-    ipcRenderer.send("asynchronous-message", "ping");
-    ipcRenderer.send("asynchronous-message", "ping");
-    ipcRenderer.send("asynchronous-message", "ping");
+    ipcRenderer.send(
+        "asynchronous-message",
+        JSON.stringify({command: "get roads"})
+    );
 });

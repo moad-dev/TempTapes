@@ -1,14 +1,22 @@
 function run(database, ipcMain) {
     ipcMain.on("asynchronous-message", (event, request) => {
-        var text = "";
-        database.getAllPaths((err, rows) => {
-            text += "Тропинки\n";
-            rows.forEach(row => {
-                text +=
-                    row.name + "\t" + row.color + "\t" + row.parent_id + "\n";
-            });
-            event.reply("asynchronous-reply", text);
-        });
+        request = JSON.parse(request);
+        switch (request["command"]) {
+            case "get roads":
+                var reply = {command: "send roads", roads: []};
+                database.getAllPaths((err, rows) => {
+                    rows.forEach(row => {
+                        road = {
+                            name: row.name,
+                            color: row.color,
+                            parent_id: row.parent_id
+                        };
+                        reply["roads"].push(road);
+                    });
+                    event.reply("asynchronous-reply", JSON.stringify(reply));
+                });
+                break;
+        }
     });
 }
 
