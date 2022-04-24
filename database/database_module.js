@@ -1,12 +1,12 @@
 const sqlite3 = require("sqlite3");
 const {promisify} = require("util");
-const path = require("path")
+const path = require("path");
+
 let db;
 
 function Init(startup) {
-    // console.log(`Current directory: ${process.cwd() + "\\database\\database.db"}`);
     db = new sqlite3.Database(
-        path.join(process.cwd() + "\\database\\database.db"),
+        "database/database.db",
         sqlite3.OPEN_READWRITE | sqlite3.OPEN,
         err => {
             if (err && err.code == "SQLITE_CANTOPEN") {
@@ -16,7 +16,7 @@ function Init(startup) {
                 console.log("SQLITE DB OPEN ERROR: " + err);
                 exit(1);
             } else {
-                startup(db);
+                startup();
             }
             return;
         }
@@ -25,7 +25,7 @@ function Init(startup) {
 
 function createDatabase(startup) {
     db = new sqlite3.Database(
-        path.join(process.cwd() + "\\database\\database.db"),
+        path.join(process.cwd() + "/database/database.db"),
         err => {
             if (err) {
                 console.log("SQLITE DB CREATE ERROR: " + err);
@@ -98,8 +98,6 @@ function createTables(db, startup) {
     // DEBUG
     */
 
-    /*
-
     insert into paths (name, color, parent_id)
         values ('path1', '#000000', null),
                ('path2', '#000001', null);
@@ -108,15 +106,13 @@ function createTables(db, startup) {
         values ('path3', '#000000', 1);
 
 
-    */
-
         `,
         err => {
             if (err != null) {
                 console.log(err);
                 exit(1);
             }
-            startup(db);
+            startup();
         }
     );
 }
@@ -160,9 +156,9 @@ function getEventsByPath(path_id, callback) {
 function makePath(name, color, icon = null, parent_id = null) {
     db.run(
         `
-        insert into paths (name, color, icon, parent_id)
-        values (?1, ?2, ?3, ?4);
-       `,
+            insert into paths (name, color, icon, parent_id)
+            values (?1, ?2, ?3, ?4);
+        `,
         {
             1: name,
             2: color,
@@ -173,6 +169,7 @@ function makePath(name, color, icon = null, parent_id = null) {
 }
 
 module.exports = {
+    db: db,
     Init: Init,
     getAllPaths: getAllPaths,
     getRootPaths: getRootPaths,
