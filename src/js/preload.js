@@ -1,4 +1,6 @@
 const {ipcRenderer} = require("electron");
+const {createGroup, deleteGroup, editGroup} = require("../js/Road.js");
+const {createEvent, deleteEvent, editEvent} = require("../js/Event.js");
 
 const addText = (selector, text) => {
     const element = document.getElementById(selector);
@@ -8,9 +10,17 @@ const addText = (selector, text) => {
 ipcRenderer.on("asynchronous-reply", (event, reply) => {
     reply = JSON.parse(reply);
     switch (reply["command"]) {
-        case "send roads":
+        case "send root roads":
+            var j = -reply["roads"].length / 2 + 0.5;
             reply["roads"].forEach(road => {
-                addText("test", road["name"] + "\n");
+                createGroup(
+                    road.color,
+                    road.icon,
+                    road.path_id,
+                    road.name,
+                    j++
+                );
+                // addText("test", road["name"] + "\n");
             });
             break;
     }
@@ -19,6 +29,6 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
 window.addEventListener("DOMContentLoaded", () => {
     ipcRenderer.send(
         "asynchronous-message",
-        JSON.stringify({command: "get roads"})
+        JSON.stringify({command: "get root roads"})
     );
 });
