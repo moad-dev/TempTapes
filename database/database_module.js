@@ -2,7 +2,7 @@ const sqlite3 = require("sqlite3");
 const {promisify} = require("util");
 const path = require("path");
 
-let db;
+var db;
 
 function Init(startup) {
     db = new sqlite3.Database(
@@ -98,12 +98,10 @@ function createTables(db, startup) {
     // DEBUG
     */
 
-    insert into paths (name, color, parent_id)
-        values ('path1', '#000000', null),
-               ('path2', '#000001', null);
-
-    insert into paths (name, color, parent_id)
-        values ('path3', '#000000', 1);
+    insert into paths (name, color, parent_id, icon)
+        values ('path1', '#FF0000', null, 'picture.png'),
+               ('path2', '#00FF00', null, 'picture.png'),
+               ('path3', '#0000FF', null, 'picture.png');
 
 
         `,
@@ -168,8 +166,13 @@ function makePath(name, color, icon = null, parent_id = null) {
     );
 }
 
+function getDB() {
+    return db;
+}
+
 module.exports = {
     db: db,
+    getDB: getDB,
     Init: Init,
     getAllPaths: getAllPaths,
     getRootPaths: getRootPaths,
