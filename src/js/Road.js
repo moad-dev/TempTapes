@@ -33,37 +33,40 @@ function createGroup(color, ico, id, text, posX)
         k--;
         line_geometry = new THREE.BufferGeometry().setFromPoints( points );
         line = new THREE.Line( line_geometry, line_material );
-        line.name = "line";
+        line.name = "line " + i;
         group.add(line);
         group.add(cube);
     }
-    let rot = 0.05
-    let posy = 0.05
+    let rot = 0.08
+    let posx = -1;
+    let posy = 0.05;
     let yl = 0.51
-    for (let i = 0; i < 15; i++)
+    for (let i = 1; i < 16; i++)
     {
-        if (i < 12)
+        material = [temp, temp, temp, temp, temp, temp];
+        let cube2;
+        cube2 = new THREE.Mesh( geometry, material );
+        cube2.position.z = posx;
+        cube2.position.y = posy
+        cube2.name = "cube " + i
+        cube2.rotateX(rot);
+        cube.add(cube2);
+        if (i < 13)
         {
             points = [];
-            points.push( new THREE.Vector3( -0.5, posy + yl, zl ) );
-            points.push( new THREE.Vector3( 0.5, posy + yl, zl ) );
+            points.push( new THREE.Vector3( -0.5, cube.position.y + 0.501, cube.position.z) );
+            points.push( new THREE.Vector3( 0.5, cube.position.y + 0.501, cube.position.z ) );
             line_geometry = new THREE.BufferGeometry().setFromPoints( points );
             line = new THREE.Line( line_geometry, line_material );
-            line.name = "line " + i;
-            group.add(line);
+            line.name = "line " + (i + 1);
+            line.position.y = cube2.position.y + 0.01;
+            cube.add(line);
         }
-
-        material = [temp, temp, temp, temp, temp, temp];
-        cube = new THREE.Mesh( geometry, material );
-        cube.position.z = k;
-        cube.position.y = posy
-        cube.rotateX(rot);
-        group.add( cube );
+        cube = cube2;
         zl--;
         k--;
-        rot += 0.1;
-        posy += rot;
-        yl += 0.03
+        yl += 0.5
+
     }
     group.name = "group " + id;
     group.position.setX(posX)

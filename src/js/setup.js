@@ -59,7 +59,7 @@ function setup() {
 
     camera.position.z = 4;
     camera.position.y = 2;
-    camera.position.x = 0;
+    camera.position.x = 5;
     camera.lookAt(camera.position.x, 1.5, 0);
 }
 function animate() {
