@@ -8,7 +8,7 @@ const path = require("path");
 const database = require(path.join(process.cwd(), "/database/database_module"));
 
 function main() {
-    // function createWindow() {
+    function createWindow() {
         window = new BrowserWindow({
             width: 800,
             height: 600,
@@ -19,7 +19,7 @@ function main() {
             }
         });
         window.loadFile(path.join(process.cwd(), "src/html/index.html"));
-    // }
+    }
 
     runEventsListeners = require(path.join(
         process.cwd(),
@@ -27,6 +27,6 @@ function main() {
     ));
     runEventsListeners(database, ipcMain);
 
-    // app.on("ready", createWindow);
+    app.on("ready", createWindow);
 }
 database.Init(main);

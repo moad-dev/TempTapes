@@ -19,6 +19,7 @@
     border-radius: 15px;
     text-align: center;
     padding: 1em;
+    cursor: pointer;
 }
 
 .btn-row {
@@ -43,4 +44,3 @@
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
-

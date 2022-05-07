@@ -23,6 +23,24 @@ function run(database, ipcMain) {
                     event.reply("asynchronous-reply", JSON.stringify(reply));
                 });
                 break;
+            case "get events":
+                var reply = {command: "send events", events: []};
+                database
+                    .getDB()
+                    .all(
+                        `SELECT * FROM events WHERE path_id = ? AND date BETWEEN ? AND ?`,
+                        request["path_id"],
+                        request["first_date"],
+                        request["end_date"],
+                        (err, rows) => {
+                            reply["events"] = rows;
+                            event.reply(
+                                "asynchronous-reply",
+                                JSON.stringify(reply)
+                            );
+                        }
+                    );
+                break;
         }
     });
 }
