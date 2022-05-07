@@ -30,6 +30,7 @@ function setup() {
     }
 
     scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0xFFFFFF, 10, 16)
     scene.background = new THREE.Color(0xffffff);
 
     camera = new THREE.PerspectiveCamera(
@@ -59,7 +60,7 @@ function setup() {
 
     camera.position.z = 4;
     camera.position.y = 2;
-    camera.position.x = 5;
+    camera.position.x = 0;
     camera.lookAt(camera.position.x, 1.5, 0);
 }
 function animate() {

@@ -41,7 +41,7 @@ function createGroup(color, ico, id, text, posX)
     let posx = -1;
     let posy = 0.05;
     let yl = 0.51
-    for (let i = 1; i < 16; i++)
+    for (let i = 1; i < 19; i++)
     {
         material = [temp, temp, temp, temp, temp, temp];
         let cube2;
