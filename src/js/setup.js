@@ -13,6 +13,7 @@ function setup() {
     }
 
     window.addEventListener("mousedown", onMouseDown, false);
+    //реакция события на клик
     var raycaster = new THREE.Raycaster();
     var mouse = new THREE.Vector2();
     function onMouseDown(event) {
@@ -26,6 +27,37 @@ function setup() {
             if (intersects[i].object.name.substring(0, 5) === "event") {
                 intersects[i].object.material.color.set(0xff0000);
             }
+        }
+    }
+
+    window.addEventListener("wheel", onScroll, false);
+    //скролл событий
+    const {editEvent, currentLine} = require("../js/Event")
+    var lastScrollTop = 0;
+    function detectMouseWheelDirection( e )
+    {
+        var delta = null,
+            direction = false;
+        if ( !e ) { // if the event is not provided, we get it from the window object
+            e = window.event;
+        }
+        if ( e.wheelDelta ) { // will work in most cases
+            delta = e.wheelDelta / 60;
+        }
+        if ( delta !== null ) {
+            direction = delta > 0 ? 'up' : 'down';
+        }
+        return direction;
+    }
+    function onScroll(e) {
+        var scrollDirection = detectMouseWheelDirection( e );
+        if (scrollDirection === "up"){
+            // downscroll code
+            console.log("up")
+        } else {
+            // upscroll code
+
+            console.log("down")
         }
     }
 
@@ -46,6 +78,8 @@ function setup() {
     // const {createGroup, deleteGroup, editGroup} = require("../js/Road.js");
     // const {createEvent, deleteEvent, editEvent} = require("../js/Event.js");
 
+    // const {createGroup} = require("../js/Road.js")
+    //
     // createGroup(0x00ff00, "picture.png", 0, "lorem ipsum", -1);
     // createGroup(0x00ffff, "picture.png", 1, "lorem ipsum", 0);
     // createGroup(0x00cfff, "picture.png", 2, "lorem ipsum", 1);
@@ -55,8 +89,9 @@ function setup() {
     // console.log(scene.getObjectByName("group 0").position.x);
     // createEvent(2, "picture.png", "group 1", 2);
     // editEvent(2, "picture.png", "group 1", 5);
-    // createEvent(1, "picture.png", "group 0", 2);
-    // createEvent(3, "picture.png", "group 2", 13);
+    // const {createEvent} = require("../js/Event.js")
+    // createEvent(1, "picture.png", "group 1", "line 2");
+    // createEvent(3, "picture.png", "group 2", "line 13");
 
     camera.position.z = 4;
     camera.position.y = 2;

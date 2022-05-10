@@ -1,29 +1,43 @@
-function createEvent(id, ico, groupName, whichLine)
+function createEvent(id, ico, color, groupName, date, dateMode)
 {
+    let selectedGroup = scene.getObjectByName("Dates");
+    let whichLine = null;
     const loader = new THREE.TextureLoader();
     const geometry = new THREE.PlaneGeometry( 0.75, 0.75 );
-    const material = new THREE.MeshBasicMaterial({color: 0xffffff, map: loader.load('../../storage/img/' + ico)});
+    const material = new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/' + ico)});
     const plane = new THREE.Mesh( geometry, material );
-    // plane.position.set(scene.getObjectByName(groupName).position.x, 0.051 * whichLine * whichLine - whichLine * 0.15 + 1.2, 1-whichLine)
+    switch (dateMode)
+    {
+        case 0:
+            let yy = date.substring(0, date.indexOf('-'))
+            let i = 0;
+            selectedGroup.traverse(function (child) {
+                if (yy == child.name)
+                {
+                    whichLine = "line " + i;
+                }
+                i++;
+            })
+            break;
+        case 1:
+            break;
+        case 2:
+            break;
+    }
     var tr = new THREE.Vector3();
     scene.getObjectByName(whichLine).getWorldPosition(tr);
     plane.position.set(scene.getObjectByName(groupName).position.x, tr.y + 1, tr.z )
     plane.name = "event " + id;
     scene.add( plane );
 }
-function editEvent(id, ico, groupName, whichLine)
+function editEvent(id, ico, color,  groupName, whichLine)
 {
     const loader = new THREE.TextureLoader();
     let selectedPlane = scene.getObjectByName("event " + id);
-    selectedPlane.material = new THREE.MeshBasicMaterial({color: 0xffffff, map: loader.load('../../storage/img/' + ico)})
-    if (whichLine > 2)
-    {
-        selectedPlane.position.set(scene.getObjectByName(groupName).position.x, 0.051 * whichLine * whichLine - whichLine * 0.19 + 1.2, 1-whichLine)
-    }
-    else
-    {
-        selectedPlane.position.set(scene.getObjectByName(groupName).position.x, 1, 1-whichLine)
-    }
+    var tr = new THREE.Vector3();
+    scene.getObjectByName(whichLine).getWorldPosition(tr);
+    selectedPlane.material = new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/' + ico)})
+    selectedPlane.position.set(scene.getObjectByName(groupName).position.x, tr.y + 1, tr.z)
 }
 function deleteEvent(id)
 {

@@ -10,7 +10,6 @@ function createGroup(color, ico, id, text, posX)
 
     const loader = new THREE.TextureLoader();
     let cube;
-
     let temp = new THREE.MeshBasicMaterial({color: color});
     const group = new THREE.Group();
     let k = 0, zl = 0;
@@ -36,12 +35,13 @@ function createGroup(color, ico, id, text, posX)
         line.name = "line " + i;
         group.add(line);
         group.add(cube);
+
     }
     let rot = 0.08
     let posx = -1;
     let posy = 0.05;
     let yl = 0.51
-    for (let i = 1; i < 19; i++)
+    for (let i = 2; i < 19; i++)
     {
         material = [temp, temp, temp, temp, temp, temp];
         let cube2;
@@ -58,7 +58,7 @@ function createGroup(color, ico, id, text, posX)
             points.push( new THREE.Vector3( 0.5, cube.position.y + 0.501, cube.position.z ) );
             line_geometry = new THREE.BufferGeometry().setFromPoints( points );
             line = new THREE.Line( line_geometry, line_material );
-            line.name = "line " + (i + 1);
+            line.name = "line " + i;
             line.position.y = cube2.position.y + 0.01;
             cube.add(line);
         }
