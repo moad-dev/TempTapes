@@ -30,6 +30,7 @@ function setup() {
     }
 
     scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0xFFFFFF, 10, 16)
     scene.background = new THREE.Color(0xffffff);
 
     camera = new THREE.PerspectiveCamera(
