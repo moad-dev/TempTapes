@@ -1,10 +1,9 @@
 const {ipcRenderer} = require("electron");
 const {createGroup, deleteGroup, editGroup} = require("../js/Road.js");
-const {createEvent, deleteEvent, editEvent} = require("../js/Event.js");
+const {createEvent, deleteEvent, editEvent, mergeEvents} = require("../js/Event.js");
 const {initTimeline, updateRange, updateCurrentTime} = require("../js/timeline.js");
 
 let DateLines = require("../js/Date.js");
-const {mergeEvents} = require("./Event");
 let Dates;
 let availableRoads;
 
@@ -19,7 +18,7 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
     switch (reply["command"]) {
         case "send root roads":
             var j = -reply["roads"].length / 2 + 0.5;
-            Dates = new DateLines("2020-01-01", "2021-03-01", 2)
+            Dates = new DateLines("2020-01-01", "2021-01-01", 2)
             reply["roads"].forEach(road => {
                 createGroup(
                     road.color,
@@ -32,8 +31,8 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
             Dates.createDates(j + 1);
             break;
         case "send events":
-            console.log(reply);
             reply["events"].forEach(event => {
+                console.log(event)
                 createEvent(
                     event.event_id,
                     event.icon,
@@ -64,7 +63,7 @@ window.addEventListener("DOMContentLoaded", () => {
                     command: "get events",
                     path_id: road.path_id,
                     first_date: "2020-01-01",
-                    end_date: "2021-03-01"
+                    end_date: "2021-05-01"
                 })
             );
         });

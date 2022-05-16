@@ -45,7 +45,7 @@ function createEvent(id, ico, color, groupName, date, dateMode)
                 if ((mm + '.' + yy) == child.name)
                 {
                     whichLine = "line " + i;
-                    lineArrayMonth[i][groupName.substring(groupName.indexOf(' ') + 1)].push(id);
+                    lineArrayMonth[groupName.substring(groupName.indexOf(' ') + 1) - 1][i].push(id);
                 }
                 i++;
             })
@@ -55,7 +55,7 @@ function createEvent(id, ico, color, groupName, date, dateMode)
                 if ((dd + '.' + mm + '.' + yy) == child.name)
                 {
                     whichLine = "line " + i;
-                    lineArrayDay[i][groupName.substring(groupName.indexOf(' ') + 1)].push(id);
+                    lineArrayDay[groupName.substring(groupName.indexOf(' ') + 1) - 1][i].push(id);
                 }
                 i++;
             })
@@ -97,8 +97,8 @@ function mergeEvents(i)
             scene.add(plane)
             for (let z = 0; z < lineArrayYear[i - 1][j].length; z++)
             {
-                scene.getObjectByName("event " + lineArrayYear[i - 1][j][z]).position.y += 0.3;
-                scene.getObjectByName("event " + lineArrayYear[i - 1][j][z]).position.x -= z * 0.25;
+                scene.getObjectByName("event " + lineArrayYear[i - 1][j][z]).position.y += 0.77;
+                scene.getObjectByName("event " + lineArrayYear[i - 1][j][z]).position.x -= z * 0.85;
             }
         }
     }
