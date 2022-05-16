@@ -32,7 +32,7 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
             break;
         case "send events":
             reply["events"].forEach(event => {
-                console.log(event);
+                console.log(reply);
                 createEvent(
                     event.event_id,
                     event.icon,
@@ -71,16 +71,16 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("timelineStart").addEventListener("change",
         updateRange
     );
-    
+
     document.getElementById("timelineCurrent").addEventListener("change",
         updateRange
     );
-    
+
     document.getElementById("timelineEnd").addEventListener("change",
         updateRange
     );
-    
-    document.getElementById("timelineRange").addEventListener("change", 
+
+    document.getElementById("timelineRange").addEventListener("change",
         updateCurrentTime
     );
     // TODO переключение масштаба
