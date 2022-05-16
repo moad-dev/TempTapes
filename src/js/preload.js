@@ -64,4 +64,20 @@ window.addEventListener("DOMContentLoaded", () => {
             );
         });
     });
+
+    // TODO переключение масштаба
+
+    function selectScale(symbol, scale) {
+        document.getElementById("select-scale").innerHTML = symbol;
+    }
+
+    document.getElementById("select-scale-day").addEventListener("click", () => {
+        selectScale("Д", "day");
+    });
+    document.getElementById("select-scale-month").addEventListener("click", () => {
+        selectScale("М", "month");
+    });
+    document.getElementById("select-scale-year").addEventListener("click", () => {
+        selectScale("Г", "year");
+    });
 });
