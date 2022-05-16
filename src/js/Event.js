@@ -1,3 +1,21 @@
+let lineArrayDay = [];
+let lineArrayMonth = [];
+let lineArrayYear = [];
+for (let i = 0; i < 3; i++)
+{
+    lineArrayDay.push([]);
+    lineArrayMonth.push([]);
+    lineArrayYear.push([]);
+}
+for (let i = 0; i < 3; i++)
+{
+    for (let j = 0; j < 14; j++)
+    {
+        lineArrayDay[i].push([]);
+        lineArrayMonth[i].push([]);
+        lineArrayYear[i].push([]);
+    }
+}
 function createEvent(id, ico, color, groupName, date, dateMode)
 {
     let selectedGroup = scene.getObjectByName("Dates");
@@ -17,6 +35,7 @@ function createEvent(id, ico, color, groupName, date, dateMode)
                 if (yy == child.name)
                 {
                     whichLine = "line " + i;
+                    lineArrayYear[groupName.substring(groupName.indexOf(' ') + 1) - 1][i].push(id);
                 }
                 i++;
             })
@@ -26,6 +45,7 @@ function createEvent(id, ico, color, groupName, date, dateMode)
                 if ((mm + '.' + yy) == child.name)
                 {
                     whichLine = "line " + i;
+                    lineArrayMonth[i][groupName.substring(groupName.indexOf(' ') + 1)].push(id);
                 }
                 i++;
             })
@@ -35,16 +55,53 @@ function createEvent(id, ico, color, groupName, date, dateMode)
                 if ((dd + '.' + mm + '.' + yy) == child.name)
                 {
                     whichLine = "line " + i;
+                    lineArrayDay[i][groupName.substring(groupName.indexOf(' ') + 1)].push(id);
                 }
                 i++;
             })
             break;
     }
+    //TODO: Сделать стэк из событий при наложении с помощью контейнера из айди для каждой линии ИТОГ: Контейнер(линия1[id, id,...],линия2[id],...)
     var tr = new THREE.Vector3();
     scene.getObjectByName(whichLine).getWorldPosition(tr);
     plane.position.set(scene.getObjectByName(groupName).position.x, tr.y + 1, tr.z )
     plane.name = "event " + id;
     scene.add( plane );
+}
+function mergeEvents(i)
+{
+    console.log(i)
+    let selectedGroup = scene.getObjectByName("group " + i);
+    let color;
+    for (let j = 0; j < 14; j++)
+    {
+        if (lineArrayYear[i - 1][j].length > 1)
+        {
+            selectedGroup.traverse(function (child) {
+                if (child.name !== "line")
+                {
+                    if ((child instanceof THREE.Mesh) && (child.name !== "name"))
+                    {
+                        color = child.material[0].color
+                    }
+                }
+            });
+            const loader = new THREE.TextureLoader();
+            const geometry = new THREE.PlaneGeometry( 0.75, 0.75 );
+            const material = new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/stack.png')});
+            const plane = new THREE.Mesh( geometry, material );
+            plane.position.set(scene.getObjectByName("event " + lineArrayYear[i - 1][j][0]).position.x,
+                scene.getObjectByName("event " + lineArrayYear[i - 1][j][0]).position.y,
+                scene.getObjectByName("event " + lineArrayYear[i - 1][j][0]).position.z )
+            plane.name = "event stack " + (i - 1) + " " + j;
+            scene.add(plane)
+            for (let z = 0; z < lineArrayYear[i - 1][j].length; z++)
+            {
+                scene.getObjectByName("event " + lineArrayYear[i - 1][j][z]).position.y += 0.3;
+                scene.getObjectByName("event " + lineArrayYear[i - 1][j][z]).position.x -= z * 0.25;
+            }
+        }
+    }
 }
 function editEvent(id, ico, color,  groupName, whichLine)
 {
@@ -62,4 +119,5 @@ function deleteEvent(id)
 
 module.exports.createEvent = createEvent
 module.exports.editEvent = editEvent
+module.exports.mergeEvents = mergeEvents
 module.exports.deleteEvent = deleteEvent

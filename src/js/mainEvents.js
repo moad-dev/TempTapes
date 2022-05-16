@@ -24,7 +24,7 @@ function run(database, ipcMain) {
                 });
                 break;
             case "get events":
-                var reply = {command: "send events", events: []};
+                var reply = {command: "send events", events: [], path_id: request["path_id"]};
                 database
                     .getDB()
                     .all(

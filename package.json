@@ -17,5 +17,8 @@
     "jsdom": "^19.0.0",
     "popper.js": "^1.16.1",
     "sqlite3": "^5.0.6"
+  },
+  "devDependencies": {
+    "electron-packager": "^15.5.1"
   }
 }
