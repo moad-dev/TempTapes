@@ -59,13 +59,6 @@
 #timeline .container {
     display: flex;
     justify-content: space-between;
-};
-
-.sidebar {
-    position: absolute;
-    right:10px;
-    top: 40%;
-    padding: 20px;
 }
 
 /* Кнопка выпадающего списка */
