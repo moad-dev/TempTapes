@@ -6,11 +6,13 @@ function createEvent(id, ico, color, groupName, date, dateMode)
     const geometry = new THREE.PlaneGeometry( 0.75, 0.75 );
     const material = new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/' + ico)});
     const plane = new THREE.Mesh( geometry, material );
+    let yy = date.substring(0, date.indexOf('-'));
+    let mm = date.substring(date.indexOf('-') + 1, date.lastIndexOf('-'));
+    let dd = date.substring(date.lastIndexOf('-') + 1);
+    let i = -1;
     switch (dateMode)
     {
         case 0:
-            let yy = date.substring(0, date.indexOf('-'))
-            let i = 0;
             selectedGroup.traverse(function (child) {
                 if (yy == child.name)
                 {
@@ -20,8 +22,22 @@ function createEvent(id, ico, color, groupName, date, dateMode)
             })
             break;
         case 1:
+            selectedGroup.traverse(function (child) {
+                if ((mm + '.' + yy) == child.name)
+                {
+                    whichLine = "line " + i;
+                }
+                i++;
+            })
             break;
         case 2:
+            selectedGroup.traverse(function (child) {
+                if ((dd + '.' + mm + '.' + yy) == child.name)
+                {
+                    whichLine = "line " + i;
+                }
+                i++;
+            })
             break;
     }
     var tr = new THREE.Vector3();
