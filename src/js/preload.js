@@ -3,7 +3,7 @@ const {createGroup, deleteGroup, editGroup} = require("../js/Road.js");
 const {createEvent, deleteEvent, editEvent} = require("../js/Event.js");
 const {initTimeline, updateRange, updateCurrentTime} = require("../js/timeline.js");
 
-let Date = require("../js/Date.js");
+let DateLines = require("../js/Date.js");
 let Dates;
 let availableRoads;
 
@@ -18,7 +18,7 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
     switch (reply["command"]) {
         case "send root roads":
             var j = -reply["roads"].length / 2 + 0.5;
-            Dates = new Date("2020-01-01", "2021-03-01", 0)
+            Dates = new DateLines("2020-01-01", "2021-03-01", 2)
             reply["roads"].forEach(road => {
                 createGroup(
                     road.color,
@@ -28,7 +28,7 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
                     j++
                 );
             });
-            Dates.createDates();
+            Dates.createDates(j + 1);
             break;
         case "send events":
             reply["events"].forEach(event => {
@@ -79,5 +79,19 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("timelineRange").addEventListener("change", 
         updateCurrentTime
     );
+    // TODO переключение масштаба
 
+    function selectScale(symbol, scale) {
+        document.getElementById("select-scale").innerHTML = symbol;
+    }
+
+    document.getElementById("select-scale-day").addEventListener("click", () => {
+        selectScale("Д", "day");
+    });
+    document.getElementById("select-scale-month").addEventListener("click", () => {
+        selectScale("М", "month");
+    });
+    document.getElementById("select-scale-year").addEventListener("click", () => {
+        selectScale("Г", "year");
+    });
 });
