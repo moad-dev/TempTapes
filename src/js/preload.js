@@ -4,6 +4,7 @@ const {createEvent, deleteEvent, editEvent} = require("../js/Event.js");
 const {initTimeline, updateRange, updateCurrentTime} = require("../js/timeline.js");
 
 let DateLines = require("../js/Date.js");
+const {mergeEvents} = require("./Event");
 let Dates;
 let availableRoads;
 
@@ -31,8 +32,8 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
             Dates.createDates(j + 1);
             break;
         case "send events":
+            console.log(reply);
             reply["events"].forEach(event => {
-                console.log(reply);
                 createEvent(
                     event.event_id,
                     event.icon,
@@ -42,6 +43,7 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
                     Dates.mode
                 );
             });
+            mergeEvents(reply["path_id"]);
             break;
     }
 });
