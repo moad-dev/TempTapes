@@ -41,14 +41,12 @@ function run(database, ipcMain) {
                         }
                     );
                 break;
-            case "get one events":
-                var reply = {command: "send events", events: []};
-                database
-                    .getDB()
-                    .all(
+            case "get events one day":
+                var reply = {command: "send events one day", events: []};
+                database.getDB().all(
                         `SELECT * FROM events WHERE path_id = ? AND date = ?`,
                         request["path_id"],
-                        request["date"]
+                        request["date"],
                         (err, rows) => {
                             reply["events"] = rows;
                             event.reply(
