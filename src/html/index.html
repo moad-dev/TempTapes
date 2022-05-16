@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru-RU">
 <head>
     <meta charset="utf-8">
+
     <title>My first three.js app</title>
     <style>
         body { margin: 0; }
@@ -16,6 +17,15 @@
     </script>
     <link href="../css/style.css" rel="stylesheet">
 
+    <div id="timeline" class="NE">
+        <input id="timelineRange" type="range" min="0" max="100">
+        <div class="container">
+            <input id="timelineStart" type="date" placeholder="dd-mm-yyyy">
+            <input id="timelineCurrent" type="date" placeholder="dd-mm-yyyy">
+            <input id="timelineEnd" type="date" placeholder="dd-mm-yyyy">
+        </div>
+    </div>
+
     <div class="btn-row SW">
         <button class="btn dark-opaque" id="getEventsBtn"> События </button>
         <button class="btn dark-opaque"> кнопка </button>
@@ -26,5 +36,6 @@
         <button class="btn dark-opaque"> кнопка </button>
         <button class="btn dark-opaque"> кнопка </button>
     </div>
+
 </body>
 </html>

@@ -44,3 +44,19 @@
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
+
+#timeline {
+    width: 100%;
+}
+
+#timeline input[type="range"] {
+    width: 100%;
+}
+
+#timeline .container input {
+}
+
+#timeline .container {
+    display: flex;
+    justify-content: space-between;
+};

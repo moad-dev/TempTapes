@@ -1,6 +1,7 @@
 const {ipcRenderer} = require("electron");
 const {createGroup, deleteGroup, editGroup} = require("../js/Road.js");
 const {createEvent, deleteEvent, editEvent} = require("../js/Event.js");
+const {initTimeline, updateRange, updateCurrentTime} = require("../js/timeline.js");
 
 let Date = require("../js/Date.js");
 let Dates;
@@ -51,6 +52,8 @@ window.addEventListener("DOMContentLoaded", () => {
         JSON.stringify({command: "get root roads"})
     );
 
+    initTimeline(new Date(2022, 5, 17), new Date(2022, 5, 21));
+
     document.getElementById("getEventsBtn").addEventListener("click", () => {
         availableRoads.forEach(road => {
             ipcRenderer.send(
@@ -64,4 +67,17 @@ window.addEventListener("DOMContentLoaded", () => {
             );
         });
     });
+
+    document.getElementById("timelineStart").addEventListener("change",
+        updateRange
+    );
+    
+    document.getElementById("timelineEnd").addEventListener("change",
+        updateRange
+    );
+    
+    document.getElementById("timelineRange").addEventListener("change", 
+        updateCurrentTime
+    );
+
 });
