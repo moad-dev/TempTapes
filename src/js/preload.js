@@ -1,6 +1,7 @@
 const {ipcRenderer} = require("electron");
 const {createGroup, deleteGroup, editGroup} = require("../js/Road.js");
-const {createEvent, deleteEvent, editEvent, mergeEvents} = require("../js/Event.js");
+const {createEvent, deleteEvent, editEvent} = require("../js/Event.js");
+const {initTimeline, updateRange, updateCurrentTime} = require("../js/timeline.js");
 
 let DateLines = require("../js/Date.js");
 let Dates;
@@ -17,7 +18,7 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
     switch (reply["command"]) {
         case "send root roads":
             var j = -reply["roads"].length / 2 + 0.5;
-            Dates = new DateLines("2020-01-01", "2021-03-01", 0)
+            Dates = new DateLines("2020-01-01", "2021-03-01", 2)
             reply["roads"].forEach(road => {
                 createGroup(
                     road.color,
@@ -31,6 +32,7 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
             break;
         case "send events":
             reply["events"].forEach(event => {
+                console.log(reply);
                 createEvent(
                     event.event_id,
                     event.icon,
@@ -40,8 +42,6 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
                     Dates.mode
                 );
             });
-            console.log(reply)
-            mergeEvents(reply["path_id"]);
             break;
     }
 });
@@ -51,6 +51,8 @@ window.addEventListener("DOMContentLoaded", () => {
         "asynchronous-message",
         JSON.stringify({command: "get root roads"})
     );
+
+    initTimeline(new Date(2022, 5, 17), new Date(2022, 5, 21));
 
     document.getElementById("getEventsBtn").addEventListener("click", () => {
         availableRoads.forEach(road => {
@@ -64,5 +66,36 @@ window.addEventListener("DOMContentLoaded", () => {
                 })
             );
         });
+    });
+
+    document.getElementById("timelineStart").addEventListener("change",
+        updateRange
+    );
+
+    document.getElementById("timelineCurrent").addEventListener("change",
+        updateRange
+    );
+
+    document.getElementById("timelineEnd").addEventListener("change",
+        updateRange
+    );
+
+    document.getElementById("timelineRange").addEventListener("change",
+        updateCurrentTime
+    );
+    // TODO переключение масштаба
+
+    function selectScale(symbol, scale) {
+        document.getElementById("select-scale").innerHTML = symbol;
+    }
+
+    document.getElementById("select-scale-day").addEventListener("click", () => {
+        selectScale("Д", "day");
+    });
+    document.getElementById("select-scale-month").addEventListener("click", () => {
+        selectScale("М", "month");
+    });
+    document.getElementById("select-scale-year").addEventListener("click", () => {
+        selectScale("Г", "year");
     });
 });

@@ -104,9 +104,9 @@ function createTables(db, startup) {
                ('path3', '#0000FF', null, 'picture.png');
 
     insert into events (date, name, color, path_id, icon)
-        values ('2021-01-01', 'event1', '#0000FF', 1, "picture.png"),
-               ('2021-01-02', 'event2', '#00FF00', 2, "picture.png"),
-               ('2021-01-03', 'event3', '#FF0000', 3, "picture.png");
+        values ('2020-01-01', 'event1', '#0000FF', 1, "picture.png"),
+               ('2020-01-02', 'event2', '#00FF00', 2, "picture.png"),
+               ('2020-01-03', 'event3', '#FF0000', 3, "picture.png");
 
 
         `,

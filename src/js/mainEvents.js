@@ -41,6 +41,21 @@ function run(database, ipcMain) {
                         }
                     );
                 break;
+            case "get events one day":
+                var reply = {command: "send events one day", events: []};
+                database.getDB().all(
+                        `SELECT * FROM events WHERE path_id = ? AND date = ?`,
+                        request["path_id"],
+                        request["date"],
+                        (err, rows) => {
+                            reply["events"] = rows;
+                            event.reply(
+                                "asynchronous-reply",
+                                JSON.stringify(reply)
+                            );
+                        }
+                    );
+                break;
         }
     });
 }
