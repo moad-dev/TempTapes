@@ -72,6 +72,10 @@ window.addEventListener("DOMContentLoaded", () => {
         updateRange
     );
     
+    document.getElementById("timelineCurrent").addEventListener("change",
+        updateRange
+    );
+    
     document.getElementById("timelineEnd").addEventListener("change",
         updateRange
     );
