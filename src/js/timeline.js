@@ -30,10 +30,12 @@ function initTimeline(date_start, date_end) {
 
 function updateCurrentTime() {
     var days = Number(document.getElementById('timelineRange').value);
-    var current = new Date(document.getElementById('timelineStart').value);
-    current.setDate(current.getDate() + days);
+    var date_current = new Date(document.getElementById('timelineStart').value);
+    date_current.setDate(date_current.getDate() + days);
     
-    document.getElementById('timelineCurrent').valueAsDate = current;
+    tm_current = document.getElementById('timelineCurrent');
+    tm_current.valueAsDate = date_current;
+    tm_current.old = tm_current.value;
 }
 
 function updateRange() {
