@@ -27,6 +27,13 @@ function setup() {
             if (intersects[i].object.name.substring(0, 5) === "event") {
                 intersects[i].object.material.color.set(0xff0000);
             }
+            if (intersects[i].object.name.substring(0, 5) === "stack") {
+                let hiddenEvents = intersects[i].object.name.split(' ');
+                for (let index = 1; index < hiddenEvents.length; index++)
+                {
+                    scene.getObjectByName("event " + hiddenEvents[index]).visible = !scene.getObjectByName("event " + hiddenEvents[index]).visible;
+                }
+            }
         }
     }
 

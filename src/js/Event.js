@@ -1,19 +1,13 @@
-let lineArrayDay = [];
-let lineArrayMonth = [];
-let lineArrayYear = [];
+let lineArray = [];
 for (let i = 0; i < 3; i++)
 {
-    lineArrayDay.push([]);
-    lineArrayMonth.push([]);
-    lineArrayYear.push([]);
+    lineArray.push([]);
 }
 for (let i = 0; i < 3; i++)
 {
     for (let j = 0; j < 14; j++)
     {
-        lineArrayDay[i].push([]);
-        lineArrayMonth[i].push([]);
-        lineArrayYear[i].push([]);
+        lineArray[i].push([]);
     }
 }
 function createEvent(id, ico, color, groupName, date, dateMode)
@@ -35,7 +29,7 @@ function createEvent(id, ico, color, groupName, date, dateMode)
                 if (yy == child.name)
                 {
                     whichLine = "line " + i;
-                    lineArrayYear[groupName.substring(groupName.indexOf(' ') + 1) - 1][i].push(id);
+                    lineArray[groupName.substring(groupName.indexOf(' ') + 1) - 1][i].push(id);
                 }
                 i++;
             })
@@ -45,7 +39,7 @@ function createEvent(id, ico, color, groupName, date, dateMode)
                 if ((mm + '.' + yy) == child.name)
                 {
                     whichLine = "line " + i;
-                    lineArrayMonth[groupName.substring(groupName.indexOf(' ') + 1) - 1][i].push(id);
+                    lineArray[groupName.substring(groupName.indexOf(' ') + 1) - 1][i].push(id);
                 }
                 i++;
             })
@@ -55,13 +49,12 @@ function createEvent(id, ico, color, groupName, date, dateMode)
                 if ((dd + '.' + mm + '.' + yy) == child.name)
                 {
                     whichLine = "line " + i;
-                    lineArrayDay[groupName.substring(groupName.indexOf(' ') + 1) - 1][i].push(id);
+                    lineArray[groupName.substring(groupName.indexOf(' ') + 1) - 1][i].push(id);
                 }
                 i++;
             })
             break;
     }
-    //TODO: Сделать стэк из событий при наложении с помощью контейнера из айди для каждой линии ИТОГ: Контейнер(линия1[id, id,...],линия2[id],...)
     var tr = new THREE.Vector3();
     scene.getObjectByName(whichLine).getWorldPosition(tr);
     plane.position.set(scene.getObjectByName(groupName).position.x, tr.y + 1, tr.z )
@@ -70,12 +63,11 @@ function createEvent(id, ico, color, groupName, date, dateMode)
 }
 function mergeEvents(i)
 {
-    console.log(i)
     let selectedGroup = scene.getObjectByName("group " + i);
     let color;
     for (let j = 0; j < 14; j++)
     {
-        if (lineArrayYear[i - 1][j].length > 1)
+        if (lineArray[i - 1][j].length > 1)
         {
             selectedGroup.traverse(function (child) {
                 if (child.name !== "line")
@@ -90,15 +82,18 @@ function mergeEvents(i)
             const geometry = new THREE.PlaneGeometry( 0.75, 0.75 );
             const material = new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/stack.png')});
             const plane = new THREE.Mesh( geometry, material );
-            plane.position.set(scene.getObjectByName("event " + lineArrayYear[i - 1][j][0]).position.x,
-                scene.getObjectByName("event " + lineArrayYear[i - 1][j][0]).position.y,
-                scene.getObjectByName("event " + lineArrayYear[i - 1][j][0]).position.z )
-            plane.name = "event stack " + (i - 1) + " " + j;
+            plane.position.set(scene.getObjectByName("event " + lineArray[i - 1][j][0]).position.x,
+                scene.getObjectByName("event " + lineArray[i - 1][j][0]).position.y,
+                scene.getObjectByName("event " + lineArray[i - 1][j][0]).position.z )
+            plane.name = "stack";
             scene.add(plane)
-            for (let z = 0; z < lineArrayYear[i - 1][j].length; z++)
+            for (let z = 0; z < lineArray[i - 1][j].length; z++)
             {
-                scene.getObjectByName("event " + lineArrayYear[i - 1][j][z]).position.y += 0.77;
-                scene.getObjectByName("event " + lineArrayYear[i - 1][j][z]).position.x -= z * 0.85;
+                plane.name += " " + lineArray[i - 1][j][z];
+                scene.getObjectByName("event " + lineArray[i - 1][j][z]).position.y += 0.77;
+                scene.getObjectByName("event " + lineArray[i - 1][j][z]).position.x -= z * 0.85;
+                scene.getObjectByName("event " + lineArray[i - 1][j][z]).visible = false;
+
             }
         }
     }
