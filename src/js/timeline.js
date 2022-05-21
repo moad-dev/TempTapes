@@ -59,8 +59,24 @@ function updateRange() {
     this.old = this.value;
 }
 
+function getStartDate() {
+    return document.getElementById('timelineStart').value;
+}
+
+function getCurrentDate() {
+    return document.getElementById('timelineCurrent').value;
+}
+
+function getEndDate() {
+    return document.getElementById('timelineEnd').value;
+}
+
 module.exports =  {
     initTimeline: initTimeline,
     updateRange: updateRange, 
-    updateCurrentTime: updateCurrentTime
+    updateCurrentTime: updateCurrentTime,
+    getStartDate: getStartDate,
+    getCurrentDate: getCurrentDate,
+    getEndDate: getEndDate
 };
+
