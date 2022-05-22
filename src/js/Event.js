@@ -60,11 +60,14 @@ function createEvent(id, ico, color, groupName, date, dateMode)
             })
             break;
     }
-    var tr = new THREE.Vector3();
-    scene.getObjectByName(whichLine).getWorldPosition(tr);
-    plane.position.set(scene.getObjectByName(groupName).position.x, tr.y + 1, tr.z )
-    plane.name = "event " + id;
-    scene.add( plane );
+    if (scene.getObjectByName(whichLine) !== undefined)
+    {
+        let tr = new THREE.Vector3();
+        scene.getObjectByName(whichLine).getWorldPosition(tr);
+        plane.position.set(scene.getObjectByName(groupName).position.x, tr.y + 1, tr.z )
+        plane.name = "event " + id;
+        scene.add( plane );
+    }
 }
 function mergeEvents(i)
 {
