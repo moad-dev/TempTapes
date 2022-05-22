@@ -57,6 +57,7 @@ function createTables(db, startup) {
         event_id integer primary key autoincrement,
         date text not null,
         name text not null,
+        description text,
         color text not null,
         icon text,
 
