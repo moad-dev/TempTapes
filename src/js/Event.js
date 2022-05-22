@@ -1,15 +1,20 @@
+const {Color} = require("./three");
 let lineArray = [];
-for (let i = 0; i < 3; i++)
-{
-    lineArray.push([]);
-}
-for (let i = 0; i < 3; i++)
-{
-    for (let j = 0; j < 14; j++)
+
+function InitEvents(countRoads) {
+    for (let i = 0; i < countRoads; i++)
     {
-        lineArray[i].push([]);
+        lineArray.push([]);
+    }
+    for (let i = 0; i < countRoads; i++)
+    {
+        for (let j = 0; j < 14; j++)
+        {
+            lineArray[i].push([]);
+        }
     }
 }
+
 function createEvent(id, ico, color, groupName, date, dateMode)
 {
     let selectedGroup = scene.getObjectByName("Dates");
@@ -81,6 +86,8 @@ function mergeEvents(i)
             const loader = new THREE.TextureLoader();
             const geometry = new THREE.PlaneGeometry( 0.75, 0.75 );
             const material = new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/stack.png')});
+            //прозрачность
+            //const material = new THREE.MeshBasicMaterial({map: loader.load('../../storage/img/pngegg.png'), opacity: 1, transparent: true});
             const plane = new THREE.Mesh( geometry, material );
             plane.position.set(scene.getObjectByName("event " + lineArray[i - 1][j][0]).position.x,
                 scene.getObjectByName("event " + lineArray[i - 1][j][0]).position.y,
@@ -102,7 +109,7 @@ function editEvent(id, ico, color,  groupName, whichLine)
 {
     const loader = new THREE.TextureLoader();
     let selectedPlane = scene.getObjectByName("event " + id);
-    var tr = new THREE.Vector3();
+    let tr = new THREE.Vector3();
     scene.getObjectByName(whichLine).getWorldPosition(tr);
     selectedPlane.material = new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/' + ico)})
     selectedPlane.position.set(scene.getObjectByName(groupName).position.x, tr.y + 1, tr.z)
@@ -142,3 +149,4 @@ module.exports.editEvent = editEvent
 module.exports.mergeEvents = mergeEvents
 module.exports.deleteEvent = deleteEvent
 module.exports.deleteAllEvents = deleteAllEvents
+module.exports.InitEvents = InitEvents
