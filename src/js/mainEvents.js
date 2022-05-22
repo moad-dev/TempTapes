@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 function run(database, ipcMain) {
     // database.makePath("test", "#FFFF00", "picture.png", null);
     // database.getDB().run(`
@@ -55,6 +57,40 @@ function run(database, ipcMain) {
                             );
                         }
                     );
+                break;
+            case "make path":
+                var reply = {command: "path added"};
+                database.makePath(
+                        request["name"],
+                        request["color"],
+                        request["icon"],
+                        request["parent_id"],
+                    (err, lastID) => {
+                        if(!err) {
+                            reply["path"] = {
+                                name: request["name"],
+                                color: request["color"],
+                                parent_id: request["parent_id"],
+                                icon: request["icon"],
+                                path_id: lastID
+                            };
+                            event.reply(
+                                "asynchronous-reply",
+                                JSON.stringify(reply)
+                            );
+                        }
+                    }
+                );
+                break;
+            case "get images":
+                var reply = {command: "send images", images: []};
+                fs.readdirSync('storage/img').forEach(file => {
+                  reply.images.push(file);
+                });
+                event.reply(
+                    "asynchronous-reply",
+                    JSON.stringify(reply)
+                );
                 break;
         }
     });
