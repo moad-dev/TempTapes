@@ -15,6 +15,7 @@ const addText = (selector, text) => {
 };
 function getEvents()
 {
+    deleteAllEvents()
     availableRoads.forEach(road => {
         ipcRenderer.send(
             "asynchronous-message",
@@ -33,7 +34,6 @@ function currentDateChanged()
     Dates.deleteDates();
     Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
     Dates.createDates(j + 1);
-    deleteAllEvents();
     getEvents();
 }
 ipcRenderer.on("asynchronous-reply", (event, reply) => {
@@ -101,10 +101,24 @@ window.addEventListener("DOMContentLoaded", () => {
             // downscroll code
             console.log("up")
             incrementCurrentDate();
+            if (getCurrentDate() <= getEndDate())
+            {
+                Dates.deleteDates();
+                Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
+                Dates.createDates(j + 1);
+                getEvents();
+            }
         } else {
             // upscroll code
             console.log("down")
             decrementCurrentDate();
+            if (getCurrentDate() >= getStartDate())
+            {
+                Dates.deleteDates();
+                Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
+                Dates.createDates(j + 1);
+                getEvents();
+            }
         }
     }
 
@@ -141,7 +155,6 @@ window.addEventListener("DOMContentLoaded", () => {
             Dates.deleteDates();
             Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
             Dates.createDates(j + 1);
-            deleteAllEvents();
             getEvents();
         });
     document
@@ -152,7 +165,6 @@ window.addEventListener("DOMContentLoaded", () => {
             Dates.deleteDates();
             Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
             Dates.createDates(j + 1);
-            deleteAllEvents();
             getEvents();
         });
     document
@@ -163,7 +175,6 @@ window.addEventListener("DOMContentLoaded", () => {
             Dates.deleteDates();
             Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
             Dates.createDates(j + 1);
-            deleteAllEvents();
             getEvents();
         });
 });
