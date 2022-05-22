@@ -58,9 +58,9 @@ module.exports = class DateLines
             case 1:
                 escape = true;
                 j = Number(this.fm);
+                year = Number(this.fy);
                 while (escape)
                 {
-                    year = Math.floor(j / 12);
                     let canvas1 = document.createElement('canvas');
                     let context1 = canvas1.getContext('2d');
                     context1.font = "Bold 15px Arial";
@@ -68,11 +68,8 @@ module.exports = class DateLines
                     if (j < 10)
                         month = "0" + j;
                     else
-                        if (j > 12)
-                            month = "0" + Math.floor(j / 12);
-                        else
-                            month = j
-                    context1.fillText(month + "." + (Number(this.fy) + year), 0, 12);
+                        month = j;
+                    context1.fillText(month + "." + year, 0, 12);
                     // canvas contents will be used for a texture
                     let texture1 = new THREE.Texture(canvas1)
                     texture1.needsUpdate = true;
@@ -85,26 +82,32 @@ module.exports = class DateLines
                     var tr = new THREE.Vector3();
                     scene.getObjectByName("line " + count).getWorldPosition(tr);
                     mesh1.position.set(RoadsLength, tr.y - 0.75, tr.z);
-                    mesh1.name = month + '.' + (Number(this.fy) + year);
+                    mesh1.name = month + '.' + year;
                     group.add(mesh1);
                     group.name = "Dates";
                     scene.add(group)
                     count += 1;
-                    j++
-                    if ((year > Number(this.ly) - Number(this.fy)) || (count > 12))
+                    j++;
+                    console.log(j + " " + count);
+                    if (j > 12)
+                    {
+                        j = 1;
+                        year++;
+                    }
+                    if ((year > Number(this.ly)) || (count > 12))
                         escape = false;
                 }
                 break;
             case 2:
                 escape = true;
+                year = Number(this.fy);
                 j = Number(this.fm);
-                var daysInMonth;
+                let daysInMonth;
                 let d = Number(this.fd);
                 let day;
                 while (escape)
                 {
-                    year = Math.floor(j / 12);
-                    daysInMonth = 32 - new Date((Number(this.fy) + year), j, 32).getDate();
+                    daysInMonth = 32 - new Date((year), j - 1, 32).getDate();
                     let canvas1 = document.createElement('canvas');
                     let context1 = canvas1.getContext('2d');
                     context1.font = "Bold 15px Arial";
@@ -113,17 +116,14 @@ module.exports = class DateLines
                     if (j < 10)
                         month = "0" + j;
                     else
-                        if (j > 12)
-                            month = "0" + Math.floor(j / 12);
-                        else
-                            month = j
+                        month = j
 
                     if (d < 10)
                         day = "0" + d;
                     else
                         day = d;
 
-                    context1.fillText(day + "." + month + "." + (Number(this.fy) + year), 0, 12);
+                    context1.fillText(day + "." + month + "." + year, 0, 12);
                     // canvas contents will be used for a texture
                     let texture1 = new THREE.Texture(canvas1)
                     texture1.needsUpdate = true;
@@ -133,10 +133,10 @@ module.exports = class DateLines
                         new THREE.PlaneGeometry(3, 3),
                         material1
                     );
-                    var tr = new THREE.Vector3();
+                    let tr = new THREE.Vector3();
                     scene.getObjectByName("line " + count).getWorldPosition(tr);
                     mesh1.position.set(RoadsLength, tr.y - 0.75, tr.z);
-                    mesh1.name = day + '.' + month + '.' + (Number(this.fy) + year);
+                    mesh1.name = day + '.' + month + '.' + year;
                     group.add(mesh1);
                     group.name = "Dates";
                     scene.add(group)
@@ -145,10 +145,15 @@ module.exports = class DateLines
                     if (d > daysInMonth)
                     {
                         j++;
+                        if (j > 12)
+                        {
+                            j = 1;
+                            year++;
+                        }
                         d = 1;
-                        daysInMonth = 32 - new Date((Number(this.fy) + year), j, 32).getDate();
+                        daysInMonth = 32 - new Date((year), j - 1, 32).getDate();
                     }
-                    if ((year > Number(this.ly) - Number(this.fy)) || (count > 12))
+                    if ((year > Number(this.ly)) || (count > 12))
                         escape = false;
                 }
                 break;

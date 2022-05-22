@@ -233,12 +233,10 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     function onScroll(e) {
         var scrollDirection = detectMouseWheelDirection( e );
-        console.log(is_events_request_processing);
         if(!check_events_status())
         {
             if (scrollDirection === "up"){
                 // downscroll code
-                console.log("up")
                 incrementCurrentDate();
                 if (getCurrentDate() <= getEndDate())
                 {
