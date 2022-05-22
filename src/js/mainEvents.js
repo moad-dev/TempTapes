@@ -96,6 +96,31 @@ function run(database, ipcMain) {
                     );
                 });
                 break;
+            case "edit path":
+                var reply = {command: "path edited"};
+                database.editPath(
+                        request["name"],
+                        request["color"],
+                        request["icon"],
+                        request["parent_id"],
+                        request["path_id"],
+                    (err, lastID) => {
+                        if(!err) {
+                            reply["path"] = {
+                                name: request["name"],
+                                color: request["color"],
+                                parent_id: request["parent_id"],
+                                icon: request["icon"],
+                                path_id: lastID
+                            };
+                            event.reply(
+                                "asynchronous-reply",
+                                JSON.stringify(reply)
+                            );
+                        }
+                    }
+                );
+                break;
         }
     });
 }

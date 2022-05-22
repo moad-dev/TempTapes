@@ -48,9 +48,9 @@
     </div>
 
     <div class="btn-row SW">
-        <button class="btn dark-opaque" id="editPathBtn"> Редактировать </button>
         <button class="js-open-modal btn dark-opaque" data-modal="1" id="makePathBtn"> Добавить дорогу </button>
         <button class="js-open-modal btn dark-opaque" data-modal="2" id="deletePathBtn"> Удалить дорогу </button>
+        <button class="js-open-modal btn dark-opaque" data-modal="3" id="editPathBtn"> Редактировать </button>
     </div>
     <div class="btn-row SE">
         <button class="btn dark-opaque"> кнопка </button>
@@ -90,6 +90,31 @@
             <select id="deletePathId"></select>
         </div>
         <button type="button" id="deletePathSubmit">Удалить</button>
+    </div>
+
+    <div class="modal" data-modal="3">
+        <!--   Svg иконка для закрытия окна  -->
+        <svg class="modal__cross js-modal-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
+        </svg>
+        <p class="modal__title">Редактировать дорогу</p>
+        <div class="modal__field">
+            <label for="name">Дорога</label>
+            <select id="editPathPath"></select>
+        </div>
+        <div class="modal__field">
+            <label for="name">Название дороги</label>
+            <input type="text" name="name" value="" id="editPathName">
+        </div>
+        <div class="modal__field">
+            <label for="color">Цвет дороги</label>
+            <input type="color" name="color" value="" id="editPathColorPeeker">
+        </div>
+        <div class="modal__field">
+            <label>Иконка</label>
+            <select id="editPathIcon"></select>
+        </div>
+        <button type="button" id="editPathSubmit">Редактировать</button>
     </div>
 
     <!-- Подложка под модальным окном -->

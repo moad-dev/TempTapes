@@ -191,6 +191,29 @@ function deletePath(path_id, callback) {
     );
 }
 
+function editPath(name, color, icon, parent_id, path_id, callback) {
+    db.run(
+        `
+            UPDATE paths
+            SET name = ?1,
+                color = ?2,
+                icon = ?3,
+                parent_id = ?4
+            WHERE path_id = ?5;
+        `,
+        {
+            1: name,
+            2: color,
+            3: icon,
+            4: parent_id,
+            5: path_id
+        },
+        function (err) {
+            callback(err, this.lastID);
+        }
+    );
+}
+
 
 function getDB() {
     return db;
@@ -205,5 +228,6 @@ module.exports = {
     getPathsByParent: getPathsByParent,
     getEventsByPath: getEventsByPath,
     makePath: makePath,
-    deletePath: deletePath
+    deletePath: deletePath,
+    editPath: editPath
 };

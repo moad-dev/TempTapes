@@ -73,6 +73,28 @@ function makePath()
         );
     }
 }
+function editPath()
+{
+    let path_id = document.getElementById('editPathPath').value;
+    let name = document.getElementById('editPathName').value;
+    let color = document.getElementById('editPathColorPeeker').value;
+    let icon = document.getElementById('editPathIcon').value;
+    if(!name || !icon || !color || !path_id) {
+        console.log("error: path name, icon, color cannot be null");
+    } else {
+        ipcRenderer.send(
+            "asynchronous-message",
+            JSON.stringify({
+                command: "edit path",
+                name: name,
+                color: color,
+                icon: icon,
+                parent_id: null,
+                path_id: path_id
+            })
+        );
+    }
+}
 function deletePath()
 {
     let id = document.getElementById('deletePathId').value;
@@ -88,15 +110,7 @@ function deletePath()
         );
     }
 }
-function requestImages()
-{
-    ipcRenderer.send(
-        "asynchronous-message",
-        JSON.stringify({
-            command: "get images"
-        })
-    );
-}
+
 function currentDateChanged()
 {
     updateCurrentTime();
@@ -164,19 +178,37 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
                 JSON.stringify({command: "get root roads"})
             );
             break;
+        case "path edited":
+            ipcRenderer.send(
+                "asynchronous-message",
+                JSON.stringify({command: "get root roads"})
+            );
+            break;
         case "send images":
-            let icons = document.getElementById("makePathIcon");
-            icons.innerHTML = "";
+            console.log(reply);
+            let icons_make = document.getElementById("makePathIcon");
+            let icons_edit = document.getElementById("editPathIcon");
+            icons_make.innerHTML = "";
+            icons_edit.innerHTML = "";
             reply["images"].forEach(function(image) {
                 let option = document.createElement("option");
                 option.innerHTML = image;
-                icons.appendChild(option);
+                icons_make.appendChild(option);
+                option = document.createElement("option");
+                option.innerHTML = image;
+                icons_edit.appendChild(option);
             });
             break;
     }
 });
 
 window.addEventListener("DOMContentLoaded", () => {
+
+    ipcRenderer.send(
+        "asynchronous-message",
+        JSON.stringify({command: "get images"})
+    );
+
     ipcRenderer.send(
         "asynchronous-message",
         JSON.stringify({command: "get root roads"})
@@ -231,13 +263,10 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     initTimeline('2022-05-17', '2022-05-21');
-    
+
     document
         .getElementById("makePathSubmit")
         .addEventListener("click", makePath);
-    document
-        .getElementById("makePathBtn")
-        .addEventListener("click", requestImages);
 
     document
         .getElementById("deletePathBtn")
@@ -254,6 +283,48 @@ window.addEventListener("DOMContentLoaded", () => {
     document
         .getElementById("deletePathSubmit")
         .addEventListener("click", deletePath);
+
+    document
+        .getElementById("editPathPath")
+        .addEventListener("change", () => {
+            let path = availableRoads.filter(
+                obj => {
+                    return obj.path_id == document.getElementById("editPathPath").value;
+                })[0];
+            document.getElementById("editPathName").value = path.name;
+            document.getElementById("editPathColorPeeker").value = path.color;
+            console.log(document.getElementById("editPathIcon").childNodes);
+            document.getElementById("editPathIcon").childNodes.forEach(elem => {
+                if(elem.innerHTML == path.icon) {
+                    elem.setAttribute('selected', 'selected');
+                }
+            });
+        });
+    document
+        .getElementById("editPathBtn")
+        .addEventListener("click", () => {
+            let paths = document.getElementById("editPathPath");
+            paths.innerHTML = "";
+            availableRoads.forEach(function(path) {
+                let option = document.createElement("option");
+                option.innerHTML = path.name;
+                option.value = path.path_id;
+                paths.appendChild(option);
+            });
+            if(!(availableRoads === undefined || availableRoads.length == 0)) {
+                let path = availableRoads[0];
+                document.getElementById("editPathName").value = path.name;
+                document.getElementById("editPathColorPeeker").value = path.color;
+                document.getElementById("editPathIcon").childNodes.forEach(elem => {
+                    if(elem.innerHTML == path.icon) {
+                        elem.setAttribute('selected', 'selected');
+                    }
+                });
+            }
+        });
+    document
+        .getElementById("editPathSubmit")
+        .addEventListener("click", editPath);
 
     document
         .getElementById("timelineStart")
