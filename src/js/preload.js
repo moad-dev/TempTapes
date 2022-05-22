@@ -108,7 +108,7 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    initTimeline(new Date(2022, 5, 17), new Date(2022, 5, 21));
+    initTimeline('2022-05-17', '2022-05-21');
 
     document.getElementById("getEventsBtn").addEventListener("click", getEvents);
 
