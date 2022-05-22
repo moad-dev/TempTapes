@@ -76,9 +76,8 @@ function setCurrentDate(value) {
     var date_current = new Date(document.getElementById('timelineCurrent').value);
     date_current.setDate(value);
 
-    if (!isInRange(new Date(getCurrentDate()), date_current, new Date(getEndDate())) {
+    if (!isInRange(new Date(getStartDate()), date_current, new Date(getEndDate())))
         return;
-    }
 
     tm_current = document.getElementById('timelineCurrent');
     tm_current.valueAsDate = date_current;
@@ -89,11 +88,9 @@ function setCurrentDate(value) {
 function incrementCurrentDate() {
     var date_current = new Date(document.getElementById('timelineCurrent').value);
     date_current.setDate(date_current.getDate() + 1);
-    
-    if (!isInRange(new Date(getCurrentDate()), date_current, new Date(getEndDate())) {
-        return;
-    }
 
+    if (!isInRange(new Date(getStartDate()), date_current, new Date(getEndDate())))
+        return;
 
     tm_current = document.getElementById('timelineCurrent');
     tm_current.valueAsDate = date_current;
@@ -105,10 +102,10 @@ function decrementCurrentDate() {
     var date_current = new Date(document.getElementById('timelineCurrent').value);
     date_current.setDate(date_current.getDate() - 1);
 
-    if (!isInRange(new Date(getCurrentDate()), date_current, new Date(getEndDate())) {
+    
+    if (!isInRange(new Date(getStartDate()), date_current, new Date(getEndDate())))
         return;
-    }
-
+    
     tm_current = document.getElementById('timelineCurrent');
     tm_current.valueAsDate = date_current;
     tm_current.old = tm_current.value;
