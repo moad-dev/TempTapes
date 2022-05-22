@@ -1,3 +1,5 @@
+/* TODO: full module rewrite */
+
 const ONE_DAY = 1000 * 60 * 60 * 24;
 
 function isValidRange(date_start, date_end) {
@@ -45,7 +47,6 @@ function updateRange() {
 
     if (!isValidRange(date_start, date_end) || 
         !isInRange(date_start, date_current, date_end)) {
-        console.log("here");
         this.value = this.old;
         return;
     }
@@ -71,12 +72,55 @@ function getEndDate() {
     return document.getElementById('timelineEnd').value;
 }
 
+function setCurrentDate(value) { 
+    var date_current = new Date(document.getElementById('timelineCurrent').value);
+    date_current.setDate(value);
+
+    if (!isInRange(new Date(getStartDate()), date_current, new Date(getEndDate())))
+        return;
+
+    tm_current = document.getElementById('timelineCurrent');
+    tm_current.valueAsDate = date_current;
+    tm_current.old = tm_current.value;
+    updateRange();
+}
+
+function incrementCurrentDate() {
+    var date_current = new Date(document.getElementById('timelineCurrent').value);
+    date_current.setDate(date_current.getDate() + 1);
+
+    if (!isInRange(new Date(getStartDate()), date_current, new Date(getEndDate())))
+        return;
+
+    tm_current = document.getElementById('timelineCurrent');
+    tm_current.valueAsDate = date_current;
+    tm_current.old = tm_current.value;
+    updateRange();
+}
+
+function decrementCurrentDate() {
+    var date_current = new Date(document.getElementById('timelineCurrent').value);
+    date_current.setDate(date_current.getDate() - 1);
+
+    
+    if (!isInRange(new Date(getStartDate()), date_current, new Date(getEndDate())))
+        return;
+    
+    tm_current = document.getElementById('timelineCurrent');
+    tm_current.valueAsDate = date_current;
+    tm_current.old = tm_current.value;
+    updateRange();
+}
+
 module.exports =  {
     initTimeline: initTimeline,
     updateRange: updateRange, 
     updateCurrentTime: updateCurrentTime,
     getStartDate: getStartDate,
     getCurrentDate: getCurrentDate,
-    getEndDate: getEndDate
+    getEndDate: getEndDate,
+    setCurrentDate: setCurrentDate,
+    incrementCurrentDate: incrementCurrentDate,
+    decrementCurrentDate: decrementCurrentDate
 };
 

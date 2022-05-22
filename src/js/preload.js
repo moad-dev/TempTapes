@@ -4,15 +4,18 @@ const {createEvent, deleteEvent, editEvent, mergeEvents, deleteAllEvents} = requ
 const {initTimeline, updateRange, updateCurrentTime, getCurrentDate, getEndDate, getStartDate} = require("../js/timeline.js");
 
 let DateLines = require("../js/Date.js");
+const {incrementCurrentDate, decrementCurrentDate} = require("./timeline");
 let Dates;
 let availableRoads;
 let j;
+let scale = 2;
 const addText = (selector, text) => {
     const element = document.getElementById(selector);
     if (element) element.innerText += text;
 };
 function getEvents()
 {
+    deleteAllEvents()
     availableRoads.forEach(road => {
         ipcRenderer.send(
             "asynchronous-message",
@@ -54,6 +57,14 @@ function requestImages()
         })
     );
 }
+function currentDateChanged()
+{
+    updateCurrentTime();
+    Dates.deleteDates();
+    Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
+    Dates.createDates(j + 1);
+    getEvents();
+}
 ipcRenderer.on("asynchronous-reply", (event, reply) => {
     reply = JSON.parse(reply);
     switch (reply["command"]) {
@@ -66,7 +77,7 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
             }
             j = -reply["roads"].length / 2 + 0.5;
             console.log(getCurrentDate())
-            Dates = new DateLines(getCurrentDate(), getEndDate(), 2);
+            Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
             availableRoads = reply["roads"];
             reply["roads"].forEach(road => {
                 createGroup(
@@ -115,6 +126,51 @@ window.addEventListener("DOMContentLoaded", () => {
         "asynchronous-message",
         JSON.stringify({command: "get root roads"})
     );
+    window.addEventListener("wheel", onScroll, false);
+    //скролл событий
+    const {editEvent, currentLine} = require("../js/Event")
+    var lastScrollTop = 0;
+    function detectMouseWheelDirection( e )
+    {
+        var delta = null,
+            direction = false;
+        if ( !e ) { // if the event is not provided, we get it from the window object
+            e = window.event;
+        }
+        if ( e.wheelDelta ) { // will work in most cases
+            delta = e.wheelDelta / 60;
+        }
+        if ( delta !== null ) {
+            direction = delta > 0 ? 'up' : 'down';
+        }
+        return direction;
+    }
+    function onScroll(e) {
+        var scrollDirection = detectMouseWheelDirection( e );
+        if (scrollDirection === "up"){
+            // downscroll code
+            console.log("up")
+            incrementCurrentDate();
+            if (getCurrentDate() <= getEndDate())
+            {
+                Dates.deleteDates();
+                Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
+                Dates.createDates(j + 1);
+                getEvents();
+            }
+        } else {
+            // upscroll code
+            console.log("down")
+            decrementCurrentDate();
+            if (getCurrentDate() >= getStartDate())
+            {
+                Dates.deleteDates();
+                Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
+                Dates.createDates(j + 1);
+                getEvents();
+            }
+        }
+    }
 
     initTimeline(new Date(2022, 5, 17), new Date(2022, 5, 21));
 
@@ -142,7 +198,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     document
         .getElementById("timelineRange")
-        .addEventListener("change", updateCurrentTime);
+        .addEventListener("change", currentDateChanged);
     // TODO переключение масштаба
 
     function selectScale(symbol, scale) {
@@ -153,30 +209,30 @@ window.addEventListener("DOMContentLoaded", () => {
         .getElementById("select-scale-day")
         .addEventListener("click", () => {
             selectScale("Д", "day");
+            scale = 2;
             Dates.deleteDates();
-            Dates = new DateLines(getCurrentDate(), getEndDate(), 2);
+            Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
             Dates.createDates(j + 1);
-            deleteAllEvents();
             getEvents();
         });
     document
         .getElementById("select-scale-month")
         .addEventListener("click", () => {
             selectScale("М", "month");
+            scale = 1;
             Dates.deleteDates();
-            Dates = new DateLines(getCurrentDate(), getEndDate(), 1);
+            Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
             Dates.createDates(j + 1);
-            deleteAllEvents();
             getEvents();
         });
     document
         .getElementById("select-scale-year")
         .addEventListener("click", () => {
             selectScale("Г", "year");
+            scale = 0;
             Dates.deleteDates();
-            Dates = new DateLines(getCurrentDate(), getEndDate(), 0);
+            Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
             Dates.createDates(j + 1);
-            deleteAllEvents();
             getEvents();
         });
 

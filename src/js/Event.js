@@ -1,3 +1,4 @@
+const {Color} = require("./three");
 let lineArray = [];
 for (let i = 0; i < 3; i++)
 {
