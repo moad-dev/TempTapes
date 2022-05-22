@@ -112,7 +112,27 @@ function deleteEvent(id)
     scene.remove( scene.getObjectByName("event " + id) );
 }
 
+function deleteAllEvents()
+{
+    let stack_name = "stack";
+    for (let i = 0; i < lineArray.length; i++)
+    {
+        for (let j = 0; j < lineArray[i].length; j++)
+        {
+            for (let k = 0; k < lineArray[i][j].length; k++)
+            {
+                scene.remove( scene.getObjectByName("event " + lineArray[i][j][k]) );
+                for (let l = 0; l < lineArray[i][j].length; l++)
+                {
+                    stack_name += " " + lineArray[i][j][l];
+                }
+                scene.remove( scene.getObjectByName(stack_name) );
+            }
+        }
+    }
+}
 module.exports.createEvent = createEvent
 module.exports.editEvent = editEvent
 module.exports.mergeEvents = mergeEvents
 module.exports.deleteEvent = deleteEvent
+module.exports.deleteAllEvents = deleteAllEvents
