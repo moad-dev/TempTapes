@@ -131,6 +131,11 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
             Dates.createDates(j + 1);
             InitEvents(reply["roads"].length);
             init_events_status(reply["roads"].length);
+            scale = 2;
+            Dates.deleteDates();
+            Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
+            Dates.createDates(j + 1);
+            getEvents();
             break;
         case "send events":
             reply["events"].forEach(event => {
@@ -226,11 +231,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     initTimeline('2022-05-17', '2022-05-21');
-
-    document
-        .getElementById("getEventsBtn")
-        .addEventListener("click", getEvents);
-
+    
     document
         .getElementById("makePathSubmit")
         .addEventListener("click", makePath);
