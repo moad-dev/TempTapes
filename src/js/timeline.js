@@ -80,7 +80,6 @@ function getEndDate(asdate=false) {
 }
 
 function setCurrentDate(value, asdate=false) {
-    console.log(value);
     date_start = getStartDate(true);
     date_current = asdate ? value : new Date(value);
     date_end = getEndDate(true);
