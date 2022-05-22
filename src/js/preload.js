@@ -1,6 +1,6 @@
 const {ipcRenderer} = require("electron");
 const {createGroup, deleteGroup, editGroup} = require("../js/Road.js");
-const {createEvent, deleteEvent, editEvent, mergeEvents, deleteAllEvents} = require("../js/Event.js");
+const {createEvent, deleteEvent, editEvent, mergeEvents, deleteAllEvents, setCountRoads} = require("../js/Event.js");
 const {initTimeline, updateRange, updateCurrentTime, getCurrentDate, getEndDate, getStartDate} = require("../js/timeline.js");
 
 let DateLines = require("../js/Date.js");

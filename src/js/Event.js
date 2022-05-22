@@ -152,3 +152,4 @@ module.exports.editEvent = editEvent
 module.exports.mergeEvents = mergeEvents
 module.exports.deleteEvent = deleteEvent
 module.exports.deleteAllEvents = deleteAllEvents
+module.exports.setCountRoads = setCountRoads
