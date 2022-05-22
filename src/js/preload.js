@@ -281,6 +281,7 @@ window.addEventListener("DOMContentLoaded", () => {
         .addEventListener("click", () => {
             selectScale("Д", "day");
             setScale(2);
+            updateRange();
             Dates.deleteDates();
             Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
             Dates.createDates(j + 1);
@@ -291,6 +292,7 @@ window.addEventListener("DOMContentLoaded", () => {
         .addEventListener("click", () => {
             selectScale("М", "month");
             setScale(1);
+            updateRange();
             Dates.deleteDates();
             Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
             Dates.createDates(j + 1);
@@ -301,6 +303,7 @@ window.addEventListener("DOMContentLoaded", () => {
         .addEventListener("click", () => {
             selectScale("Г", "year");
             setScale(0);
+            updateRange();
             Dates.deleteDates();
             Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
             Dates.createDates(j + 1);

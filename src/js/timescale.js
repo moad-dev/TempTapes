@@ -14,5 +14,6 @@ function setScale(value) {
 
 module.exports =  {
     getScale: getScale,
+    getScaleString: getScaleString,
     setScale: setScale
 };
