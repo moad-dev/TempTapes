@@ -2,6 +2,7 @@ const {Color} = require("./three");
 let lineArray = [];
 
 function InitEvents(countRoads) {
+    lineArray = [];
     for (let i = 0; i < countRoads; i++)
     {
         lineArray.push([]);
@@ -73,6 +74,7 @@ function mergeEvents(i)
 {
     let selectedGroup = scene.getObjectByName("group " + i);
     let color;
+    console.log(lineArray);
     for (let j = 0; j < 14; j++)
     {
         if (lineArray[i - 1][j].length > 1)

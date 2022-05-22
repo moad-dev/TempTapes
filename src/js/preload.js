@@ -126,11 +126,11 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
             if(availableRoads) {
                 availableRoads.forEach((elem) => {
                     deleteGroup(elem["path_id"]);
+                    deleteAllEvents();
                     Dates.deleteDates();
                 });
             }
             j = -reply["roads"].length / 2 + 0.5;
-            console.log(getCurrentDate())
             Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
             availableRoads = reply["roads"];
             reply["roads"].forEach(road => {
@@ -162,8 +162,8 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
                     Dates.mode
                 );
             });
-            mergeEvents(reply["path_id"]);
             let index = availableRoads.map( el => el.path_id ).indexOf(reply["path_id"]);
+            mergeEvents(index+1);
             is_events_request_processing[index] = false;
             break;
         case "path added":
@@ -185,7 +185,6 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
             );
             break;
         case "send images":
-            console.log(reply);
             let icons_make = document.getElementById("makePathIcon");
             let icons_edit = document.getElementById("editPathIcon");
             icons_make.innerHTML = "";
@@ -247,7 +246,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 }
             } else {
                 // upscroll code
-                console.log("down")
                 decrementCurrentDate();
                 if (getCurrentDate() >= getStartDate())
                 {
@@ -303,7 +301,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 })[0];
             document.getElementById("editPathName").value = path.name;
             document.getElementById("editPathColorPeeker").value = path.color;
-            console.log(document.getElementById("editPathIcon").childNodes);
             document.getElementById("editPathIcon").childNodes.forEach(elem => {
                 if(elem.innerHTML == path.icon) {
                     elem.setAttribute('selected', 'selected');
