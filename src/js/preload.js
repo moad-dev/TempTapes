@@ -7,7 +7,6 @@ let DateLines = require("../js/Date.js");
 let Dates;
 let availableRoads;
 let j;
-let scale = 2;
 const addText = (selector, text) => {
     const element = document.getElementById(selector);
     if (element) element.innerText += text;
@@ -19,7 +18,8 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
     switch (reply["command"]) {
         case "send root roads":
             j = -reply["roads"].length / 2 + 0.5;
-            Dates = new DateLines(getStartDate(), getEndDate(), scale)
+            Dates = new DateLines(getStartDate(), getEndDate(), 2);
+            availableRoads = reply["roads"];
             reply["roads"].forEach(road => {
                 createGroup(
                     road.color,
@@ -70,49 +70,49 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    document.getElementById("timelineStart").addEventListener("change",
-        updateRange
-    );
+    document
+        .getElementById("timelineStart")
+        .addEventListener("change", updateRange);
 
-    document.getElementById("timelineCurrent").addEventListener("change",
-        updateRange
-    );
+    document
+        .getElementById("timelineCurrent")
+        .addEventListener("change", updateRange);
 
-    document.getElementById("timelineEnd").addEventListener("change",
-        updateRange
-    );
+    document
+        .getElementById("timelineEnd")
+        .addEventListener("change", updateRange);
 
-    document.getElementById("timelineRange").addEventListener("change",
-        updateCurrentTime
-    );
+    document
+        .getElementById("timelineRange")
+        .addEventListener("change", updateCurrentTime);
     // TODO переключение масштаба
 
     function selectScale(symbol, scale) {
         document.getElementById("select-scale").innerHTML = symbol;
     }
 
-    document.getElementById("select-scale-day").addEventListener("click", () => {
-        selectScale("Д", "day");
-        scale = 2;
-        Dates.deleteDates();
-        Dates = new DateLines(getStartDate(), getEndDate(), scale);
-        Dates.createDates(j + 1);
-        deleteAllEvents();
-    });
-    document.getElementById("select-scale-month").addEventListener("click", () => {
-        selectScale("М", "month");
-        scale = 1;
-        Dates.deleteDates();
-        Dates = new DateLines(getStartDate(), getEndDate(), scale);
-        Dates.createDates(j + 1);
-        deleteAllEvents();
-    });
-    document.getElementById("select-scale-year").addEventListener("click", () => {
-        selectScale("Г", "year");
-        scale = 0;
-        Dates.deleteDates();
-        Dates = new DateLines(getStartDate(), getEndDate(), scale);
-        Dates.createDates(j + 1);
-        deleteAllEvents();
-    });
+    document
+        .getElementById("select-scale-day")
+        .addEventListener("click", () => {
+            selectScale("Д", "day");
+            Dates.deleteDates();
+            Dates = new DateLines(getStartDate(), getEndDate(), 2);
+            Dates.createDates(j + 1);
+        });
+    document
+        .getElementById("select-scale-month")
+        .addEventListener("click", () => {
+            selectScale("М", "month");
+            Dates.deleteDates();
+            Dates = new DateLines(getStartDate(), getEndDate(), 1);
+            Dates.createDates(j + 1);
+        });
+    document
+        .getElementById("select-scale-year")
+        .addEventListener("click", () => {
+            selectScale("Г", "year");
+            Dates.deleteDates();
+            Dates = new DateLines(getStartDate(), getEndDate(), 0);
+            Dates.createDates(j + 1);
+        });
 });
