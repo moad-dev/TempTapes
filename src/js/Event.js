@@ -1,23 +1,20 @@
 const {Color} = require("./three");
 let lineArray = [];
-let countRoads;
 
-for (let i = 0; i < countRoads; i++)
-{
-    lineArray.push([]);
-}
-for (let i = 0; i < countRoads; i++)
-{
-    for (let j = 0; j < 14; j++)
+function InitEvents(countRoads) {
+    for (let i = 0; i < countRoads; i++)
     {
-        lineArray[i].push([]);
+        lineArray.push([]);
+    }
+    for (let i = 0; i < countRoads; i++)
+    {
+        for (let j = 0; j < 14; j++)
+        {
+            lineArray[i].push([]);
+        }
     }
 }
 
-function setCountRoads(count)
-{
-    countRoads = count;
-}
 function createEvent(id, ico, color, groupName, date, dateMode)
 {
     let selectedGroup = scene.getObjectByName("Dates");
@@ -152,4 +149,4 @@ module.exports.editEvent = editEvent
 module.exports.mergeEvents = mergeEvents
 module.exports.deleteEvent = deleteEvent
 module.exports.deleteAllEvents = deleteAllEvents
-module.exports.setCountRoads = setCountRoads
+module.exports.InitEvents = InitEvents
