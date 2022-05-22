@@ -9,12 +9,36 @@ let Dates;
 let availableRoads;
 let j;
 let scale = 2;
+
+
+let is_events_request_processing;
+function init_events_status(size)
+{
+    is_events_request_processing = [];
+    for(let i = 0; i < size; i++)
+        is_events_request_processing.push(false);
+}
+function set_events_status(value)
+{
+    for(let i = 0; i < is_events_request_processing.length; i++)
+        is_events_request_processing[i] = value;
+}
+function check_events_status()
+{
+    for(let i = 0; i < is_events_request_processing.length; i++)
+        if(is_events_request_processing[i] == true)
+            return true;
+    return false;
+}
+
+
 const addText = (selector, text) => {
     const element = document.getElementById(selector);
     if (element) element.innerText += text;
 };
 function getEvents()
 {
+    set_events_status(true);
     deleteAllEvents()
     availableRoads.forEach(road => {
         ipcRenderer.send(
@@ -105,6 +129,7 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
             });
             Dates.createDates(j + 1);
             InitEvents(reply["roads"].length);
+            init_events_status(reply["roads"].length);
             break;
         case "send events":
             reply["events"].forEach(event => {
@@ -118,6 +143,8 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
                 );
             });
             mergeEvents(reply["path_id"]);
+            let index = availableRoads.map( el => el.path_id ).indexOf(reply["path_id"]);
+            is_events_request_processing[index] = false;
             break;
         case "path added":
             ipcRenderer.send(
@@ -168,27 +195,31 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     function onScroll(e) {
         var scrollDirection = detectMouseWheelDirection( e );
-        if (scrollDirection === "up"){
-            // downscroll code
-            console.log("up")
-            incrementCurrentDate();
-            if (getCurrentDate() <= getEndDate())
-            {
-                Dates.deleteDates();
-                Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
-                Dates.createDates(j + 1);
-                getEvents();
-            }
-        } else {
-            // upscroll code
-            console.log("down")
-            decrementCurrentDate();
-            if (getCurrentDate() >= getStartDate())
-            {
-                Dates.deleteDates();
-                Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
-                Dates.createDates(j + 1);
-                getEvents();
+        console.log(is_events_request_processing);
+        if(!check_events_status())
+        {
+            if (scrollDirection === "up"){
+                // downscroll code
+                console.log("up")
+                incrementCurrentDate();
+                if (getCurrentDate() <= getEndDate())
+                {
+                    Dates.deleteDates();
+                    Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
+                    Dates.createDates(j + 1);
+                    getEvents();
+                }
+            } else {
+                // upscroll code
+                console.log("down")
+                decrementCurrentDate();
+                if (getCurrentDate() >= getStartDate())
+                {
+                    Dates.deleteDates();
+                    Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
+                    Dates.createDates(j + 1);
+                    getEvents();
+                }
             }
         }
     }

@@ -1,11 +1,6 @@
 const fs = require('fs');
 
 function run(database, ipcMain) {
-    // database.makePath("test", "#FFFF00", "picture.png", null);
-    // database.getDB().run(`
-    //     DELETE FROM paths WHERE path_id = 4;
-    //     `);
-    // console.log(database.getDB());
     ipcMain.on("asynchronous-message", (event, request) => {
         request = JSON.parse(request);
         switch (request["command"]) {
