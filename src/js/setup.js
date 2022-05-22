@@ -24,8 +24,9 @@ function setup() {
         // calculate objects intersecting the picking ray
         var intersects = raycaster.intersectObjects(scene.children);
         for (var i = 0; i < intersects.length; i++) {
+            console.log(intersects[i].object.name);
             if (intersects[i].object.name.substring(0, 5) === "event") {
-                intersects[i].object.material.color.set(0xff0000);
+                // document.getElementById("menu").
             }
             if (intersects[i].object.name.substring(0, 5) === "stack") {
                 let hiddenEvents = intersects[i].object.name.split(' ');

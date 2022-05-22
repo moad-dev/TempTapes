@@ -34,6 +34,7 @@ function createGroup(color, ico, id, text, posX)
         line = new THREE.Line( line_geometry, line_material );
         line.name = "line " + i;
         cube.add(line);
+        cube.name = "cube " + id;
         group.add(cube);
 
     }
@@ -47,7 +48,7 @@ function createGroup(color, ico, id, text, posX)
         cube2 = new THREE.Mesh( geometry, material );
         cube2.position.z = posx;
         cube2.position.y = posy
-        cube2.name = "cube " + i
+        cube2.name = "cube " + id
         cube2.rotateX(rot);
         cube.add(cube2);
         if (i < 13)
@@ -68,25 +69,16 @@ function createGroup(color, ico, id, text, posX)
     group.name = "group " + id;
     group.position.setX(posX)
 
-    let canvas1 = document.createElement('canvas');
-    let context1 = canvas1.getContext('2d');
-    context1.font = "Bold 10px Arial";
-    context1.fillStyle = "rgb(0,0,0)";
-    context1.fillText(text, 0, 10);
-
-    // canvas contents will be used for a texture
-    let texture1 = new THREE.Texture(canvas1)
+    let texture1 = new THREE.CanvasTexture(makeLabelCanvas(23,text))
     texture1.needsUpdate = true;
 
-    let material1 = new THREE.MeshBasicMaterial({ map: texture1, side: THREE.DoubleSide });
+    let material1 = new THREE.SpriteMaterial({ map: texture1, transparent: true });
     material1.transparent = true;
 
-    let mesh1 = new THREE.Mesh(
-        new THREE.PlaneGeometry(3, 3),
+    let mesh1 = new THREE.Sprite(
         material1
     );
-    mesh1.position.set(1.15, -1.85, 0.9);
-    mesh1.rotation.x = -0.2;
+    mesh1.position.set(0, -0.55, 0.6);
     mesh1.name = "name";
 
     group.add(mesh1);
@@ -119,12 +111,7 @@ function editGroup(color, ico, id, newText)
             }
             else
             {
-                let canvas1 = document.createElement('canvas');
-                let context1 = canvas1.getContext('2d');
-                context1.font = "Bold 10px Arial";
-                context1.fillStyle = "rgb(0,0,0)";
-                context1.fillText(newText, 0, 10);
-                let texture1 = new THREE.Texture(canvas1)
+                let texture1 = new THREE.Texture(makeLabelCanvas(23,newText))
                 texture1.needsUpdate = true;
                 let material1 = new THREE.MeshBasicMaterial({ map: texture1, side: THREE.DoubleSide });
                 material1.transparent = true;
@@ -137,6 +124,30 @@ function editGroup(color, ico, id, newText)
 function deleteGroup(id)
 {
     scene.remove( scene.getObjectByName("group " + id) );
+}
+
+function makeLabelCanvas(size, name) {
+    const borderSize = 30;
+    const ctx = document.createElement('canvas').getContext('2d');
+    const font =  `${size}px bold sans-serif`;
+    ctx.font = font;
+    // measure how long the name will be
+    const doubleBorderSize = borderSize * 2;
+    const width = ctx.measureText(name).width + doubleBorderSize;
+    const height = size + doubleBorderSize;
+    ctx.canvas.width = width;
+    ctx.canvas.height = height;
+
+    // need to set font again after resizing canvas
+    ctx.font = font;
+    ctx.textBaseline = 'top';
+
+    ctx.fillStyle = 'white';
+    ctx.fillRect(100, 100, width, height);
+    ctx.fillStyle = 'black';
+    ctx.fillText(name, borderSize, borderSize);
+
+    return ctx.canvas;
 }
 module.exports.createGroup = createGroup
 module.exports.editGroup = editGroup
