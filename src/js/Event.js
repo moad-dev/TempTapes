@@ -87,7 +87,7 @@ function mergeEvents(i)
             const geometry = new THREE.PlaneGeometry( 0.75, 0.75 );
             const material = new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/stack.png')});
             //прозрачность
-            //const material = new THREE.MeshBasicMaterial({map: loader.load('../../storage/img/pngegg.png'), opacity: 1, transparent: true});
+            //const material = new THREE.MeshBasicMaterial({map: loader.load('../../storage/img/instagram.png'), opacity: 1, transparent: true});
             const plane = new THREE.Mesh( geometry, material );
             plane.position.set(scene.getObjectByName("event " + lineArray[i - 1][j][0]).position.x,
                 scene.getObjectByName("event " + lineArray[i - 1][j][0]).position.y,

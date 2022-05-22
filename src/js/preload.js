@@ -150,8 +150,7 @@ window.addEventListener("DOMContentLoaded", () => {
     );
     window.addEventListener("wheel", onScroll, false);
     //скролл событий
-    const {editEvent, currentLine} = require("../js/Event")
-    var lastScrollTop = 0;
+    let lastScrollTop = 0;
     function detectMouseWheelDirection( e )
     {
         var delta = null,
