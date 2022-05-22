@@ -57,7 +57,7 @@ module.exports = class DateLines
                 break;
             case 1:
                 escape = true;
-                j = 1;
+                j = Number(this.fm);
                 while (escape)
                 {
                     year = Math.floor(j / 12);
@@ -97,7 +97,7 @@ module.exports = class DateLines
                 break;
             case 2:
                 escape = true;
-                j = 1;
+                j = Number;
                 var daysInMonth;
                 let d = 1;
                 let day;

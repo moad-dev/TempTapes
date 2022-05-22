@@ -19,7 +19,7 @@ function getEvents()
             JSON.stringify({
                 command: "get events",
                 path_id: road.path_id,
-                first_date: getStartDate(),
+                first_date: getCurrentDate(),
                 end_date: getEndDate()
             })
         );
@@ -30,7 +30,8 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
     switch (reply["command"]) {
         case "send root roads":
             j = -reply["roads"].length / 2 + 0.5;
-            Dates = new DateLines(getStartDate(), getEndDate(), 2);
+            console.log(getCurrentDate())
+            Dates = new DateLines(getCurrentDate(), getEndDate(), 2);
             availableRoads = reply["roads"];
             reply["roads"].forEach(road => {
                 createGroup(
@@ -66,20 +67,7 @@ window.addEventListener("DOMContentLoaded", () => {
     );
 
     initTimeline(new Date(2022, 5, 17), new Date(2022, 5, 21));
-    function getEvents()
-    {
-        availableRoads.forEach(road => {
-            ipcRenderer.send(
-                "asynchronous-message",
-                JSON.stringify({
-                    command: "get events",
-                    path_id: road.path_id,
-                    first_date: getStartDate(),
-                    end_date: getEndDate()
-                })
-            );
-        });
-    }
+
     document.getElementById("getEventsBtn").addEventListener("click", getEvents);
 
     document
@@ -108,7 +96,7 @@ window.addEventListener("DOMContentLoaded", () => {
         .addEventListener("click", () => {
             selectScale("Д", "day");
             Dates.deleteDates();
-            Dates = new DateLines(getStartDate(), getEndDate(), 2);
+            Dates = new DateLines(getCurrentDate(), getEndDate(), 2);
             Dates.createDates(j + 1);
             deleteAllEvents();
             getEvents();
@@ -118,7 +106,7 @@ window.addEventListener("DOMContentLoaded", () => {
         .addEventListener("click", () => {
             selectScale("М", "month");
             Dates.deleteDates();
-            Dates = new DateLines(getStartDate(), getEndDate(), 1);
+            Dates = new DateLines(getCurrentDate(), getEndDate(), 1);
             Dates.createDates(j + 1);
             deleteAllEvents();
             getEvents();
@@ -128,7 +116,7 @@ window.addEventListener("DOMContentLoaded", () => {
         .addEventListener("click", () => {
             selectScale("Г", "year");
             Dates.deleteDates();
-            Dates = new DateLines(getStartDate(), getEndDate(), 0);
+            Dates = new DateLines(getCurrentDate(), getEndDate(), 0);
             Dates.createDates(j + 1);
             deleteAllEvents();
             getEvents();
