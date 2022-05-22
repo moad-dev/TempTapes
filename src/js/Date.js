@@ -97,9 +97,9 @@ module.exports = class DateLines
                 break;
             case 2:
                 escape = true;
-                j = Number;
+                j = Number(this.fm);
                 var daysInMonth;
-                let d = 1;
+                let d = Number(this.fd);
                 let day;
                 while (escape)
                 {
