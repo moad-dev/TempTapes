@@ -2,6 +2,7 @@ const {Color} = require("./three");
 let lineArray = [];
 
 function InitEvents(countRoads) {
+    lineArray = [];
     for (let i = 0; i < countRoads; i++)
     {
         lineArray.push([]);
