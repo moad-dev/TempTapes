@@ -53,6 +53,10 @@ module.exports = class DateLines
                     group.name = "Dates";
                     scene.add(group)
                     count++;
+                    if (count > 12)
+                    {
+                        break;
+                    }
                 }
                 break;
             case 1:
