@@ -131,9 +131,9 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
             Dates.createDates(j + 1);
             InitEvents(reply["roads"].length);
             init_events_status(reply["roads"].length);
-            scale = 2;
+            setScale(2)
             Dates.deleteDates();
-            Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
+            Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
             Dates.createDates(j + 1);
             getEvents();
             break;
