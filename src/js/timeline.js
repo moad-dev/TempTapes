@@ -47,7 +47,6 @@ function updateRange() {
 
     if (!isValidRange(date_start, date_end) || 
         !isInRange(date_start, date_current, date_end)) {
-        console.log("here");
         this.value = this.old;
         return;
     }
@@ -74,9 +73,12 @@ function getEndDate() {
 }
 
 function setCurrentDate(value) { 
-    var date_current = new Date(document.getElementById('timelineStart').value);
+    var date_current = new Date(document.getElementById('timelineCurrent').value);
     date_current.setDate(value);
 
+    if (!isInRange(new Date(getCurrentDate()), date_current, new Date(getEndDate())) {
+        return;
+    }
 
     tm_current = document.getElementById('timelineCurrent');
     tm_current.valueAsDate = date_current;
@@ -85,8 +87,12 @@ function setCurrentDate(value) {
 }
 
 function incrementCurrentDate() {
-    var date_current = new Date(document.getElementById('timelineStart').value);
+    var date_current = new Date(document.getElementById('timelineCurrent').value);
     date_current.setDate(date_current.getDate() + 1);
+    
+    if (!isInRange(new Date(getCurrentDate()), date_current, new Date(getEndDate())) {
+        return;
+    }
 
 
     tm_current = document.getElementById('timelineCurrent');
@@ -96,9 +102,12 @@ function incrementCurrentDate() {
 }
 
 function decrementCurrentDate() {
-    var date_current = new Date(document.getElementById('timelineStart').value);
+    var date_current = new Date(document.getElementById('timelineCurrent').value);
     date_current.setDate(date_current.getDate() - 1);
 
+    if (!isInRange(new Date(getCurrentDate()), date_current, new Date(getEndDate())) {
+        return;
+    }
 
     tm_current = document.getElementById('timelineCurrent');
     tm_current.valueAsDate = date_current;
