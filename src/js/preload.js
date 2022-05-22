@@ -113,11 +113,13 @@ function deletePath()
 
 function currentDateChanged()
 {
-    updateCurrentTime();
-    Dates.deleteDates();
-    Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
-    Dates.createDates(j + 1);
-    getEvents();
+    if(!check_events_status()){
+        updateCurrentTime();
+        Dates.deleteDates();
+        Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
+        Dates.createDates(j + 1);
+        getEvents();
+    }
 }
 ipcRenderer.on("asynchronous-reply", (event, reply) => {
     reply = JSON.parse(reply);
@@ -353,7 +355,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     document
         .getElementById("timelineRange")
-        .addEventListener("change", currentDateChanged);
+        .addEventListener("input", currentDateChanged);
     // TODO переключение масштаба
 
     function selectScale(symbol, scale) {
