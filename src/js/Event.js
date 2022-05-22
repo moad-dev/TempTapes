@@ -74,7 +74,6 @@ function mergeEvents(i)
 {
     let selectedGroup = scene.getObjectByName("group " + i);
     let color;
-    console.log(lineArray);
     for (let j = 0; j < 14; j++)
     {
         if (lineArray[i - 1][j].length > 1)
