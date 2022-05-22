@@ -101,12 +101,14 @@ function createTables(db, startup) {
     insert into paths (name, color, parent_id, icon)
         values ('path1', '#FF0000', null, 'picture.png'),
                ('path2', '#00FF00', null, 'picture.png'),
-               ('path3', '#0000FF', null, 'picture.png');
+               ('path3', '#0000FF', null, 'picture.png'),
+               ('path4', '#00FFFF', null, 'picture.png');
 
     insert into events (date, name, color, path_id, icon)
         values ('2020-01-01', 'event1', '#0000FF', 1, "picture.png"),
                ('2020-01-02', 'event2', '#00FF00', 2, "picture.png"),
-               ('2020-01-03', 'event3', '#FF0000', 3, "picture.png");
+               ('2020-01-03', 'event3', '#FF0000', 3, "picture.png"),
+               ('2020-01-04', 'event4', '#FF0000', 4, "picture.png");
 
 
         `,
@@ -156,7 +158,7 @@ function getEventsByPath(path_id, callback) {
 //
 // Setters
 
-function makePath(name, color, icon = null, parent_id = null) {
+function makePath(name, color, icon = null, parent_id = null, callback) {
     db.run(
         `
             insert into paths (name, color, icon, parent_id)
@@ -167,9 +169,27 @@ function makePath(name, color, icon = null, parent_id = null) {
             2: color,
             3: icon,
             4: parent_id
+        },
+        function (err) {
+            callback(err, this.lastID);
         }
     );
 }
+
+function deletePath(path_id, callback) {
+    db.run(
+        `
+            DELETE FROM paths WHERE path_id = ?1;
+        `,
+        {
+            1: path_id
+        },
+        function (err) {
+            callback(err);
+        }
+    );
+}
+
 
 function getDB() {
     return db;
@@ -183,5 +203,6 @@ module.exports = {
     getRootPaths: getRootPaths,
     getPathsByParent: getPathsByParent,
     getEventsByPath: getEventsByPath,
-    makePath: makePath
+    makePath: makePath,
+    deletePath: deletePath
 };

@@ -34,7 +34,7 @@ function makePath()
     let color = document.getElementById('makePathColorPeeker').value;
     let icon = document.getElementById('makePathIcon').value;
     if(!name || !icon) {
-        console.log("error");
+        console.log("error: path name, icon, color cannot be null");
     } else {
         ipcRenderer.send(
             "asynchronous-message",
@@ -44,6 +44,21 @@ function makePath()
                 color: color,
                 icon: icon,
                 parent_id: null
+            })
+        );
+    }
+}
+function deletePath()
+{
+    let id = document.getElementById('deletePathId').value;
+    if(!id) {
+        console.log("error: path id cannot be null");
+    } else {
+        ipcRenderer.send(
+            "asynchronous-message",
+            JSON.stringify({
+                command: "delete path",
+                path_id: id
             })
         );
     }
@@ -105,6 +120,12 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
             mergeEvents(reply["path_id"]);
             break;
         case "path added":
+            ipcRenderer.send(
+                "asynchronous-message",
+                JSON.stringify({command: "get root roads"})
+            );
+            break;
+        case "path deleted":
             ipcRenderer.send(
                 "asynchronous-message",
                 JSON.stringify({command: "get root roads"})
@@ -178,12 +199,29 @@ window.addEventListener("DOMContentLoaded", () => {
     document
         .getElementById("getEventsBtn")
         .addEventListener("click", getEvents);
+
     document
         .getElementById("makePathSubmit")
         .addEventListener("click", makePath);
     document
         .getElementById("makePathBtn")
         .addEventListener("click", requestImages);
+
+    document
+        .getElementById("deletePathBtn")
+        .addEventListener("click", () => {
+            let paths = document.getElementById("deletePathId");
+            paths.innerHTML = "";
+            availableRoads.forEach(function(path) {
+                let option = document.createElement("option");
+                option.innerHTML = path.name;
+                option.value = path.path_id;
+                paths.appendChild(option);
+            });
+        });
+    document
+        .getElementById("deletePathSubmit")
+        .addEventListener("click", deletePath);
 
     document
         .getElementById("timelineStart")

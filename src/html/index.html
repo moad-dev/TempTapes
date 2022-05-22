@@ -44,7 +44,7 @@
     <div class="btn-row SW">
         <button class="btn dark-opaque" id="getEventsBtn"> События </button>
         <button class="js-open-modal btn dark-opaque" data-modal="1" id="makePathBtn"> Добавить дорогу </button>
-        <button class="btn dark-opaque"> кнопка </button>
+        <button class="js-open-modal btn dark-opaque" data-modal="2" id="deletePathBtn"> Удалить дорогу </button>
     </div>
     <div class="btn-row SE">
         <button class="btn dark-opaque"> кнопка </button>
@@ -57,21 +57,35 @@
         <svg class="modal__cross js-modal-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
         </svg>
-        <p class="modal__title">Заголовок окна 1</p>
+        <p class="modal__title">Добавить дорогу</p>
         <div class="modal__field">
             <label for="name">Название дороги</label>
             <input type="text" name="name" value="" id="makePathName">
         </div>
         <div class="modal__field">
-            <label for="name">Цвет дороги</label>
+            <label for="color">Цвет дороги</label>
             <input type="color" name="color" value="" id="makePathColorPeeker">
         </div>
         <div class="modal__field">
-            <label for="name">Иконка</label>
+            <label>Иконка</label>
             <select id="makePathIcon"></select>
         </div>
         <button type="button" id="makePathSubmit">Создать</button>
     </div>
+
+    <div class="modal" data-modal="2">
+        <!--   Svg иконка для закрытия окна  -->
+        <svg class="modal__cross js-modal-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
+        </svg>
+        <p class="modal__title">Удалить дорогу</p>
+        <div class="modal__field">
+            <label>Дорога</label>
+            <select id="deletePathId"></select>
+        </div>
+        <button type="button" id="deletePathSubmit">Удалить</button>
+    </div>
+
     <!-- Подложка под модальным окном -->
     <div class="overlay js-overlay-modal"></div>
 

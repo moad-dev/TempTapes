@@ -92,6 +92,15 @@ function run(database, ipcMain) {
                     JSON.stringify(reply)
                 );
                 break;
+            case "delete path":
+                var reply = {command: "path deleted"};
+                database.deletePath(request["path_id"], (err) => {
+                    event.reply(
+                        "asynchronous-reply",
+                        JSON.stringify(reply)
+                    );
+                });
+                break;
         }
     });
 }
