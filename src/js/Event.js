@@ -130,6 +130,12 @@ function deleteAllEvents()
             }
         }
     }
+    for (let i = 0; i < lineArray.length; i++) {
+        for (let j = 0; j < lineArray[i].length; j++) {
+            lineArray[i][j].length = 0;
+        }
+    }
+
 }
 module.exports.createEvent = createEvent
 module.exports.editEvent = editEvent

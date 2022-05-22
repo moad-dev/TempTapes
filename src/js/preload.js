@@ -11,10 +11,22 @@ const addText = (selector, text) => {
     const element = document.getElementById(selector);
     if (element) element.innerText += text;
 };
-
+function getEvents()
+{
+    availableRoads.forEach(road => {
+        ipcRenderer.send(
+            "asynchronous-message",
+            JSON.stringify({
+                command: "get events",
+                path_id: road.path_id,
+                first_date: getStartDate(),
+                end_date: getEndDate()
+            })
+        );
+    });
+}
 ipcRenderer.on("asynchronous-reply", (event, reply) => {
     reply = JSON.parse(reply);
-    availableRoads = reply["roads"];
     switch (reply["command"]) {
         case "send root roads":
             j = -reply["roads"].length / 2 + 0.5;
@@ -33,7 +45,6 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
             break;
         case "send events":
             reply["events"].forEach(event => {
-                console.log(event)
                 createEvent(
                     event.event_id,
                     event.icon,
@@ -55,8 +66,8 @@ window.addEventListener("DOMContentLoaded", () => {
     );
 
     initTimeline(new Date(2022, 5, 17), new Date(2022, 5, 21));
-
-    document.getElementById("getEventsBtn").addEventListener("click", () => {
+    function getEvents()
+    {
         availableRoads.forEach(road => {
             ipcRenderer.send(
                 "asynchronous-message",
@@ -68,7 +79,8 @@ window.addEventListener("DOMContentLoaded", () => {
                 })
             );
         });
-    });
+    }
+    document.getElementById("getEventsBtn").addEventListener("click", getEvents);
 
     document
         .getElementById("timelineStart")
@@ -98,6 +110,8 @@ window.addEventListener("DOMContentLoaded", () => {
             Dates.deleteDates();
             Dates = new DateLines(getStartDate(), getEndDate(), 2);
             Dates.createDates(j + 1);
+            deleteAllEvents();
+            getEvents();
         });
     document
         .getElementById("select-scale-month")
@@ -106,6 +120,8 @@ window.addEventListener("DOMContentLoaded", () => {
             Dates.deleteDates();
             Dates = new DateLines(getStartDate(), getEndDate(), 1);
             Dates.createDates(j + 1);
+            deleteAllEvents();
+            getEvents();
         });
     document
         .getElementById("select-scale-year")
@@ -114,5 +130,7 @@ window.addEventListener("DOMContentLoaded", () => {
             Dates.deleteDates();
             Dates = new DateLines(getStartDate(), getEndDate(), 0);
             Dates.createDates(j + 1);
+            deleteAllEvents();
+            getEvents();
         });
 });
