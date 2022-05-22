@@ -1,9 +1,18 @@
-function getOffset() {
-    return ["year", "month", "day"][
-        document.getElementById('select-scale').value
-    ];
+let scale;
+
+function getScale() {
+    return scale;
+}
+
+function getScaleString() {
+    return ["year", "month", "day"][scale];
+}
+
+function setScale(value) {
+    scale = value;
 }
 
 module.exports =  {
-    getOffset: getOffset
+    getScale: getScale,
+    setScale: setScale
 };
