@@ -1,7 +1,10 @@
 const {ipcRenderer} = require("electron");
 const {createGroup, deleteGroup, editGroup} = require("../js/Road.js");
 const {createEvent, deleteEvent, editEvent, mergeEvents, deleteAllEvents, InitEvents} = require("../js/Event.js");
-const {initTimeline, updateRange, updateCurrentTime, getCurrentDate, getEndDate, getStartDate} = require("../js/timeline.js");
+const {
+    initTimeline, updateRange, updateCurrentDate, adjustDate,
+    getCurrentDate, getEndDate, getStartDate,
+} = require("../js/timeline.js");
 const {setScale, getScale} = require('../js/timescale.js');
 
 let DateLines = require("../js/Date.js");
@@ -113,7 +116,7 @@ function deletePath()
 
 function currentDateChanged()
 {
-    updateCurrentTime();
+    updateCurrentDate();
     Dates.deleteDates();
     Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
     Dates.createDates(j + 1);
@@ -369,6 +372,7 @@ window.addEventListener("DOMContentLoaded", () => {
             selectScale("Д", "day");
             setScale(2);
             updateRange();
+            adjustDate();
             Dates.deleteDates();
             Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
             Dates.createDates(j + 1);
@@ -380,6 +384,7 @@ window.addEventListener("DOMContentLoaded", () => {
             selectScale("М", "month");
             setScale(1);
             updateRange();
+            adjustDate();
             Dates.deleteDates();
             Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
             Dates.createDates(j + 1);
@@ -391,6 +396,7 @@ window.addEventListener("DOMContentLoaded", () => {
             selectScale("Г", "year");
             setScale(0);
             updateRange();
+            adjustDate();
             Dates.deleteDates();
             Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
             Dates.createDates(j + 1);

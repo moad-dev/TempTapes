@@ -1,18 +1,6 @@
 const {getScaleString} = require("./timescale.js");
 const ONE_DAY = 1000 * 60 * 60 * 24;
 
-function isValidRange(date_start, date_end) {
-    return date_start < date_end;
-}
-
-function isInRange(date_start, current, date_end) {
-    return date_start <= current && current <= date_end;
-}
-
-function daysDiff(date_start, date_end) {
-    return (date_end - date_start) / ONE_DAY;
-}
-
 Date.prototype.addDays = function(days) {
     var date = new Date(this.valueOf());
     date.setDate(date.getDate() + days);
@@ -36,16 +24,16 @@ Date.prototype.formatted = function() {
     return date.toISOString().slice(0, 10);
 }
 
+function isValidRange(date_start, date_end) {
+    return date_start < date_end;
+}
 
-function addScale(date, value) {
-    switch (getScaleString()) {
-        case "day":
-            return date.addDays(value);
-        case "month":
-            return date.addMonths(value);
-        case "year":
-            return date.addYears(value);
-    }
+function isInRange(date_start, current, date_end) {
+    return date_start <= current && current <= date_end;
+}
+
+function daysDiff(date_start, date_end) {
+    return (date_end - date_start) / ONE_DAY;
 }
 
 function monthsDiff(date_start, date_end) {
@@ -59,6 +47,18 @@ function monthsDiff(date_start, date_end) {
 function yearsDiff(date_start, date_end) {
     var years = date_end.getFullYear() - date_start.getFullYear();
     return years <= 0 ? 0 : years;
+}
+
+
+function addScale(date, value) {
+    switch (getScaleString()) {
+        case "day":
+            return date.addDays(value);
+        case "month":
+            return date.addMonths(value);
+        case "year":
+            return date.addYears(value);
+    }
 }
 
 function initTimeline(date_start, date_end) {
@@ -77,10 +77,42 @@ function initTimeline(date_start, date_end) {
     updateRange();
 }
 
-function updateCurrentTime() {
+function updateCurrentDate() {
     var value = Number(document.getElementById('timelineRange').value);
     var date = getStartDate(document.getElementById('timelineRange'));
     setCurrentDate(addScale(date, value), true);
+}
+
+/* TODO: Buggy, rewrite later */
+function adjustDate() {
+    switch (getScaleString()) {
+        case "month":
+            var date_start = getStartDate(true);
+            var date_end = getEndDate(true).addMonths(1);
+            
+            date_start.setDate(1);
+            date_end.setDate(1);
+            
+            setStartDate(date_start);
+            setCurrentDate(date_start);
+            setEndDate(date_end);
+            break;
+
+        case "year":
+            var date_start = getStartDate(true);
+            var date_end = getEndDate(true).addYears(1);
+           
+
+            date_start.setMonth(0);
+            date_start.setDate(1);
+            date_end.setMonth(0);
+            date_end.setDate(1);
+            
+            setStartDate(date_start);
+            setCurrentDate(date_start);
+            setEndDate(date_end);
+            break;
+    }
 }
 
 function syncRange(date_start, date_current, date_end) {
@@ -139,20 +171,63 @@ function getEndDate(asdate=false) {
     return getInputDate('timelineEnd', asdate);
 }
 
+
+/* TODO: rewrite later */
+function setStartDate(value, asdate=false) {
+    var date_start = asdate ? value : new Date(value);
+    var date_current = getCurrentDate(true);
+    var date_end = getEndDate(true);
+
+    if (!isValidRange(date_start, date_end) || 
+        !isInRange(date_start, date_current, date_end)) {
+        
+        return;
+    }
+
+    var tm_start = document.getElementById('timelineStart');
+    tm_start.valueAsDate = date_start;
+    tm_start.old = tm_start.value;
+    
+    syncRange(date_start, date_current, date_end);
+}
+
 function setCurrentDate(value, asdate=false) {
     var date_start = getStartDate(true);
     var date_current = asdate ? value : new Date(value);
     var date_end = getEndDate(true);
     
-    if (!isInRange(date_start, date_current, date_end)) 
+    if (!isValidRange(date_start, date_end) || 
+        !isInRange(date_start, date_current, date_end)) {
+        
         return;
-
+    }
+    
     var tm_current = document.getElementById('timelineCurrent');
     tm_current.valueAsDate = date_current;
     tm_current.old = tm_current.value;
     
     syncRange(date_start, date_current, date_end);
 }
+
+function setEndDate(value, asdate=false) {
+    var date_start = getStartDate(true);
+    var date_current = getCurrentDate(true);
+    var date_end = asdate ? value : new Date(value);
+    
+    
+    if (!isValidRange(date_start, date_end) || 
+        !isInRange(date_start, date_current, date_end)) {
+        
+        return;
+    }
+
+    var tm_end = document.getElementById('timelineEnd');
+    tm_end.valueAsDate = date_end;
+    tm_end.old = tm_end.value;
+    
+    syncRange(date_start, date_end, date_end);
+}
+
 
 function incrementCurrentDate() {
     var date = getCurrentDate(true);
@@ -168,7 +243,8 @@ function decrementCurrentDate(value=-1) {
 module.exports =  {
     initTimeline: initTimeline,
     updateRange: updateRange, 
-    updateCurrentTime: updateCurrentTime,
+    updateCurrentDate: updateCurrentDate,
+    adjustDate: adjustDate,
     getStartDate: getStartDate,
     getCurrentDate: getCurrentDate,
     getEndDate: getEndDate,
