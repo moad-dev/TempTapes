@@ -7,6 +7,7 @@ let DateLines = require("../js/Date.js");
 let Dates;
 let availableRoads;
 let j;
+let scale = 2;
 const addText = (selector, text) => {
     const element = document.getElementById(selector);
     if (element) element.innerText += text;
@@ -25,13 +26,22 @@ function getEvents()
         );
     });
 }
+function currentDateChanged()
+{
+    updateCurrentTime();
+    Dates.deleteDates();
+    Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
+    Dates.createDates(j + 1);
+    deleteAllEvents();
+    getEvents();
+}
 ipcRenderer.on("asynchronous-reply", (event, reply) => {
     reply = JSON.parse(reply);
     switch (reply["command"]) {
         case "send root roads":
             j = -reply["roads"].length / 2 + 0.5;
             console.log(getCurrentDate())
-            Dates = new DateLines(getCurrentDate(), getEndDate(), 2);
+            Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
             availableRoads = reply["roads"];
             reply["roads"].forEach(road => {
                 createGroup(
@@ -84,7 +94,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     document
         .getElementById("timelineRange")
-        .addEventListener("change", updateCurrentTime);
+        .addEventListener("change", currentDateChanged);
     // TODO переключение масштаба
 
     function selectScale(symbol, scale) {
@@ -95,8 +105,9 @@ window.addEventListener("DOMContentLoaded", () => {
         .getElementById("select-scale-day")
         .addEventListener("click", () => {
             selectScale("Д", "day");
+            scale = 2;
             Dates.deleteDates();
-            Dates = new DateLines(getCurrentDate(), getEndDate(), 2);
+            Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
             Dates.createDates(j + 1);
             deleteAllEvents();
             getEvents();
@@ -105,8 +116,9 @@ window.addEventListener("DOMContentLoaded", () => {
         .getElementById("select-scale-month")
         .addEventListener("click", () => {
             selectScale("М", "month");
+            scale = 1;
             Dates.deleteDates();
-            Dates = new DateLines(getCurrentDate(), getEndDate(), 1);
+            Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
             Dates.createDates(j + 1);
             deleteAllEvents();
             getEvents();
@@ -115,8 +127,9 @@ window.addEventListener("DOMContentLoaded", () => {
         .getElementById("select-scale-year")
         .addEventListener("click", () => {
             selectScale("Г", "year");
+            scale = 0;
             Dates.deleteDates();
-            Dates = new DateLines(getCurrentDate(), getEndDate(), 0);
+            Dates = new DateLines(getCurrentDate(), getEndDate(), scale);
             Dates.createDates(j + 1);
             deleteAllEvents();
             getEvents();
