@@ -4,6 +4,7 @@ const {createEvent, deleteEvent, editEvent, mergeEvents, deleteAllEvents} = requ
 const {initTimeline, updateRange, updateCurrentTime, getCurrentDate, getEndDate, getStartDate} = require("../js/timeline.js");
 
 let DateLines = require("../js/Date.js");
+const {incrementCurrentDate, decrementCurrentDate} = require("./timeline");
 let Dates;
 let availableRoads;
 let j;
@@ -75,6 +76,37 @@ window.addEventListener("DOMContentLoaded", () => {
         "asynchronous-message",
         JSON.stringify({command: "get root roads"})
     );
+    window.addEventListener("wheel", onScroll, false);
+    //скролл событий
+    const {editEvent, currentLine} = require("../js/Event")
+    var lastScrollTop = 0;
+    function detectMouseWheelDirection( e )
+    {
+        var delta = null,
+            direction = false;
+        if ( !e ) { // if the event is not provided, we get it from the window object
+            e = window.event;
+        }
+        if ( e.wheelDelta ) { // will work in most cases
+            delta = e.wheelDelta / 60;
+        }
+        if ( delta !== null ) {
+            direction = delta > 0 ? 'up' : 'down';
+        }
+        return direction;
+    }
+    function onScroll(e) {
+        var scrollDirection = detectMouseWheelDirection( e );
+        if (scrollDirection === "up"){
+            // downscroll code
+            console.log("up")
+            incrementCurrentDate();
+        } else {
+            // upscroll code
+            console.log("down")
+            decrementCurrentDate();
+        }
+    }
 
     initTimeline(new Date(2022, 5, 17), new Date(2022, 5, 21));
 
