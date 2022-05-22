@@ -112,6 +112,9 @@ module.exports =  {
     updateCurrentTime: updateCurrentTime,
     getStartDate: getStartDate,
     getCurrentDate: getCurrentDate,
-    getEndDate: getEndDate
+    getEndDate: getEndDate,
+    setCurrentDate: setCurrentDate,
+    incrementCurrentDate: incrementCurrentDate,
+    decrementCurrentDate: decrementCurrentDate
 };
 
