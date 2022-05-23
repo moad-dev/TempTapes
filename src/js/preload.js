@@ -27,9 +27,8 @@ function getEvents()
     deleteAllEvents()
     availableRoads.forEach(road => {
         ipcRenderer.send(
-            "asynchronous-message",
+            "get events",
             JSON.stringify({
-                command: "get events",
                 path_id: road.path_id,
                 first_date: getCurrentDate(),
                 end_date: getEndDate()
@@ -46,9 +45,8 @@ function makePath()
         console.log("error: path name, icon, color cannot be null");
     } else {
         ipcRenderer.send(
-            "asynchronous-message",
+            "make path",
             JSON.stringify({
-                command: "make path",
                 name: name,
                 color: color,
                 icon: icon,
@@ -67,9 +65,8 @@ function editPath()
         console.log("error: path name, icon, color cannot be null");
     } else {
         ipcRenderer.send(
-            "asynchronous-message",
+            "edit path",
             JSON.stringify({
-                command: "edit path",
                 name: name,
                 color: color,
                 icon: icon,
@@ -86,9 +83,8 @@ function deletePath()
         console.log("error: path id cannot be null");
     } else {
         ipcRenderer.send(
-            "asynchronous-message",
+            "delete path",
             JSON.stringify({
-                command: "delete path",
                 path_id: id
             })
         );
@@ -111,98 +107,101 @@ function currentDateChanged()
         getEvents();
     }
 }
-ipcRenderer.on("asynchronous-reply", (event, reply) => {
+
+ipcRenderer.on("send root roads", (event, reply) =>
+{
     reply = JSON.parse(reply);
-    switch (reply["command"]) {
-        case "send root roads":
-            if(availableRoads) {
-                availableRoads.forEach((elem) => {
-                    deleteGroup(elem["path_id"]);
-                    deleteAllEvents();
-                    Dates.deleteDates();
-                });
-            }
-            j = -reply["roads"].length / 2 + 0.5;
-            Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
-            availableRoads = reply["roads"];
-            reply["roads"].forEach(road => {
-                createGroup(
-                    road.color,
-                    road.icon,
-                    road.path_id,
-                    road.name,
-                    j++
-                );
-            });
-            Dates.createDates(j + 1);
-            InitEvents(reply["roads"].length);
-            events_watcher = new Watcher(reply["roads"].length);
-            setScale(2)
+    if(availableRoads) {
+        availableRoads.forEach((elem) => {
+            deleteGroup(elem["path_id"]);
+            deleteAllEvents();
             Dates.deleteDates();
-            Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
-            Dates.createDates(j + 1);
-            getEvents();
-            break;
-        case "send events":
-            reply["events"].forEach(event => {
-                createEvent(
-                    event.event_id,
-                    event.icon,
-                    event.color,
-                    "group " + event.path_id,
-                    event.date,
-                    Dates.mode
-                );
-            });
-            let index = availableRoads.map( el => el.path_id ).indexOf(reply["path_id"]);
-            mergeEvents(index+1);
-            events_watcher.process_complete([index]);
-            break;
-        case "path added":
-            ipcRenderer.send(
-                "asynchronous-message",
-                JSON.stringify({command: "get root roads"})
-            );
-            break;
-        case "path deleted":
-            ipcRenderer.send(
-                "asynchronous-message",
-                JSON.stringify({command: "get root roads"})
-            );
-            break;
-        case "path edited":
-            ipcRenderer.send(
-                "asynchronous-message",
-                JSON.stringify({command: "get root roads"})
-            );
-            break;
-        case "send images":
-            let icons_make = document.getElementById("makePathIcon");
-            let icons_edit = document.getElementById("editPathIcon");
-            icons_make.innerHTML = "";
-            icons_edit.innerHTML = "";
-            reply["images"].forEach(function(image) {
-                let option = document.createElement("option");
-                option.innerHTML = image;
-                icons_make.appendChild(option);
-                option = document.createElement("option");
-                option.innerHTML = image;
-                icons_edit.appendChild(option);
-            });
-            break;
+        });
     }
+    j = -reply["roads"].length / 2 + 0.5;
+    Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
+    availableRoads = reply["roads"];
+    reply["roads"].forEach(road => {
+        createGroup(
+            road.color,
+            road.icon,
+            road.path_id,
+            road.name,
+            j++
+        );
+    });
+    Dates.createDates(j + 1);
+    InitEvents(reply["roads"].length);
+    events_watcher = new Watcher(reply["roads"].length);
+    setScale(2)
+    Dates.deleteDates();
+    Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
+    Dates.createDates(j + 1);
+    getEvents();
+});
+ipcRenderer.on("send events", (event, reply) =>
+{
+    reply = JSON.parse(reply);
+    reply["events"].forEach(event => {
+        createEvent(
+            event.event_id,
+            event.icon,
+            event.color,
+            "group " + event.path_id,
+            event.date,
+            Dates.mode
+        );
+    });
+    let index = availableRoads.map( el => el.path_id ).indexOf(reply["path_id"]);
+    mergeEvents(index+1);
+    events_watcher.process_complete([index]);
+});
+ipcRenderer.on("path added", (event, reply) =>
+{
+    reply = JSON.parse(reply);
+    ipcRenderer.send(
+        "get root roads", "{}"
+    );
+});
+ipcRenderer.on("path deleted", (event, reply) =>
+{
+    reply = JSON.parse(reply);
+    ipcRenderer.send(
+        "get root roads", "{}"
+    );
+});
+ipcRenderer.on("path edited", (event, reply) =>
+{
+    reply = JSON.parse(reply);
+    ipcRenderer.send(
+        "get root roads", "{}"
+    );
+});
+ipcRenderer.on("send images", (event, reply) =>
+{
+    reply = JSON.parse(reply);
+    let icons_make = document.getElementById("makePathIcon");
+    let icons_edit = document.getElementById("editPathIcon");
+    icons_make.innerHTML = "";
+    icons_edit.innerHTML = "";
+    reply["images"].forEach(function(image) {
+        let option = document.createElement("option");
+        option.innerHTML = image;
+        icons_make.appendChild(option);
+        option = document.createElement("option");
+        option.innerHTML = image;
+        icons_edit.appendChild(option);
+    });
 });
 
 window.addEventListener("DOMContentLoaded", () => {
 
     ipcRenderer.send(
-        "asynchronous-message",
-        JSON.stringify({command: "get images"})
+        "get images", "{}"
     );
 
     ipcRenderer.send(
-        "asynchronous-message",
-        JSON.stringify({command: "get root roads"})
+        "get root roads", "{}"
     );
     window.addEventListener("wheel", onScroll, false);
     //скролл событий
