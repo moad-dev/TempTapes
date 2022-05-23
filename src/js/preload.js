@@ -14,27 +14,8 @@ let availableRoads;
 let j;
 setScale(2);
 
-
-let is_events_request_processing;
-function init_events_status(size)
-{
-    is_events_request_processing = [];
-    for(let i = 0; i < size; i++)
-        is_events_request_processing.push(false);
-}
-function set_events_status(value)
-{
-    for(let i = 0; i < is_events_request_processing.length; i++)
-        is_events_request_processing[i] = value;
-}
-function check_events_status()
-{
-    for(let i = 0; i < is_events_request_processing.length; i++)
-        if(is_events_request_processing[i] == true)
-            return true;
-    return false;
-}
-
+const Watcher = require("../js/multipleProcessWatcher.js");
+let events_watcher = null;
 
 const addText = (selector, text) => {
     const element = document.getElementById(selector);
@@ -42,7 +23,7 @@ const addText = (selector, text) => {
 };
 function getEvents()
 {
-    set_events_status(true);
+    events_watcher.set_status(true);
     deleteAllEvents()
     availableRoads.forEach(road => {
         ipcRenderer.send(
@@ -116,7 +97,7 @@ function deletePath()
 
 function currentDateChanged()
 {
-    if(!check_events_status()){
+    if(!events_watcher.check_status()){
         updateCurrentDate();
         Dates.deleteDates();
         Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
@@ -155,7 +136,7 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
             });
             Dates.createDates(j + 1);
             InitEvents(reply["roads"].length);
-            init_events_status(reply["roads"].length);
+            events_watcher = new Watcher(reply["roads"].length);
             setScale(2)
             Dates.deleteDates();
             Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
@@ -175,7 +156,7 @@ ipcRenderer.on("asynchronous-reply", (event, reply) => {
             });
             let index = availableRoads.map( el => el.path_id ).indexOf(reply["path_id"]);
             mergeEvents(index+1);
-            is_events_request_processing[index] = false;
+            events_watcher.process_complete([index]);
             break;
         case "path added":
             ipcRenderer.send(
@@ -242,7 +223,7 @@ window.addEventListener("DOMContentLoaded", () => {
         return direction;
     }
     function onScroll(e) {
-        if(!check_events_status())
+        if(!events_watcher.check_status())
         {
             var scrollDirection = detectMouseWheelDirection( e );
             if (scrollDirection === "up"){
