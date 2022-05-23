@@ -116,12 +116,13 @@ function deletePath()
 
 function currentDateChanged()
 {
-    updateCurrentDate();
-    Dates.deleteDates();
-    Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
-    Dates.createDates(j + 1);
-    getEvents();
     if(!check_events_status()){
+        updateCurrentDate();
+        Dates.deleteDates();
+        Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
+        Dates.createDates(j + 1);
+        getEvents();
+
         updateCurrentTime();
         Dates.deleteDates();
         Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
@@ -241,9 +242,9 @@ window.addEventListener("DOMContentLoaded", () => {
         return direction;
     }
     function onScroll(e) {
-        var scrollDirection = detectMouseWheelDirection( e );
         if(!check_events_status())
         {
+            var scrollDirection = detectMouseWheelDirection( e );
             if (scrollDirection === "up"){
                 // downscroll code
                 incrementCurrentDate();
