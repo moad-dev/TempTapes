@@ -1,194 +1,32 @@
+// Главный модуль фронтенд части, js код для работы с html элементами
+//
+//
+
 const {ipcRenderer} = require("electron");
-const {createGroup, deleteGroup, editGroup} = require("../js/Road.js");
-const {createEvent, deleteEvent, editEvent, mergeEvents, deleteAllEvents, InitEvents} = require("../js/Event.js");
+
 const {
     initTimeline, updateRange, updateCurrentDate, adjustDate,
     getCurrentDate, getEndDate, getStartDate,
 } = require("../js/timeline.js");
 const {setScale, getScale} = require('../js/timescale.js');
-
-let DateLines = require("../js/Date.js");
 const {incrementCurrentDate, decrementCurrentDate} = require("./timeline");
-let Dates;
-let availableRoads;
-let j;
-setScale(2);
 
-const Watcher = require("../js/multipleProcessWatcher.js");
-let events_watcher = null;
+const frontendEvents = require("../js/frontendEvents.js");
 
-const addText = (selector, text) => {
-    const element = document.getElementById(selector);
-    if (element) element.innerText += text;
-};
-function getEvents()
-{
-    Dates.deleteDates();
-    Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
-    Dates.createDates(j + 1);
-    events_watcher.set_status(true);
-    deleteAllEvents()
-    availableRoads.forEach(road => {
-        ipcRenderer.send(
-            "get events",
-            JSON.stringify({
-                path_id: road.path_id,
-                first_date: getCurrentDate(),
-                end_date: getEndDate()
-            })
-        );
-    });
-}
-function makePath()
-{
-    let name = document.getElementById('makePathName').value;
-    let color = document.getElementById('makePathColorPeeker').value;
-    let icon = document.getElementById('makePathIcon').value;
-    if(!name || !icon) {
-        console.log("error: path name, icon, color cannot be null");
-    } else {
-        ipcRenderer.send(
-            "make path",
-            JSON.stringify({
-                name: name,
-                color: color,
-                icon: icon,
-                parent_id: null
-            })
-        );
-    }
-}
-function editPath()
-{
-    let path_id = document.getElementById('editPathPath').value;
-    let name = document.getElementById('editPathName').value;
-    let color = document.getElementById('editPathColorPeeker').value;
-    let icon = document.getElementById('editPathIcon').value;
-    if(!name || !icon || !color || !path_id) {
-        console.log("error: path name, icon, color cannot be null");
-    } else {
-        ipcRenderer.send(
-            "edit path",
-            JSON.stringify({
-                name: name,
-                color: color,
-                icon: icon,
-                parent_id: null,
-                path_id: path_id
-            })
-        );
-    }
-}
-function deletePath()
-{
-    let id = document.getElementById('deletePathId').value;
-    if(!id) {
-        console.log("error: path id cannot be null");
-    } else {
-        ipcRenderer.send(
-            "delete path",
-            JSON.stringify({
-                path_id: id
-            })
-        );
-    }
-}
-
-function currentDateChanged()
-{
-    if(!events_watcher.any_running()){
-        updateCurrentDate();
-        getEvents();
-
-        updateCurrentTime();
-        getEvents();
-    }
-}
-
-ipcRenderer.on("send root roads", (event, reply) =>
-{
-    reply = JSON.parse(reply);
-    if(availableRoads) {
-        availableRoads.forEach((elem) => {
-            deleteGroup(elem["path_id"]);
-            deleteAllEvents();
-            Dates.deleteDates();
-        });
-    }
-    j = -reply["roads"].length / 2 + 0.5;
-    Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
-    availableRoads = reply["roads"];
-    reply["roads"].forEach(road => {
-        createGroup(
-            road.color,
-            road.icon,
-            road.path_id,
-            road.name,
-            j++
-        );
-    });
-    Dates.createDates(j + 1);
-    InitEvents(reply["roads"].length);
-    events_watcher = new Watcher(reply["roads"].length);
-    setScale(2)
-    getEvents();
-});
-ipcRenderer.on("send events", (event, reply) =>
-{
-    reply = JSON.parse(reply);
-    reply["events"].forEach(event => {
-        createEvent(
-            event.event_id,
-            event.icon,
-            event.color,
-            "group " + event.path_id,
-            event.date,
-            Dates.mode
-        );
-    });
-    let index = availableRoads.map( el => el.path_id ).indexOf(reply["path_id"]);
-    mergeEvents(index+1);
-    events_watcher.process_complete([index]);
-});
-ipcRenderer.on("path added", (event, reply) =>
-{
-    reply = JSON.parse(reply);
-    ipcRenderer.send(
-        "get root roads", "{}"
-    );
-});
-ipcRenderer.on("path deleted", (event, reply) =>
-{
-    reply = JSON.parse(reply);
-    ipcRenderer.send(
-        "get root roads", "{}"
-    );
-});
-ipcRenderer.on("path edited", (event, reply) =>
-{
-    reply = JSON.parse(reply);
-    ipcRenderer.send(
-        "get root roads", "{}"
-    );
-});
-ipcRenderer.on("send images", (event, reply) =>
-{
-    reply = JSON.parse(reply);
-    let icons_make = document.getElementById("makePathIcon");
-    let icons_edit = document.getElementById("editPathIcon");
-    icons_make.innerHTML = "";
-    icons_edit.innerHTML = "";
-    reply["images"].forEach(function(image) {
-        let option = document.createElement("option");
-        option.innerHTML = image;
-        icons_make.appendChild(option);
-        option = document.createElement("option");
-        option.innerHTML = image;
-        icons_edit.appendChild(option);
-    });
-});
+// const addText = (selector, text) => {
+//     const element = document.getElementById(selector);
+//     if (element) element.innerText += text;
+// };
 
 window.addEventListener("DOMContentLoaded", () => {
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Инициализация приложения
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    setScale(2);
+
+    initTimeline('2022-05-17', '2022-05-21');
 
     ipcRenderer.send(
         "get images", "{}"
@@ -197,6 +35,11 @@ window.addEventListener("DOMContentLoaded", () => {
     ipcRenderer.send(
         "get root roads", "{}"
     );
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Обработчики событий html
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     window.addEventListener("wheel", onScroll, false);
     //скролл событий
     let lastScrollTop = 0;
@@ -216,7 +59,7 @@ window.addEventListener("DOMContentLoaded", () => {
         return direction;
     }
     function onScroll(e) {
-        if(!events_watcher.any_running())
+        if(!frontendEvents.getWatcher().any_running())
         {
             var scrollDirection = detectMouseWheelDirection( e );
             if (scrollDirection === "up"){
@@ -224,20 +67,18 @@ window.addEventListener("DOMContentLoaded", () => {
                 incrementCurrentDate();
                 if (getCurrentDate() <= getEndDate())
                 {
-                    getEvents();
+                    frontendEvents.getEvents();
                 }
             } else {
                 // upscroll code
                 decrementCurrentDate();
                 if (getCurrentDate() >= getStartDate())
                 {
-                    getEvents();
+                    frontendEvents.getEvents();
                 }
             }
         }
     }
-
-    initTimeline('2022-05-17', '2022-05-21');
 
     document
         .getElementById("makePathSubmit")
@@ -246,7 +87,7 @@ window.addEventListener("DOMContentLoaded", () => {
             var overlay = document.querySelector('.js-overlay-modal');
             parentModal.classList.remove('active');
             overlay.classList.remove('active');
-            makePath();
+            frontendEvents.makePath();
         });
 
     document
@@ -254,7 +95,7 @@ window.addEventListener("DOMContentLoaded", () => {
         .addEventListener("click", () => {
             let paths = document.getElementById("deletePathId");
             paths.innerHTML = "";
-            availableRoads.forEach(function(path) {
+            frontendEvents.getCache()["roads"].forEach(function(path) {
                 let option = document.createElement("option");
                 option.innerHTML = path.name;
                 option.value = path.path_id;
@@ -268,13 +109,13 @@ window.addEventListener("DOMContentLoaded", () => {
             var overlay = document.querySelector('.js-overlay-modal');
             parentModal.classList.remove('active');
             overlay.classList.remove('active');
-            deletePath();
+            frontendEvents.deletePath();
         });
 
     document
         .getElementById("editPathPath")
         .addEventListener("change", () => {
-            let path = availableRoads.filter(
+            let path = frontendEvents.getCache()["roads"].filter(
                 obj => {
                     return obj.path_id == document.getElementById("editPathPath").value;
                 })[0];
@@ -289,16 +130,17 @@ window.addEventListener("DOMContentLoaded", () => {
     document
         .getElementById("editPathBtn")
         .addEventListener("click", () => {
+            let cachedRoads = frontendEvents.getCache()["roads"];
             let paths = document.getElementById("editPathPath");
             paths.innerHTML = "";
-            availableRoads.forEach(function(path) {
+            cachedRoads.forEach(function(path) {
                 let option = document.createElement("option");
                 option.innerHTML = path.name;
                 option.value = path.path_id;
                 paths.appendChild(option);
             });
-            if(!(availableRoads === undefined || availableRoads.length == 0)) {
-                let path = availableRoads[0];
+            if(!(cachedRoads === undefined || cachedRoads.length == 0)) {
+                let path = cachedRoads[0];
                 document.getElementById("editPathName").value = path.name;
                 document.getElementById("editPathColorPeeker").value = path.color;
                 document.getElementById("editPathIcon").childNodes.forEach(elem => {
@@ -315,7 +157,7 @@ window.addEventListener("DOMContentLoaded", () => {
             var overlay = document.querySelector('.js-overlay-modal');
             parentModal.classList.remove('active');
             overlay.classList.remove('active');
-            editPath();
+            frontendEvents.editPath();
         });
 
     document
@@ -332,48 +174,46 @@ window.addEventListener("DOMContentLoaded", () => {
 
     document
         .getElementById("timelineRange")
-        .addEventListener("input", currentDateChanged);
-    // TODO переключение масштаба
+        .addEventListener("input",
+        function() {
+            if(!frontendEvents.getWatcher().any_running()){
+                updateCurrentDate();
+                frontendEvents.getEvents();
+
+                updateCurrentTime();
+                frontendEvents.getEvents();
+            }
+        });
+
+    // Переключение масштаба
 
     function selectScale(symbol, scale) {
         document.getElementById("select-scale").innerHTML = symbol;
+        setScale(scale);
+        updateRange();
+        adjustDate();
+        frontendEvents.getEvents();
     }
 
     document
         .getElementById("select-scale-day")
         .addEventListener("click", () => {
-            selectScale("Д", "day");
-            setScale(2);
-            updateRange();
-            adjustDate();
-            getEvents();
+            selectScale("Д", 2);
         });
     document
         .getElementById("select-scale-month")
         .addEventListener("click", () => {
-            selectScale("М", "month");
-            setScale(1);
-            updateRange();
-            adjustDate();
-            getEvents();
+            selectScale("М", 1);
         });
     document
         .getElementById("select-scale-year")
         .addEventListener("click", () => {
-            selectScale("Г", "year");
-            setScale(0);
-            updateRange();
-            adjustDate();
-            getEvents();
+            selectScale("Г", 0);
         });
 
-
-    // Графическая часть
-    //
-    //
-    /*~~~~~~~~~~~~~~
-    Модальные окна
-    ~~~~~~~~~~~~~~*/
+    //~~~~~~~~~~~~~~~~
+    // Модальные окна
+    //~~~~~~~~~~~~~~~~
 
     /* Записываем в переменные массив элементов-кнопок и подложку.
       Подложке зададим id, чтобы не влиять на другие элементы с классом overlay*/
