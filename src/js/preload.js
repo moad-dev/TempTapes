@@ -23,6 +23,9 @@ const addText = (selector, text) => {
 };
 function getEvents()
 {
+    Dates.deleteDates();
+    Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
+    Dates.createDates(j + 1);
     events_watcher.set_status(true);
     deleteAllEvents()
     availableRoads.forEach(road => {
@@ -95,15 +98,9 @@ function currentDateChanged()
 {
     if(!events_watcher.any_running()){
         updateCurrentDate();
-        Dates.deleteDates();
-        Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
-        Dates.createDates(j + 1);
         getEvents();
 
         updateCurrentTime();
-        Dates.deleteDates();
-        Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
-        Dates.createDates(j + 1);
         getEvents();
     }
 }
@@ -134,9 +131,6 @@ ipcRenderer.on("send root roads", (event, reply) =>
     InitEvents(reply["roads"].length);
     events_watcher = new Watcher(reply["roads"].length);
     setScale(2)
-    Dates.deleteDates();
-    Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
-    Dates.createDates(j + 1);
     getEvents();
 });
 ipcRenderer.on("send events", (event, reply) =>
@@ -230,9 +224,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 incrementCurrentDate();
                 if (getCurrentDate() <= getEndDate())
                 {
-                    Dates.deleteDates();
-                    Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
-                    Dates.createDates(j + 1);
                     getEvents();
                 }
             } else {
@@ -240,9 +231,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 decrementCurrentDate();
                 if (getCurrentDate() >= getStartDate())
                 {
-                    Dates.deleteDates();
-                    Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
-                    Dates.createDates(j + 1);
                     getEvents();
                 }
             }
@@ -358,9 +346,6 @@ window.addEventListener("DOMContentLoaded", () => {
             setScale(2);
             updateRange();
             adjustDate();
-            Dates.deleteDates();
-            Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
-            Dates.createDates(j + 1);
             getEvents();
         });
     document
@@ -370,9 +355,6 @@ window.addEventListener("DOMContentLoaded", () => {
             setScale(1);
             updateRange();
             adjustDate();
-            Dates.deleteDates();
-            Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
-            Dates.createDates(j + 1);
             getEvents();
         });
     document
@@ -382,9 +364,6 @@ window.addEventListener("DOMContentLoaded", () => {
             setScale(0);
             updateRange();
             adjustDate();
-            Dates.deleteDates();
-            Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
-            Dates.createDates(j + 1);
             getEvents();
         });
 
