@@ -11,12 +11,19 @@ module.exports =
             for(let i = 0; i < this.flags.length; i++)
                 this.flags[i] = value;
         }
-        check_status()
+        any_running()
         {
             for(let i = 0; i < this.flags.length; i++)
                 if(this.flags[i] == true)
                     return true;
             return false;
+        }
+        any_completed()
+        {
+            for(let i = 0; i < this.flags.length; i++)
+                if(this.flags[i] == false)
+                    return false;
+            return true;
         }
         process_complete(index)
         {
