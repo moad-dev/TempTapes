@@ -1,3 +1,7 @@
+// Модуль взаимодействия между фронтом и бэком
+// обращение к базе тоже здесь
+//
+
 const fs = require('fs');
 
 function run(database, ipcMain) {

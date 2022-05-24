@@ -1,8 +1,15 @@
+// Модуль базы данных: инициализация и интерфейсы для доступа к БД
+//
+//
+
 const sqlite3 = require("sqlite3");
-const {promisify} = require("util");
 const path = require("path");
 
 var db;
+
+//~~~~~~~~~~~~~~~~~~~~~
+//    Инициализация
+//~~~~~~~~~~~~~~~~~~~~~
 
 function Init(startup) {
     db = new sqlite3.Database(
@@ -106,7 +113,14 @@ function createTables(db, startup) {
                ('path4', '#00FFFF', null, 'picture.png');
 
     insert into events (date, name, color, path_id, icon)
-        values ('2020-01-01', 'event1', '#0000FF', 1, "picture.png"),
+        values ('2020-01-01', 'event10', '#0000FF', 1, "picture.png"),
+               ('2020-01-01', 'event11', '#5522FF', 1, "picture.png"),
+               ('2020-01-01', 'event12', '#284683', 1, "picture.png"),
+               ('2020-01-01', 'event13', '#0000FF', 1, "picture.png"),
+               ('2020-01-01', 'event14', '#0000FF', 1, "picture.png"),
+               ('2020-01-01', 'event10', '#284683', 1, "picture.png"),
+               ('2020-01-01', 'event10', '#0000FF', 1, "picture.png"),
+               ('2020-01-01', 'event10', '#0000FF', 1, "picture.png"),
                ('2020-01-02', 'event2', '#00FF00', 2, "picture.png"),
                ('2020-01-03', 'event3', '#FF0000', 3, "picture.png"),
                ('2020-01-04', 'event4', '#FF0000', 4, "picture.png");
@@ -123,9 +137,9 @@ function createTables(db, startup) {
     );
 }
 
-//
-//
-// Getters
+//~~~~~~~~~~~~~~~~~~
+//    интерфейсы
+//~~~~~~~~~~~~~~~~~~
 
 function getAllPaths(callback) {
     db.all(`SELECT * FROM paths`, (err, rows) => {
@@ -154,10 +168,6 @@ function getEventsByPath(path_id, callback) {
         callback(err, rows);
     });
 }
-
-//
-//
-// Setters
 
 function makePath(name, color, icon = null, parent_id = null, callback) {
     db.run(

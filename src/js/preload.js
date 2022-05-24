@@ -3,14 +3,18 @@
 //
 
 const {ipcRenderer} = require("electron");
-
 const {
-    initTimeline, updateRange, updateCurrentDate, adjustDate,
-    getCurrentDate, getEndDate, getStartDate,
-} = require("../js/timeline.js");
+    initTimeline,
+    updateRange,
+    updateCurrentDate,
+    adjustDate,
+    getCurrentDate,
+    getEndDate,
+    getStartDate,
+    incrementCurrentDate,
+    decrementCurrentDate
+} = require("./timeline");
 const timescale = require('../js/timescale.js');
-const {incrementCurrentDate, decrementCurrentDate} = require("./timeline");
-
 const frontendEvents = require("../js/frontendEvents.js");
 
 // const addText = (selector, text) => {
@@ -40,17 +44,17 @@ window.addEventListener("DOMContentLoaded", () => {
     // Обработчики событий html
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    // Скролл событий
     window.addEventListener("wheel", onScroll, false);
-    //скролл событий
     let lastScrollTop = 0;
     function detectMouseWheelDirection( e )
     {
         var delta = null,
             direction = false;
-        if ( !e ) { // if the event is not provided, we get it from the window object
+        if ( !e ) { // если event не был передан, получим его из window object
             e = window.event;
         }
-        if ( e.wheelDelta ) { // will work in most cases
+        if ( e.wheelDelta ) {
             delta = e.wheelDelta / 60;
         }
         if ( delta !== null ) {
@@ -63,14 +67,12 @@ window.addEventListener("DOMContentLoaded", () => {
         {
             var scrollDirection = detectMouseWheelDirection( e );
             if (scrollDirection === "up"){
-                // downscroll code
                 incrementCurrentDate();
                 if (getCurrentDate() <= getEndDate())
                 {
                     frontendEvents.getEvents();
                 }
             } else {
-                // upscroll code
                 decrementCurrentDate();
                 if (getCurrentDate() >= getStartDate())
                 {
@@ -89,7 +91,6 @@ window.addEventListener("DOMContentLoaded", () => {
             overlay.classList.remove('active');
             frontendEvents.makePath();
         });
-
     document
         .getElementById("deletePathBtn")
         .addEventListener("click", () => {
@@ -191,7 +192,6 @@ window.addEventListener("DOMContentLoaded", () => {
         adjustDate();
         frontendEvents.getEvents();
     }
-
     document
         .getElementById("select-scale-day")
         .addEventListener("click", () => {
