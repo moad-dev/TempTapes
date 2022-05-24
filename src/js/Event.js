@@ -1,5 +1,6 @@
 const {Color} = require("./three");
 let lineArray = [];
+let availableStackNames = [];
 
 function InitEvents(countRoads) {
     lineArray = [];
@@ -70,13 +71,13 @@ function createEvent(id, ico, color, groupName, date, dateMode)
         scene.add( plane );
     }
 }
-function mergeEvents(i)
+function mergeEvents(i, path_id)
 {
-    let selectedGroup = scene.getObjectByName("group " + i);
+    let selectedGroup = scene.getObjectByName("group " + path_id);
     let color;
     for (let j = 0; j < 14; j++)
     {
-        if (lineArray[i - 1][j].length > 1)
+        if (lineArray[i][j].length > 1)
         {
             selectedGroup.traverse(function (child) {
                 if (child.name !== "line")
@@ -93,19 +94,21 @@ function mergeEvents(i)
             //прозрачность
             //const material = new THREE.MeshBasicMaterial({map: loader.load('../../storage/img/instagram.png'), opacity: 1, transparent: true});
             const plane = new THREE.Mesh( geometry, material );
-            plane.position.set(scene.getObjectByName("event " + lineArray[i - 1][j][0]).position.x,
-                scene.getObjectByName("event " + lineArray[i - 1][j][0]).position.y,
-                scene.getObjectByName("event " + lineArray[i - 1][j][0]).position.z )
+            plane.position.set(
+                scene.getObjectByName("event " + lineArray[i][j][0]).position.x,
+                scene.getObjectByName("event " + lineArray[i][j][0]).position.y,
+                scene.getObjectByName("event " + lineArray[i][j][0]).position.z
+            );
             plane.name = "stack";
-            scene.add(plane)
-            for (let z = 0; z < lineArray[i - 1][j].length; z++)
+            scene.add(plane);
+            for (let z = 0; z < lineArray[i][j].length; z++)
             {
-                plane.name += " " + lineArray[i - 1][j][z];
-                scene.getObjectByName("event " + lineArray[i - 1][j][z]).position.y += 0.77;
-                scene.getObjectByName("event " + lineArray[i - 1][j][z]).position.x -= z * 0.85;
-                scene.getObjectByName("event " + lineArray[i - 1][j][z]).visible = false;
-
+                plane.name += " " + lineArray[i][j][z];
+                scene.getObjectByName("event " + lineArray[i][j][z]).position.y += 0.77;
+                scene.getObjectByName("event " + lineArray[i][j][z]).position.x -= z * 0.85;
+                scene.getObjectByName("event " + lineArray[i][j][z]).visible = false;
             }
+            availableStackNames.push(plane.name);
         }
     }
 }
@@ -125,7 +128,6 @@ function deleteEvent(id)
 
 function deleteAllEvents()
 {
-    let stack_name = "stack";
     for (let i = 0; i < lineArray.length; i++)
     {
         for (let j = 0; j < lineArray[i].length; j++)
@@ -133,14 +135,13 @@ function deleteAllEvents()
             for (let k = 0; k < lineArray[i][j].length; k++)
             {
                 scene.remove( scene.getObjectByName("event " + lineArray[i][j][k]) );
-                for (let l = 0; l < lineArray[i][j].length; l++)
-                {
-                    stack_name += " " + lineArray[i][j][l];
-                }
-                scene.remove( scene.getObjectByName(stack_name) );
             }
         }
     }
+    availableStackNames.forEach (function(stack_name){
+        scene.remove( scene.getObjectByName(stack_name) );
+    });
+    availableStackNames = [];
     for (let i = 0; i < lineArray.length; i++) {
         for (let j = 0; j < lineArray[i].length; j++) {
             lineArray[i][j].length = 0;

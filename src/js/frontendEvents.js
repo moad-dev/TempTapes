@@ -161,7 +161,7 @@ ipcRenderer.on("send events", (event, reply) =>
         );
     });
     let index = cache["roads"].map( el => el.path_id ).indexOf(reply["path_id"]);
-    mergeEvents(index+1);
+    mergeEvents(index, reply["path_id"]);
     events_watcher.process_complete([index]);
 });
 ipcRenderer.on("path added", (event, reply) =>
