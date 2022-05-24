@@ -17,7 +17,7 @@ function InitEvents(countRoads) {
     }
 }
 
-function createEvent(id, ico, color, groupName, date, dateMode)
+function createEvent(id, ico, color, groupName, date, dateMode, path_index)
 {
     let selectedGroup = scene.getObjectByName("Dates");
     let whichLine = null;
@@ -36,7 +36,7 @@ function createEvent(id, ico, color, groupName, date, dateMode)
                 if (yy == child.name)
                 {
                     whichLine = "line " + i;
-                    lineArray[groupName.substring(groupName.indexOf(' ') + 1) - 1][i].push(id);
+                    lineArray[path_index][i].push(id);
                 }
                 i++;
             })
@@ -46,7 +46,7 @@ function createEvent(id, ico, color, groupName, date, dateMode)
                 if ((mm + '.' + yy) == child.name)
                 {
                     whichLine = "line " + i;
-                    lineArray[groupName.substring(groupName.indexOf(' ') + 1) - 1][i].push(id);
+                    lineArray[path_index][i].push(id);
                 }
                 i++;
             })
@@ -56,7 +56,7 @@ function createEvent(id, ico, color, groupName, date, dateMode)
                 if ((dd + '.' + mm + '.' + yy) == child.name)
                 {
                     whichLine = "line " + i;
-                    lineArray[groupName.substring(groupName.indexOf(' ') + 1) - 1][i].push(id);
+                    lineArray[path_index][i].push(id);
                 }
                 i++;
             })

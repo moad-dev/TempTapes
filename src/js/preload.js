@@ -106,10 +106,7 @@ window.addEventListener("DOMContentLoaded", () => {
     document
         .getElementById("deletePathSubmit")
         .addEventListener("click", function(e) {
-            var parentModal = this.closest('.modal');
-            var overlay = document.querySelector('.js-overlay-modal');
-            parentModal.classList.remove('active');
-            overlay.classList.remove('active');
+            closeParentModal(this);
             frontendEvents.deletePath();
         });
 
@@ -154,10 +151,7 @@ window.addEventListener("DOMContentLoaded", () => {
     document
         .getElementById("editPathSubmit")
         .addEventListener("click", function(e) {
-            var parentModal = this.closest('.modal');
-            var overlay = document.querySelector('.js-overlay-modal');
-            parentModal.classList.remove('active');
-            overlay.classList.remove('active');
+            closeParentModal(this);
             frontendEvents.editPath();
         });
 
@@ -266,4 +260,11 @@ window.addEventListener("DOMContentLoaded", () => {
         document.querySelector('.modal.active').classList.remove('active');
         this.classList.remove('active');
     });
+
+    function closeParentModal(child) {
+        var parentModal = child.closest('.modal');
+        var overlay = document.querySelector('.js-overlay-modal');
+        parentModal.classList.remove('active');
+        overlay.classList.remove('active');
+    }
 });

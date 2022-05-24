@@ -150,6 +150,7 @@ ipcRenderer.on("send root roads", (event, reply) =>
 ipcRenderer.on("send events", (event, reply) =>
 {
     reply = JSON.parse(reply);
+    let path_index = cache["roads"].map( el => el.path_id ).indexOf(reply["path_id"]);
     reply["events"].forEach(event => {
         createEvent(
             event.event_id,
@@ -157,7 +158,8 @@ ipcRenderer.on("send events", (event, reply) =>
             event.color,
             "group " + event.path_id,
             event.date,
-            Dates.mode
+            Dates.mode,
+            path_index
         );
     });
     let index = cache["roads"].map( el => el.path_id ).indexOf(reply["path_id"]);
