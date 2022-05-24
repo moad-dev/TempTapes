@@ -101,7 +101,9 @@ function createTables(db, startup) {
         foreign key(document_id) references documents(document_id)
         ON DELETE CASCADE ON UPDATE CASCADE
     );
-
+    
+    create index idx_events_path_date on events(path_id, date);
+    
     /*
     //
     // DEBUG
