@@ -20,7 +20,7 @@ const {
 let DateLines = require("../js/Date.js");
 let Dates;
 let cache = {roads: [], events: []};
-let j;
+let axisCenter;
 const Watcher = require("../js/multipleProcessWatcher.js");
 let events_watcher = null;
 
@@ -32,8 +32,8 @@ function getCache() {
     return cache;
 }
 
-function getWatcher() {
-    return events_watcher;
+function isEventsTransfering() {
+    return events_watcher.any_running();
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,7 +45,7 @@ function getEvents()
 {
     Dates.deleteDates();
     Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
-    Dates.createDates(j + 1);
+    Dates.createDates(axisCenter + 1);
     events_watcher.set_status(true);
     deleteAllEvents()
     cache["roads"].forEach(road => {
@@ -129,7 +129,7 @@ ipcRenderer.on("send root roads", (event, reply) =>
             Dates.deleteDates();
         });
     }
-    j = -reply["roads"].length / 2 + 0.5;
+    axisCenter = -reply["roads"].length / 2 + 0.5;
     Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
     cache["roads"] = reply["roads"];
     reply["roads"].forEach(road => {
@@ -138,10 +138,10 @@ ipcRenderer.on("send root roads", (event, reply) =>
             road.icon,
             road.path_id,
             road.name,
-            j++
+            axisCenter++
         );
     });
-    Dates.createDates(j + 1);
+    Dates.createDates(axisCenter + 1);
     InitEvents(reply["roads"].length);
     events_watcher = new Watcher(reply["roads"].length);
     setScale(2)
@@ -205,7 +205,7 @@ ipcRenderer.on("send images", (event, reply) =>
 
 module.exports = {
     getCache: getCache,
-    getWatcher: getWatcher,
+    isEventsTransfering: isEventsTransfering,
     getEvents: getEvents,
     makePath: makePath,
     editPath: editPath,

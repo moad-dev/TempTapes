@@ -8,7 +8,7 @@ const {
     initTimeline, updateRange, updateCurrentDate, adjustDate,
     getCurrentDate, getEndDate, getStartDate,
 } = require("../js/timeline.js");
-const {setScale, getScale} = require('../js/timescale.js');
+const timescale = require('../js/timescale.js');
 const {incrementCurrentDate, decrementCurrentDate} = require("./timeline");
 
 const frontendEvents = require("../js/frontendEvents.js");
@@ -24,7 +24,7 @@ window.addEventListener("DOMContentLoaded", () => {
     // Инициализация приложения
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    setScale(2);
+    timescale.setScale(2);
 
     initTimeline('2022-05-17', '2022-05-21');
 
@@ -59,7 +59,7 @@ window.addEventListener("DOMContentLoaded", () => {
         return direction;
     }
     function onScroll(e) {
-        if(!frontendEvents.getWatcher().any_running())
+        if(!frontendEvents.isEventsTransfering())
         {
             var scrollDirection = detectMouseWheelDirection( e );
             if (scrollDirection === "up"){
@@ -176,11 +176,8 @@ window.addEventListener("DOMContentLoaded", () => {
         .getElementById("timelineRange")
         .addEventListener("input",
         function() {
-            if(!frontendEvents.getWatcher().any_running()){
+            if(!frontendEvents.isEventsTransfering()){
                 updateCurrentDate();
-                frontendEvents.getEvents();
-
-                updateCurrentTime();
                 frontendEvents.getEvents();
             }
         });
@@ -189,7 +186,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     function selectScale(symbol, scale) {
         document.getElementById("select-scale").innerHTML = symbol;
-        setScale(scale);
+        timescale.setScale(scale);
         updateRange();
         adjustDate();
         frontendEvents.getEvents();
