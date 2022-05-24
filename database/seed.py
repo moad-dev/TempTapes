@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import argparse
 import datetime
 import random
@@ -8,6 +10,8 @@ import time
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 ICONS = os.listdir(f"{PATH}/../storage/img")
+HI = '\033[0;33m'
+END = '\033[0m'
 
 
 def randcolor():
@@ -55,7 +59,7 @@ def gen_roads(amount, nested):
 
 
 def gen_events(amount, roads, start, end):
-    for i in range(amount):
+    for _ in range(amount):
         yield {
             "date": randdate(start, end),
             "name": randstr(8, 16),
@@ -109,10 +113,6 @@ def valid_date(to_parse):
         raise argparse.ArgumentTypeError(msg) from ex
 
 
-def hi(value):
-    return '\033[0;33m' + str(value) + '\033[0m'
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -158,6 +158,7 @@ if __name__ == "__main__":
     tm = seed(args.roads, args.events, *args.date, args.nested)
 
     print(
-        f"Generated {hi(args.events)} events on {hi(args.roads)} roads",
-        f"with {hi(args.seed)} seed in {hi(tm) + hi('s')}"
+        f"Generated {HI}{args.events}{END} events"
+        f"on {HI}{args.roads}{END} roads",
+        f"with {HI}{args.seed}{END} seed in {HI}{tm:.3f}s.{END}"
     )
