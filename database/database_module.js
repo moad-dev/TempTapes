@@ -48,6 +48,7 @@ function createTables(db, startup) {
         `
 
     PRAGMA foreign_keys=on;
+    PRAGMA cache_size=32000;
 
     create table paths (
         path_id integer primary key autoincrement,
