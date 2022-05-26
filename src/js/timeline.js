@@ -90,7 +90,6 @@ function adjustDate() {
             var date_start = getStartDate(true);
             var date_end = getEndDate(true).addMonths(1);
             
-            date_start.setDate(1);
             date_end.setDate(1);
             
             setStartDate(date_start);
@@ -171,6 +170,18 @@ function getEndDate(asdate=false) {
     return getInputDate('timelineEnd', asdate);
 }
 
+function getVisibleDate() {
+    var date = getCurrentDate(true);
+    switch (getScaleString()) {
+        case "day":
+            return date.addDays(12);
+        case "month":
+            return date.addMonths(12);
+        case "year":
+            return date.addYears(12);
+    }
+}
+
 
 /* TODO: rewrite later */
 function setStartDate(value, asdate=false) {
@@ -249,6 +260,7 @@ module.exports =  {
     getCurrentDate: getCurrentDate,
     getEndDate: getEndDate,
     setCurrentDate: setCurrentDate,
+    getVisibleDate: getVisibleDate,
     incrementCurrentDate: incrementCurrentDate,
     decrementCurrentDate: decrementCurrentDate
 };

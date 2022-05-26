@@ -10,7 +10,7 @@ const {createEvent, deleteEvent, editEvent, mergeEvents, deleteAllEvents, InitEv
 const {setScale, getScale} = require('../js/timescale.js');
 const {
     initTimeline, updateRange, updateCurrentDate, adjustDate,
-    getCurrentDate, getEndDate, getStartDate,
+    getCurrentDate, getEndDate, getStartDate, getVisibleDate
 } = require("../js/timeline.js");
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,13 +48,14 @@ function getEvents()
     Dates.createDates(axisCenter + 1);
     events_watcher.set_status(true);
     deleteAllEvents()
+    console.log(getVisibleDate);
     cache["roads"].forEach(road => {
         ipcRenderer.send(
             "get events",
             JSON.stringify({
                 path_id: road.path_id,
                 first_date: getCurrentDate(),
-                end_date: getEndDate()
+                end_date: getVisibleDate()
             })
         );
     });
