@@ -180,11 +180,13 @@ window.addEventListener("DOMContentLoaded", () => {
     // Переключение масштаба
 
     function selectScale(symbol, scale) {
-        document.getElementById("select-scale").innerHTML = symbol;
-        timescale.setScale(scale);
-        updateRange();
-        adjustDate();
-        frontendEvents.getEvents();
+        if(!frontendEvents.isEventsTransfering()){
+            document.getElementById("select-scale").innerHTML = symbol;
+            timescale.setScale(scale);
+            updateRange();
+            adjustDate();
+            frontendEvents.getEvents();
+        }
     }
     document
         .getElementById("select-scale-day")

@@ -88,10 +88,10 @@ function adjustDate() {
     switch (getScaleString()) {
         case "month":
             var date_start = getStartDate(true);
-            var date_end = getEndDate(true).addMonths(1);
-            
+            var date_end = getEndDate(true).addMonths(1).addDays(-1);
+
             date_end.setDate(1);
-            
+
             setStartDate(date_start);
             setCurrentDate(date_start);
             setEndDate(date_end);
@@ -99,14 +99,14 @@ function adjustDate() {
 
         case "year":
             var date_start = getStartDate(true);
-            var date_end = getEndDate(true).addYears(1);
-           
+            var date_end = getEndDate(true).addYears(1).addDays(-1);
+
 
             date_start.setMonth(0);
             date_start.setDate(1);
             date_end.setMonth(0);
             date_end.setDate(1);
-            
+
             setStartDate(date_start);
             setCurrentDate(date_start);
             setEndDate(date_end);
@@ -116,9 +116,9 @@ function adjustDate() {
 
 function syncRange(date_start, date_current, date_end) {
     var range = document.getElementById('timelineRange');
-    
+
     switch (getScaleString()) {
-        case "day": 
+        case "day":
             range.min = 0;
             range.value = daysDiff(date_start, date_current);
             range.max = daysDiff(date_start, date_end);
@@ -141,7 +141,7 @@ function updateRange() {
     var date_current = getCurrentDate(true);
     var date_end = getEndDate(true);
 
-    if (!isValidRange(date_start, date_end) || 
+    if (!isValidRange(date_start, date_end) ||
         !isInRange(date_start, date_current, date_end)) {
         this.value = this.old;
         return;
@@ -154,7 +154,7 @@ function updateRange() {
 function getInputDate(input_id, asdate=false) {
     var value = document.getElementById(input_id).value;
     if (asdate)
-        return new Date(value); 
+        return new Date(value);
     return value;
 }
 
@@ -189,16 +189,16 @@ function setStartDate(value, asdate=false) {
     var date_current = getCurrentDate(true);
     var date_end = getEndDate(true);
 
-    if (!isValidRange(date_start, date_end) || 
+    if (!isValidRange(date_start, date_end) ||
         !isInRange(date_start, date_current, date_end)) {
-        
+
         return;
     }
 
     var tm_start = document.getElementById('timelineStart');
     tm_start.valueAsDate = date_start;
     tm_start.old = tm_start.value;
-    
+
     syncRange(date_start, date_current, date_end);
 }
 
@@ -206,17 +206,17 @@ function setCurrentDate(value, asdate=false) {
     var date_start = getStartDate(true);
     var date_current = asdate ? value : new Date(value);
     var date_end = getEndDate(true);
-    
-    if (!isValidRange(date_start, date_end) || 
+
+    if (!isValidRange(date_start, date_end) ||
         !isInRange(date_start, date_current, date_end)) {
-        
+
         return;
     }
-    
+
     var tm_current = document.getElementById('timelineCurrent');
     tm_current.valueAsDate = date_current;
     tm_current.old = tm_current.value;
-    
+
     syncRange(date_start, date_current, date_end);
 }
 
@@ -224,18 +224,18 @@ function setEndDate(value, asdate=false) {
     var date_start = getStartDate(true);
     var date_current = getCurrentDate(true);
     var date_end = asdate ? value : new Date(value);
-    
-    
-    if (!isValidRange(date_start, date_end) || 
+
+
+    if (!isValidRange(date_start, date_end) ||
         !isInRange(date_start, date_current, date_end)) {
-        
+
         return;
     }
 
     var tm_end = document.getElementById('timelineEnd');
     tm_end.valueAsDate = date_end;
     tm_end.old = tm_end.value;
-    
+
     syncRange(date_start, date_end, date_end);
 }
 
@@ -253,7 +253,7 @@ function decrementCurrentDate(value=-1) {
 
 module.exports =  {
     initTimeline: initTimeline,
-    updateRange: updateRange, 
+    updateRange: updateRange,
     updateCurrentDate: updateCurrentDate,
     adjustDate: adjustDate,
     getStartDate: getStartDate,
@@ -264,4 +264,3 @@ module.exports =  {
     incrementCurrentDate: incrementCurrentDate,
     decrementCurrentDate: decrementCurrentDate
 };
-
