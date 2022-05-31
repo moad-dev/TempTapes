@@ -5,7 +5,7 @@
 const {ipcRenderer} = require("electron");
 
 const {createGroup, deleteGroup, editGroup} = require("../js/Road.js");
-const {createEvent, deleteEvent, editEvent, mergeEvents, deleteAllEvents, InitEvents} = require("../js/Event.js");
+const {createEvents, deleteEvent, editEvent, deleteAllEvents} = require("../js/Event.js");
 
 const {setScale, getScale} = require('../js/timescale.js');
 const {
@@ -19,7 +19,8 @@ const {
 
 let DateLines = require("../js/Date.js");
 let Dates;
-let cache = {roads: [], events: {}};
+const cacheModule = require("../js/cacheModule.js");
+let cache = cacheModule.getCache();
 let axisCenter;
 const Watcher = require("../js/multipleProcessWatcher.js");
 let events_watcher = null;
@@ -56,12 +57,12 @@ function isEventsTransfering() {
 
 function getEvents()
 {
+    deleteAllEvents()
     cache["events"] = {};
     Dates.deleteDates();
     Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
     Dates.createDates(axisCenter + 1);
     events_watcher.set_status(true);
-    deleteAllEvents()
     console.log(getVisibleDate);
     cache["roads"].forEach(road => {
         ipcRenderer.send(
@@ -225,7 +226,6 @@ ipcRenderer.on("send root roads", (event, reply) =>
         );
     });
     Dates.createDates(axisCenter + 1);
-    InitEvents(reply["roads"].length);
     events_watcher = new Watcher(reply["roads"].length);
     setScale(2)
     getEvents();
@@ -237,21 +237,12 @@ ipcRenderer.on("send events", (event, reply) =>
     let path_index = cache["roads"].map( el => el.path_id ).indexOf(reply["path_id"]);
     cache["events"][reply["path_id"]] = {};
     reply["events"].forEach(event => {
-        createEvent(
-            event.event_id,
-            event.icon,
-            event.color,
-            "group " + event.path_id,
-            event.date,
-            Dates.mode,
-            path_index
-        );
         if(!cache["events"][reply["path_id"]][event.date])
             cache["events"][reply["path_id"]][event.date] = [];
         cache["events"][reply["path_id"]][event.date].push(event);
     });
+    createEvents(Dates.mode, reply["path_id"])
     let index = cache["roads"].map( el => el.path_id ).indexOf(reply["path_id"]);
-    mergeEvents(index, reply["path_id"]);
     events_watcher.process_complete([index]);
 });
 ipcRenderer.on("path added", (event, reply) =>
