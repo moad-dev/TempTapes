@@ -236,10 +236,10 @@ ipcRenderer.on("send events", (event, reply) =>
         cache["events_day"][reply["path_id"]][event.date].push(event);
         if(!cache["events_month"][reply["path_id"]][month])
             cache["events_month"][reply["path_id"]][month] = [];
-        cache["events_month"][reply["path_id"]][month].push(month);
+        cache["events_month"][reply["path_id"]][month].push(event);
         if(!cache["events_year"][reply["path_id"]][year])
             cache["events_year"][reply["path_id"]][year] = [];
-        cache["events_year"][reply["path_id"]][year].push(year);
+        cache["events_year"][reply["path_id"]][year].push(event);
 
     });
     createEvents(Dates.mode, reply["path_id"])

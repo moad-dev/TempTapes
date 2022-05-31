@@ -383,20 +383,31 @@ window.addEventListener("DOMContentLoaded", () => {
         positionMenu(menu, e);
         menu.classList.add("context-menu--active");
     }
-    function toggleMenuOff() {
+    function toggleMenusOff() {
         let menus = document.querySelectorAll('.context-menu');
         menus.forEach(menu => {
             menu.classList.remove("context-menu--active");
         });
     }
+    // ~ отключаем контекстное меню
+    // при ESC
     document.body.addEventListener('keyup', function (e) {
         var key = e.keyCode;
         if (key == 27) {
-            toggleMenuOff();
+            toggleMenusOff();
         };
     }, false);
+    // при клике
     document.addEventListener( "click", function(e) {
         var button = e.which || e.button;
-        if ( button === 1 ) { toggleMenuOff(); }
+        if ( button === 1 ) { toggleMenusOff(); }
+    });
+    // при изменении размера окна
+    window.addEventListener( "resize", function(e) {
+        toggleMenusOff();
+    });
+    // при скролле
+    window.addEventListener( "wheel", function(e) {
+        toggleMenusOff();
     });
 });

@@ -21,12 +21,11 @@ function createEvents(dateMode, road)
             cachename = "events_day";
             break;
     }
-    let i = -1;
     iterateBy(road, function(date) {
         let events = cache[cachename][road][date];
         let date_tokens = date.split('-');
         let yy = date_tokens[0], mm = date_tokens[1], dd = date_tokens[2];
-        i = -1;
+        let i = -1;
         switch (dateMode)
         {
             case 0:
@@ -162,6 +161,7 @@ function stackClick(plane, scale)
             events = cache["events_day"][selectedStack.about["path_id"]][selectedStack.about["date"]];
             break;
     }
+    console.log(cache["events_month"])
     console.log(events)
     let axisOffset = 0;
     events.forEach(function (event){
