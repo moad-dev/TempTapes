@@ -128,6 +128,9 @@ window.addEventListener("DOMContentLoaded", () => {
             document.getElementById("editPathName").value = path.name;
             document.getElementById("editPathColorPeeker").value = path.color;
             document.getElementById("editPathIcon").childNodes.forEach(elem => {
+                elem.removeAttribute("selected");
+            });
+            document.getElementById("editPathIcon").childNodes.forEach(elem => {
                 if(elem.innerHTML == path.icon) {
                     elem.setAttribute('selected', 'selected');
                 }
@@ -149,6 +152,9 @@ window.addEventListener("DOMContentLoaded", () => {
                 let path = cachedRoads[0];
                 document.getElementById("editPathName").value = path.name;
                 document.getElementById("editPathColorPeeker").value = path.color;
+                document.getElementById("editPathIcon").childNodes.forEach(elem => {
+                    elem.removeAttribute("selected");
+                });
                 document.getElementById("editPathIcon").childNodes.forEach(elem => {
                     if(elem.innerHTML == path.icon) {
                         elem.setAttribute('selected', 'selected');
@@ -206,6 +212,10 @@ window.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("editEventColorPeeker").value = selected_event.color;
                 document.getElementById("editEventDate").value = selected_event.date;
                 document.getElementById("editEventDescription").value = selected_event.description;
+                console.log(selected_event.icon);
+                document.getElementById("editEventIcon").childNodes.forEach(elem => {
+                    elem.removeAttribute("selected");
+                });
                 document.getElementById("editEventIcon").childNodes.forEach(elem => {
                     if(elem.innerHTML == selected_event.icon) {
                         elem.setAttribute('selected', 'selected');
@@ -214,6 +224,9 @@ window.addEventListener("DOMContentLoaded", () => {
                 path_name = frontendEvents.getCache()["roads"]
                     .filter(obj => { return obj.path_id == selected_event.path_id; })[0]
                     .name;
+                document.getElementById("editEventPath").childNodes.forEach(elem => {
+                    elem.removeAttribute("selected");
+                });
                 document.getElementById("editEventPath").childNodes.forEach(elem => {
                     if(elem.innerHTML == path_name) {
                         elem.setAttribute('selected', 'selected');
