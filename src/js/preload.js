@@ -14,6 +14,7 @@ const {
     incrementCurrentDate,
     decrementCurrentDate
 } = require("./timeline");
+const {stackClick} = require("../js/Event.js")
 const timescale = require('../js/timescale.js');
 const frontendEvents = require("../js/frontendEvents.js");
 const cacheModule = require("../js/cacheModule.js");
@@ -21,7 +22,9 @@ const cacheModule = require("../js/cacheModule.js");
 const {
     setEventClickHandler,
     setPathClickHandler,
+    setStackClickHandler
 } = require("./setup");
+const {getScale} = require("./timescale");
 
 // const addText = (selector, text) => {
 //     const element = document.getElementById(selector);
@@ -180,6 +183,9 @@ window.addEventListener("DOMContentLoaded", () => {
             frontendEvents.cmdDeleteEvent();
         });
 
+    setStackClickHandler(function (event, obj){
+        stackClick(obj, getScale());
+    });
     // ~~~~~~~~~~~~~ Обработчики событий для вызова контекстного меню
 
     // меню дороги

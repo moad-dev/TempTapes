@@ -5,7 +5,7 @@
 const {ipcRenderer} = require("electron");
 
 const {createGroup, deleteGroup, editGroup} = require("../js/Road.js");
-const {createEvents, deleteEvent, editEvent, deleteAllEvents} = require("../js/Event.js");
+const {createEvents, deleteEvent, editEvent, deleteAllEvents, stackClick} = require("../js/Event.js");
 
 const {setScale, getScale} = require('../js/timescale.js');
 const {

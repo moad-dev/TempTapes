@@ -1,8 +1,6 @@
 const cacheModule = require("../js/cacheModule.js")
-const {get} = require("jsdom/lib/jsdom/named-properties-tracker");
 let cache = cacheModule.getCache();
 let availableStacks = [];
-
 function createEvents(dateMode, road)
 {
     let selectedGroup = scene.getObjectByName("Dates");
@@ -140,7 +138,58 @@ function deleteAllEvents()
     });
     availableStacks = []
 }
+
+function stackClick(plane, scale)
+{
+    let selectedStack = null;
+    availableStacks.forEach(function (stack){
+       if (stack == plane)
+       {
+           selectedStack = stack;
+       }
+    });
+    let dateTokens = selectedStack.about["date"].split('-');
+    let events = null;
+    switch (scale)
+    {
+        case 0:
+            events = cache["events_year"][selectedStack.about["path_id"]][dateTokens[0]];
+            break
+        case 1:
+            events = cache["events_month"][selectedStack.about["path_id"]][dateTokens[0] + '-' + dateTokens[1]];
+            break;
+        case 2:
+            events = cache["events_day"][selectedStack.about["path_id"]][selectedStack.about["date"]];
+            break;
+    }
+    console.log(events)
+    let axisOffset = 0;
+    events.forEach(function (event){
+        let eventObj = scene.getObjectByName("event " + event.event_id);
+        if (eventObj)
+        {
+            scene.remove(eventObj);
+        }
+        else
+        {
+            const loader = new THREE.TextureLoader();
+            const geometry = new THREE.PlaneGeometry( 0.75, 0.75 );
+            const material = new THREE.MeshBasicMaterial({color: event.color, map: loader.load('../../storage/img/' + event.icon)});
+            const plane = new THREE.Mesh( geometry, material );
+            plane.position.set(
+                selectedStack.position.x - axisOffset * 0.85,
+                selectedStack.position.y + 1,
+                selectedStack.position.z
+            );
+            plane.name = "event " + event.event_id;
+            scene.add( plane );
+
+        }
+        axisOffset++;
+    });
+}
 module.exports.createEvents = createEvents
 module.exports.editEvent = editEvent
 module.exports.deleteEvent = deleteEvent
 module.exports.deleteAllEvents = deleteAllEvents
+module.exports.stackClick = stackClick

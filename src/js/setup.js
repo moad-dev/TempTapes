@@ -48,7 +48,7 @@ function setup() {
             }
             if (intersects[i].object.name.substring(0, 5) === "stack") {
                 if(window.stackClickHandler){
-                    window.stackClickHandler(event, intersects[i].object.name);
+                    window.stackClickHandler(event, intersects[i].object);
                 }
                 // let hiddenEvents = intersects[i].object.name.split(' ');
                 // for (let index = 1; index < hiddenEvents.length; index++)
