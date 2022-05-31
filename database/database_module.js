@@ -247,6 +247,47 @@ function makeEvent(name, color, icon, date, description, path_id, callback) {
     );
 }
 
+function editEvent(name, color, icon, date, description, path_id, event_id, callback) {
+    db.run(
+        `
+            UPDATE paths
+            SET name = ?1,
+                color = ?2,
+                icon = ?3,
+                date = ?4,
+                description = ?5,
+                path_id = ?6
+            WHERE event_id = ?7;
+        `,
+        {
+            1: name,
+            2: color,
+            3: icon,
+            4: date,
+            5: description,
+            6: path_id,
+            7: event_id
+        },
+        function (err) {
+            callback(err);
+        }
+    );
+}
+
+function deleteEvent(event_id, callback) {
+    db.run(
+        `
+            DELETE FROM events WHERE event_id = ?1;
+        `,
+        {
+            1: event_id
+        },
+        function (err) {
+            callback(err);
+        }
+    );
+}
+
 function getDB() {
     return db;
 }
@@ -255,12 +296,18 @@ module.exports = {
     db: db,
     getDB: getDB,
     Init: Init,
+
     getAllPaths: getAllPaths,
     getRootPaths: getRootPaths,
     getPathsByParent: getPathsByParent,
+
     getEventsByPath: getEventsByPath,
+
     makePath: makePath,
     deletePath: deletePath,
     editPath: editPath,
-    makeEvent: makeEvent
+
+    makeEvent: makeEvent,
+    editEvent: editEvent,
+    deleteEvent: deleteEvent
 };

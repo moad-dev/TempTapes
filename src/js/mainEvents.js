@@ -101,18 +101,6 @@ function run(database, ipcMain) {
         );
     });
 
-    ipcMain.on("delete path", (event, request) =>
-    {
-        request = JSON.parse(request);
-        var reply = {};
-        database.deletePath(request["path_id"], (err) => {
-            event.reply(
-                "path deleted",
-                JSON.stringify(reply)
-            );
-        });
-    });
-
     ipcMain.on("edit path", (event, request) =>
     {
         request = JSON.parse(request);
@@ -139,6 +127,18 @@ function run(database, ipcMain) {
                 }
             }
         );
+    });
+
+    ipcMain.on("delete path", (event, request) =>
+    {
+        request = JSON.parse(request);
+        var reply = {};
+        database.deletePath(request["path_id"], (err) => {
+            event.reply(
+                "path deleted",
+                JSON.stringify(reply)
+            );
+        });
     });
 
     ipcMain.on("make event", (event, request) =>
@@ -169,6 +169,50 @@ function run(database, ipcMain) {
                 }
             }
         );
+    });
+
+    ipcMain.on("edit event", (event, request) =>
+    {
+        request = JSON.parse(request);
+        var reply = {};
+        database.editEvent(
+                request["name"],
+                request["color"],
+                request["icon"],
+                request["date"],
+                request["description"],
+                request["path_id"],
+                request["event_id"],
+            (err) => {
+                if(!err) {
+                    reply["event"] = {
+                        name: request["name"],
+                        color: request["color"],
+                        icon: request["icon"],
+                        date: request["date"],
+                        description: request["description"],
+                        path_id: request["path_id"],
+                        event_id: request["event_id"]
+                    };
+                    event.reply(
+                        "event edited",
+                        JSON.stringify(reply)
+                    );
+                }
+            }
+        );
+    });
+
+    ipcMain.on("delete event", (event, request) =>
+    {
+        request = JSON.parse(request);
+        var reply = {};
+        database.deleteEvent(request["event_id"], (err) => {
+            event.reply(
+                "event deleted",
+                JSON.stringify(reply)
+            );
+        });
     });
 
     ipcMain.on("get images", (event, request) =>
