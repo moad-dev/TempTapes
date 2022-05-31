@@ -67,7 +67,7 @@ function makePath()
     let name = document.getElementById('makePathName').value;
     let color = document.getElementById('makePathColorPeeker').value;
     let icon = document.getElementById('makePathIcon').value;
-    if(!name || !icon) {
+    if(!name || !icon || !color) {
         console.log("error: path name, icon, color cannot be null");
     } else {
         ipcRenderer.send(
@@ -125,8 +125,8 @@ function makeEvent()
     let date = document.getElementById('makeEventDate').value;
     let description = document.getElementById('makeEventDescription').value;
     let path_id = document.getElementById('makeEventPath').value;
-    if(!name || !icon || !date || !description || !path_id) {
-        console.log("make event error: name, icon, date, description, path_id cannot be null");
+    if(!name || !icon || !date || !path_id) {
+        console.log("make event error: name, icon, date, path_id cannot be null");
     } else {
         ipcRenderer.send(
             "make event",
@@ -153,7 +153,7 @@ function cmdEditEvent()
     let event_id = document.getElementById('editEventId').value;
     console.log(name, color, icon, date, description, path_id, event_id);
     if(!name || !icon || !date || !path_id || !event_id) {
-        console.log("edit event error: name, icon, date, description, path_id cannot be null");
+        console.log("edit event error: name, icon, date, path_id cannot be null");
     } else {
         ipcRenderer.send(
             "edit event",
