@@ -19,7 +19,7 @@ const {
 
 let DateLines = require("../js/Date.js");
 let Dates;
-let cache = {roads: [], events: []};
+let cache = {roads: [], events: {}};
 let axisCenter;
 const Watcher = require("../js/multipleProcessWatcher.js");
 let events_watcher = null;
@@ -27,6 +27,19 @@ let events_watcher = null;
 //~~~~~~~~~~
 // Геттеры
 //~~~~~~~~~~
+
+function findEventInCache(id) {
+    for (var road in cache["events"]) {
+        for(var date in cache["events"][road]) {
+            let selected_event = cache["events"][road][date]
+                .filter(obj => { return obj.event_id == id; })[0];
+            if(selected_event) {
+                return selected_event;
+            }
+        }
+    }
+    return null;
+}
 
 function getCache() {
     return cache;
@@ -43,7 +56,7 @@ function isEventsTransfering() {
 
 function getEvents()
 {
-    cache["events"] = [];
+    cache["events"] = {};
     Dates.deleteDates();
     Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
     Dates.createDates(axisCenter + 1);
@@ -222,6 +235,7 @@ ipcRenderer.on("send events", (event, reply) =>
 {
     reply = JSON.parse(reply);
     let path_index = cache["roads"].map( el => el.path_id ).indexOf(reply["path_id"]);
+    cache["events"][reply["path_id"]] = {};
     reply["events"].forEach(event => {
         createEvent(
             event.event_id,
@@ -232,7 +246,9 @@ ipcRenderer.on("send events", (event, reply) =>
             Dates.mode,
             path_index
         );
-        cache["events"].push(event);
+        if(!cache["events"][reply["path_id"]][event.date])
+            cache["events"][reply["path_id"]][event.date] = [];
+        cache["events"][reply["path_id"]][event.date].push(event);
     });
     let index = cache["roads"].map( el => el.path_id ).indexOf(reply["path_id"]);
     mergeEvents(index, reply["path_id"]);
@@ -322,6 +338,7 @@ ipcRenderer.on("event deleted", (event, reply) =>
 
 module.exports = {
     getCache: getCache,
+    findEventInCache: findEventInCache,
     isEventsTransfering: isEventsTransfering,
     getEvents: getEvents,
     makePath: makePath,
