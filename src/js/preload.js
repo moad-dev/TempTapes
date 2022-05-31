@@ -16,6 +16,7 @@ const {
 } = require("./timeline");
 const timescale = require('../js/timescale.js');
 const frontendEvents = require("../js/frontendEvents.js");
+const cacheModule = require("../js/cacheModule.js");
 // Сеттеры для обработчиков событий кликов по элементам интерфейса three.js
 const {
     setEventClickHandler,
@@ -193,7 +194,7 @@ window.addEventListener("DOMContentLoaded", () => {
         if((event || window.event).which == 3) // если ПКМ
         {
             // Устанавливаем начальные значения выбранного элемента в модальных окнах
-            let selected_event = frontendEvents.findEventInCache(id);
+            let selected_event = cacheModule.findEventInCache(id);
             if(selected_event) {
                 document.getElementById("editEventName").value = selected_event.name;
                 document.getElementById("editEventColorPeeker").value = selected_event.color;

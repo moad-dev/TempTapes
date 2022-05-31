@@ -29,19 +29,6 @@ let events_watcher = null;
 // Геттеры
 //~~~~~~~~~~
 
-function findEventInCache(id) {
-    for (var road in cache["events"]) {
-        for(var date in cache["events"][road]) {
-            let selected_event = cache["events"][road][date]
-                .filter(obj => { return obj.event_id == id; })[0];
-            if(selected_event) {
-                return selected_event;
-            }
-        }
-    }
-    return null;
-}
-
 function getCache() {
     return cache;
 }
@@ -58,7 +45,9 @@ function isEventsTransfering() {
 function getEvents()
 {
     deleteAllEvents()
-    cache["events"] = {};
+    cache["events_day"] = {};
+    cache["events_month"] = {};
+    cache["events_year"] = {};
     Dates.deleteDates();
     Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
     Dates.createDates(axisCenter + 1);
@@ -235,11 +224,23 @@ ipcRenderer.on("send events", (event, reply) =>
 {
     reply = JSON.parse(reply);
     let path_index = cache["roads"].map( el => el.path_id ).indexOf(reply["path_id"]);
-    cache["events"][reply["path_id"]] = {};
+    cache["events_day"][reply["path_id"]] = {};
+    cache["events_month"][reply["path_id"]] = {};
+    cache["events_year"][reply["path_id"]] = {};
     reply["events"].forEach(event => {
-        if(!cache["events"][reply["path_id"]][event.date])
-            cache["events"][reply["path_id"]][event.date] = [];
-        cache["events"][reply["path_id"]][event.date].push(event);
+        let date_tokens = event.date.split('-');
+        let month = date_tokens[0] + '-' + date_tokens[1];
+        let year = date_tokens[0];
+        if(!cache["events_day"][reply["path_id"]][event.date])
+            cache["events_day"][reply["path_id"]][event.date] = [];
+        cache["events_day"][reply["path_id"]][event.date].push(event);
+        if(!cache["events_month"][reply["path_id"]][month])
+            cache["events_month"][reply["path_id"]][month] = [];
+        cache["events_month"][reply["path_id"]][month].push(month);
+        if(!cache["events_year"][reply["path_id"]][year])
+            cache["events_year"][reply["path_id"]][year] = [];
+        cache["events_year"][reply["path_id"]][year].push(year);
+
     });
     createEvents(Dates.mode, reply["path_id"])
     let index = cache["roads"].map( el => el.path_id ).indexOf(reply["path_id"]);
@@ -329,7 +330,6 @@ ipcRenderer.on("event deleted", (event, reply) =>
 
 module.exports = {
     getCache: getCache,
-    findEventInCache: findEventInCache,
     isEventsTransfering: isEventsTransfering,
     getEvents: getEvents,
     makePath: makePath,

@@ -3,18 +3,32 @@ const {get} = require("jsdom/lib/jsdom/named-properties-tracker");
 let cache = cacheModule.getCache();
 let availableStacks = [];
 
-//id, ico, color, groupName, date, dateMode, path_id
 function createEvents(dateMode, road)
 {
     let selectedGroup = scene.getObjectByName("Dates");
     let whichLine = null;
-    for(let date in cache["events"][road])
-    {
-        let events = cache["events"][road][date];
-        let yy = date.substring(0, date.indexOf('-'));
-        let mm = date.substring(date.indexOf('-') + 1, date.lastIndexOf('-'));
-        let dd = date.substring(date.lastIndexOf('-') + 1);
-        let i = -1;
+    let iterateBy = null;
+    let cachename = null;
+    switch (dateMode){
+        case 0:
+            iterateBy = cacheModule.iterateYears;
+            cachename = "events_year";
+            break;
+        case 1:
+            iterateBy = cacheModule.iterateMonths;
+            cachename = "events_month";
+            break;
+        case 2:
+            iterateBy = cacheModule.iterateDays;
+            cachename = "events_day";
+            break;
+    }
+    let i = -1;
+    iterateBy(road, function(date) {
+        let events = cache[cachename][road][date];
+        let date_tokens = date.split('-');
+        let yy = date_tokens[0], mm = date_tokens[1], dd = date_tokens[2];
+        i = -1;
         switch (dateMode)
         {
             case 0:
@@ -91,7 +105,7 @@ function createEvents(dateMode, road)
             plane.name = "event " + events[0].event_id;
             scene.add( plane );
         }
-    }
+    });
 }
 
 function editEvent(id, ico, color,  groupName, whichLine)
@@ -111,11 +125,11 @@ function deleteEvent(id)
 
 function deleteAllEvents()
 {
-    for (let road in cache["events"])
+    for (let road in cache["events_day"])
     {
-        for(let date in cache["events"][road])
+        for(let date in cache["events_day"][road])
         {
-            let events = cache["events"][road][date];
+            let events = cache["events_day"][road][date];
             events.forEach(function (elem){
                 scene.remove(scene.getObjectByName("event " + elem.event_id))
             })
