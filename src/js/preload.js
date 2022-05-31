@@ -16,6 +16,11 @@ const {
 } = require("./timeline");
 const timescale = require('../js/timescale.js');
 const frontendEvents = require("../js/frontendEvents.js");
+// Сеттеры для обработчиков событий кликов по элементам интерфейса three.js
+const {
+    setEventClickHandler,
+    setPathClickHandler,
+} = require("./setup");
 
 // const addText = (selector, text) => {
 //     const element = document.getElementById(selector);
@@ -30,7 +35,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     timescale.setScale(2);
 
-    initTimeline('2022-05-17', '2022-05-21');
+    initTimeline('2022-01-01', '2022-05-21');
 
     ipcRenderer.send(
         "get images", "{}"
@@ -43,6 +48,16 @@ window.addEventListener("DOMContentLoaded", () => {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Обработчики событий html
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    setPathClickHandler(function (event, id) {
+        console.log(id);
+    });
+    setEventClickHandler(function (event, id) {
+        console.log(id);
+    });
+    setStackClickHandler(function (event, name) {
+        console.log(name);
+    });
 
     // Скролл событий
     window.addEventListener("wheel", onScroll, false);
@@ -153,6 +168,16 @@ window.addEventListener("DOMContentLoaded", () => {
         .addEventListener("click", function(e) {
             closeParentModal(this);
             frontendEvents.editPath();
+        });
+
+    document
+        .getElementById("makeEventSubmit")
+        .addEventListener("click", function(e) {
+            var parentModal = this.closest('.modal');
+            var overlay = document.querySelector('.js-overlay-modal');
+            parentModal.classList.remove('active');
+            overlay.classList.remove('active');
+            frontendEvents.makeEvent();
         });
 
     document
@@ -268,5 +293,12 @@ window.addEventListener("DOMContentLoaded", () => {
         var overlay = document.querySelector('.js-overlay-modal');
         parentModal.classList.remove('active');
         overlay.classList.remove('active');
+    }
+
+    function showModal(modalId) {
+        overlay = document.querySelector('.js-overlay-modal');
+        modalElem = document.querySelector('.modal[data-modal="' + modalId + '"]');
+        overlay.classList.add('active');
+        modalElem.classList.add('active');
     }
 });

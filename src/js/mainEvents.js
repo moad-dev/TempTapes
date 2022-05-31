@@ -25,6 +25,16 @@ function run(database, ipcMain) {
         });
     });
 
+    ipcMain.on("get all roads", (event, request) =>
+    {
+        request = JSON.parse(request);
+        var reply = {};
+        database.getAllPaths((err, rows) => {
+            reply["roads"] = rows;
+            event.reply("send all roads", JSON.stringify(reply));
+        });
+    });
+
     ipcMain.on("get events", (event, request) =>
     {
         request = JSON.parse(request);
@@ -91,19 +101,6 @@ function run(database, ipcMain) {
         );
     });
 
-    ipcMain.on("get images", (event, request) =>
-    {
-        request = JSON.parse(request);
-        var reply = {images: []};
-        fs.readdirSync('storage/img').forEach(file => {
-          reply.images.push(file);
-        });
-        event.reply(
-            "send images",
-            JSON.stringify(reply)
-        );
-    });
-
     ipcMain.on("delete path", (event, request) =>
     {
         request = JSON.parse(request);
@@ -141,6 +138,49 @@ function run(database, ipcMain) {
                     );
                 }
             }
+        );
+    });
+
+    ipcMain.on("make event", (event, request) =>
+    {
+        request = JSON.parse(request);
+        var reply = {};
+        database.makeEvent(
+                request["name"],
+                request["color"],
+                request["icon"],
+                request["date"],
+                request["description"],
+                request["path_id"],
+            (err) => {
+                if(!err) {
+                    reply["event"] = {
+                        name: request["name"],
+                        color: request["color"],
+                        icon: request["icon"],
+                        date: request["date"],
+                        description: request["description"],
+                        path_id: request["path_id"]
+                    };
+                    event.reply(
+                        "event added",
+                        JSON.stringify(reply)
+                    );
+                }
+            }
+        );
+    });
+
+    ipcMain.on("get images", (event, request) =>
+    {
+        request = JSON.parse(request);
+        var reply = {images: []};
+        fs.readdirSync('storage/img').forEach(file => {
+          reply.images.push(file);
+        });
+        event.reply(
+            "send images",
+            JSON.stringify(reply)
         );
     });
 

@@ -43,6 +43,7 @@ function isEventsTransfering() {
 
 function getEvents()
 {
+    cache["events"] = [];
     Dates.deleteDates();
     Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
     Dates.createDates(axisCenter + 1);
@@ -116,6 +117,31 @@ function deletePath()
     }
 }
 
+function makeEvent()
+{
+    let name = document.getElementById('makeEventName').value;
+    let color = document.getElementById('makeEventColorPeeker').value;
+    let icon = document.getElementById('makeEventIcon').value;
+    let date = document.getElementById('makeEventDate').value;
+    let description = document.getElementById('makeEventDescription').value;
+    let path_id = document.getElementById('makeEventPath').value;
+    if(!name || !icon || !date || !description || !path_id) {
+        console.log("make event error: name, icon, date, description, path_id cannot be null");
+    } else {
+        ipcRenderer.send(
+            "make event",
+            JSON.stringify({
+                name: name,
+                color: color,
+                icon: icon,
+                date: date,
+                description: description,
+                path_id: path_id
+            })
+        );
+    }
+}
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Обработчики событий сообщений от сервера
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -147,6 +173,7 @@ ipcRenderer.on("send root roads", (event, reply) =>
     events_watcher = new Watcher(reply["roads"].length);
     setScale(2)
     getEvents();
+    ipcRenderer.send("get all roads", "{}");
 });
 ipcRenderer.on("send events", (event, reply) =>
 {
@@ -162,6 +189,7 @@ ipcRenderer.on("send events", (event, reply) =>
             Dates.mode,
             path_index
         );
+        cache["events"].push(event);
     });
     let index = cache["roads"].map( el => el.path_id ).indexOf(reply["path_id"]);
     mergeEvents(index, reply["path_id"]);
@@ -191,18 +219,40 @@ ipcRenderer.on("path edited", (event, reply) =>
 ipcRenderer.on("send images", (event, reply) =>
 {
     reply = JSON.parse(reply);
-    let icons_make = document.getElementById("makePathIcon");
-    let icons_edit = document.getElementById("editPathIcon");
-    icons_make.innerHTML = "";
-    icons_edit.innerHTML = "";
+    let path_icons_make = document.getElementById("makePathIcon");
+    let path_icons_edit = document.getElementById("editPathIcon");
+    let events_icons_make = document.getElementById("makeEventIcon");
+    path_icons_make.innerHTML = "";
+    path_icons_edit.innerHTML = "";
+    events_icons_make.innerHTML = "";
     reply["images"].forEach(function(image) {
         let option = document.createElement("option");
         option.innerHTML = image;
-        icons_make.appendChild(option);
+        path_icons_make.appendChild(option);
         option = document.createElement("option");
         option.innerHTML = image;
-        icons_edit.appendChild(option);
+        path_icons_edit.appendChild(option);
+        option = document.createElement("option");
+        option.innerHTML = image;
+        events_icons_make.appendChild(option);
     });
+});
+ipcRenderer.on("send all roads", (event, reply) =>
+{
+    reply = JSON.parse(reply);
+    let events_paths = document.getElementById("makeEventPath");
+    events_paths.innerHTML = "";
+    reply["roads"].forEach(function(path) {
+        let option = document.createElement("option");
+        option.innerHTML = path.name;
+        option.value = path.path_id;
+        events_paths.appendChild(option);
+    });
+});
+ipcRenderer.on("event added", (event, reply) =>
+{
+    reply = JSON.parse(reply);
+    getEvents();
 });
 
 
@@ -212,5 +262,6 @@ module.exports = {
     getEvents: getEvents,
     makePath: makePath,
     editPath: editPath,
-    deletePath: deletePath
+    deletePath: deletePath,
+    makeEvent: makeEvent
 }

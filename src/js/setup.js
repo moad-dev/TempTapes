@@ -2,6 +2,16 @@ var camera;
 var scene;
 var renderer;
 
+// обработчик событий для клика по событию.
+// принимает id события в базе, ничего не возвращает
+function setEventClickHandler (handler) { window.eventClickHandler = handler; }
+// обработчик событий для клика по дороге.
+// принимает id дороги в базе, ничего не возвращает
+function setPathClickHandler  (handler) { window.pathClickHandler  = handler; }
+// обработчик событий для клика по стаку.
+// принимает имя стака, ничего не возвращает
+function setStackClickHandler  (handler) { window.stackClickHandler  = handler; }
+
 function setup() {
     window.addEventListener("resize", onWindowResize, false);
     //мастшабирование дороги(через событие onWindowResize)
@@ -24,16 +34,28 @@ function setup() {
         // calculate objects intersecting the picking ray
         var intersects = raycaster.intersectObjects(scene.children);
         for (var i = 0; i < intersects.length; i++) {
-            console.log(intersects[i].object.name);
+            if (intersects[i].object.name.substring(0, 4) === "cube") {
+                if(window.pathClickHandler){
+                    window.pathClickHandler(event, intersects[i].object.name.split(' ')[1]);
+                }
+                break;
+            }
             if (intersects[i].object.name.substring(0, 5) === "event") {
-                // document.getElementById("menu").
+                if(window.eventClickHandler){
+                    window.eventClickHandler(event, intersects[i].object.name.split(' ')[1]);
+                }
+                break;
             }
             if (intersects[i].object.name.substring(0, 5) === "stack") {
-                let hiddenEvents = intersects[i].object.name.split(' ');
-                for (let index = 1; index < hiddenEvents.length; index++)
-                {
-                    scene.getObjectByName("event " + hiddenEvents[index]).visible = !scene.getObjectByName("event " + hiddenEvents[index]).visible;
+                if(window.stackClickHandler){
+                    window.stackClickHandler(event, intersects[i].object.name);
                 }
+                // let hiddenEvents = intersects[i].object.name.split(' ');
+                // for (let index = 1; index < hiddenEvents.length; index++)
+                // {
+                //     scene.getObjectByName("event " + hiddenEvents[index]).visible = !scene.getObjectByName("event " + hiddenEvents[index]).visible;
+                // }
+                break;
             }
         }
     }
@@ -83,3 +105,6 @@ function animate() {
 
 module.exports.animate = animate;
 module.exports.setup = setup;
+module.exports.setEventClickHandler = setEventClickHandler;
+module.exports.setPathClickHandler = setPathClickHandler;
+module.exports.setStackClickHandler = setStackClickHandler;

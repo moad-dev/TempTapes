@@ -66,7 +66,7 @@ function createTables(db, startup) {
         date text not null,
         name text not null,
         description text,
-        color text not null,
+        color text,
         icon text,
 
         path_id integer not null,
@@ -101,9 +101,9 @@ function createTables(db, startup) {
         foreign key(document_id) references documents(document_id)
         ON DELETE CASCADE ON UPDATE CASCADE
     );
-    
+
     create index idx_events_path_date on events(path_id, date);
-    
+
     /*
     //
     // DEBUG
@@ -227,6 +227,25 @@ function editPath(name, color, icon, parent_id, path_id, callback) {
     );
 }
 
+function makeEvent(name, color, icon, date, description, path_id, callback) {
+    db.run(
+        `
+            insert into events (name, color, icon, date, description, path_id)
+            values (?1, ?2, ?3, ?4, ?5, ?6);
+        `,
+        {
+            1: name,
+            2: color,
+            3: icon,
+            4: date,
+            5: description,
+            6: path_id
+        },
+        function (err) {
+            callback(err);
+        }
+    );
+}
 
 function getDB() {
     return db;
@@ -242,5 +261,6 @@ module.exports = {
     getEventsByPath: getEventsByPath,
     makePath: makePath,
     deletePath: deletePath,
-    editPath: editPath
+    editPath: editPath,
+    makeEvent: makeEvent
 };
