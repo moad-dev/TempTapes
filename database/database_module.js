@@ -250,7 +250,7 @@ function makeEvent(name, color, icon, date, description, path_id, callback) {
 function editEvent(name, color, icon, date, description, path_id, event_id, callback) {
     db.run(
         `
-            UPDATE paths
+            UPDATE events
             SET name = ?1,
                 color = ?2,
                 icon = ?3,

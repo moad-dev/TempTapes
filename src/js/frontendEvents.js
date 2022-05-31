@@ -142,6 +142,49 @@ function makeEvent()
     }
 }
 
+function cmdEditEvent()
+{
+    let name = document.getElementById('editEventName').value;
+    let color = document.getElementById('editEventColorPeeker').value;
+    let icon = document.getElementById('editEventIcon').value;
+    let date = document.getElementById('editEventDate').value;
+    let description = document.getElementById('editEventDescription').value;
+    let path_id = document.getElementById('editEventPath').value;
+    let event_id = document.getElementById('editEventId').value;
+    console.log(name, color, icon, date, description, path_id, event_id);
+    if(!name || !icon || !date || !path_id || !event_id) {
+        console.log("edit event error: name, icon, date, description, path_id cannot be null");
+    } else {
+        ipcRenderer.send(
+            "edit event",
+            JSON.stringify({
+                name: name,
+                color: color,
+                icon: icon,
+                date: date,
+                description: description,
+                path_id: path_id,
+                event_id: event_id
+            })
+        );
+    }
+}
+
+function cmdDeleteEvent()
+{
+    let id = document.getElementById('deleteEventId').value;
+    if(!id) {
+        console.log("delete event error: event id cannot be null");
+    } else {
+        ipcRenderer.send(
+            "delete event",
+            JSON.stringify({
+                event_id: id
+            })
+        );
+    }
+}
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Обработчики событий сообщений от сервера
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -222,9 +265,11 @@ ipcRenderer.on("send images", (event, reply) =>
     let path_icons_make = document.getElementById("makePathIcon");
     let path_icons_edit = document.getElementById("editPathIcon");
     let events_icons_make = document.getElementById("makeEventIcon");
+    let events_icons_edit = document.getElementById("editEventIcon");
     path_icons_make.innerHTML = "";
     path_icons_edit.innerHTML = "";
     events_icons_make.innerHTML = "";
+    events_icons_edit.innerHTML = "";
     reply["images"].forEach(function(image) {
         let option = document.createElement("option");
         option.innerHTML = image;
@@ -235,21 +280,40 @@ ipcRenderer.on("send images", (event, reply) =>
         option = document.createElement("option");
         option.innerHTML = image;
         events_icons_make.appendChild(option);
+        option = document.createElement("option");
+        option.innerHTML = image;
+        events_icons_edit.appendChild(option);
     });
 });
 ipcRenderer.on("send all roads", (event, reply) =>
 {
     reply = JSON.parse(reply);
-    let events_paths = document.getElementById("makeEventPath");
-    events_paths.innerHTML = "";
+    let events_paths_make = document.getElementById("makeEventPath");
+    let events_paths_edit = document.getElementById("editEventPath");
+    events_paths_make.innerHTML = "";
+    events_paths_edit.innerHTML = "";
     reply["roads"].forEach(function(path) {
         let option = document.createElement("option");
         option.innerHTML = path.name;
         option.value = path.path_id;
-        events_paths.appendChild(option);
+        events_paths_make.appendChild(option);
+        option = document.createElement("option");
+        option.innerHTML = path.name;
+        option.value = path.path_id;
+        events_paths_edit.appendChild(option);
     });
 });
 ipcRenderer.on("event added", (event, reply) =>
+{
+    reply = JSON.parse(reply);
+    getEvents();
+});
+ipcRenderer.on("event edited", (event, reply) =>
+{
+    reply = JSON.parse(reply);
+    getEvents();
+});
+ipcRenderer.on("event deleted", (event, reply) =>
 {
     reply = JSON.parse(reply);
     getEvents();
@@ -263,5 +327,7 @@ module.exports = {
     makePath: makePath,
     editPath: editPath,
     deletePath: deletePath,
-    makeEvent: makeEvent
+    makeEvent: makeEvent,
+    cmdEditEvent: cmdEditEvent,
+    cmdDeleteEvent: cmdDeleteEvent
 }

@@ -150,8 +150,66 @@
         <button type="button" id="makeEventSubmit">Создать</button>
     </div>
 
+    <div class="modal" data-modal="eventEdit">
+        <!--   Svg иконка для закрытия окна  -->
+        <svg class="modal__cross js-modal-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
+        </svg>
+        <p class="modal__title">Редактировать событие</p>
+        <div class="modal__field">
+            <label for="name">Название события</label>
+            <input type="text" name="name" value="" id="editEventName">
+        </div>
+        <div class="modal__field">
+            <label for="date">Дата</label>
+            <input type="date" name="date" value="" id="editEventDate">
+        </div>
+        <div class="modal__field">
+            <label for="description">Описание</label>
+            <input type="text" name="description" value="" id="editEventDescription">
+        </div>
+        <div class="modal__field">
+            <label for="color">Цвет</label>
+            <input type="color" name="color" value="" id="editEventColorPeeker">
+        </div>
+        <div class="modal__field">
+            <label>Иконка</label>
+            <select id="editEventIcon"></select>
+        </div>
+        <div class="modal__field">
+            <label>Дорога</label>
+            <select id="editEventPath"></select>
+        </div>
+        <input type="hidden" value="" id="editEventId">
+        <button type="button" id="editEventSubmit">Редактировать</button>
+    </div>
+
+    <div class="modal" data-modal="eventDelete">
+        <!--   Svg иконка для закрытия окна  -->
+        <svg class="modal__cross js-modal-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
+        </svg>
+        <input type="hidden" value="" id="deleteEventId">
+        <div style="text-align: center;">
+            <h4>Вы действительно хотите удалить событие?</h4>
+            <button type="button" id="deleteEventSubmit">Удалить</button>
+        </div>
+    </div>
+
     <!-- Подложка под модальным окном -->
     <div class="overlay js-overlay-modal"></div>
+
+    <!-- Контекстное меню для событий -->
+    <nav class="context-menu" id="eventsContextMenu">
+        <ul class="context-menu__items">
+            <li class="context-menu__item js-open-modal" data-modal="eventEdit">
+                Редактировать
+            </li>
+            <li class="context-menu__item js-open-modal" data-modal="eventDelete">
+                Удалить
+            </li>
+        </ul>
+    </nav>
 
 </body>
 

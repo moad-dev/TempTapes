@@ -49,16 +49,6 @@ window.addEventListener("DOMContentLoaded", () => {
     // Обработчики событий html
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    setPathClickHandler(function (event, id) {
-        console.log(id);
-    });
-    setEventClickHandler(function (event, id) {
-        console.log(id);
-    });
-    setStackClickHandler(function (event, name) {
-        console.log(name);
-    });
-
     // Скролл событий
     window.addEventListener("wheel", onScroll, false);
     let lastScrollTop = 0;
@@ -96,6 +86,8 @@ window.addEventListener("DOMContentLoaded", () => {
             }
         }
     }
+
+    // ~~~~~~~~~ Обработчики событий элементов управления событиями и дорогами
 
     document
         .getElementById("makePathSubmit")
@@ -179,6 +171,70 @@ window.addEventListener("DOMContentLoaded", () => {
             overlay.classList.remove('active');
             frontendEvents.makeEvent();
         });
+
+    document
+        .getElementById("editEventSubmit")
+        .addEventListener("click", function(e) {
+            var parentModal = this.closest('.modal');
+            var overlay = document.querySelector('.js-overlay-modal');
+            parentModal.classList.remove('active');
+            overlay.classList.remove('active');
+            frontendEvents.cmdEditEvent();
+        });
+    document
+        .getElementById("deleteEventSubmit")
+        .addEventListener("click", function(e) {
+            var parentModal = this.closest('.modal');
+            var overlay = document.querySelector('.js-overlay-modal');
+            parentModal.classList.remove('active');
+            overlay.classList.remove('active');
+            frontendEvents.cmdDeleteEvent();
+        });
+
+    // ~~~~~~~~~~~~~ Обработчики событий для вызова контекстного меню
+
+    // меню дороги
+    setPathClickHandler(function (event, id) {
+        if((event || window.event).which == 3) // если ПКМ
+        {
+            console.log(id);
+        }
+    });
+    // меню события
+    setEventClickHandler(function (event, id) {
+        if((event || window.event).which == 3) // если ПКМ
+        {
+            // Устанавливаем начальные значения выбранного элемента в модальных окнах
+            let selected_event = frontendEvents.getCache()["events"]
+                .filter(obj => { return obj.event_id == id; })[0];
+            if(selected_event) {
+                document.getElementById("editEventName").value = selected_event.name;
+                document.getElementById("editEventColorPeeker").value = selected_event.color;
+                document.getElementById("editEventDate").value = selected_event.date;
+                document.getElementById("editEventDescription").value = selected_event.description;
+                document.getElementById("editEventIcon").childNodes.forEach(elem => {
+                    if(elem.innerHTML == selected_event.icon) {
+                        elem.setAttribute('selected', 'selected');
+                    }
+                });
+                path_name = frontendEvents.getCache()["roads"]
+                    .filter(obj => { return obj.path_id == selected_event.path_id; })[0]
+                    .name;
+                document.getElementById("editEventPath").childNodes.forEach(elem => {
+                    if(elem.innerHTML == path_name) {
+                        elem.setAttribute('selected', 'selected');
+                    }
+                });
+                document.getElementById("editEventId").value = id;
+                document.getElementById("deleteEventId").value = id;
+
+                // Включаем контекстное меню
+                toggleMenuOn(document.getElementById("eventsContextMenu"), event);
+            }
+        }
+    });
+
+    // ~~~~~~~~~~~~~~~ Обработчики событий для timeline
 
     document
         .getElementById("timelineStart")
@@ -301,4 +357,52 @@ window.addEventListener("DOMContentLoaded", () => {
         overlay.classList.add('active');
         modalElem.classList.add('active');
     }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Контекстное меню для событий и дорог
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    function getPosition(e) {
+        var posx = 0;
+        var posy = 0;
+        if (!e) var e = window.event;
+        if (e.pageX || e.pageY) {
+            posx = e.pageX;
+            posy = e.pageY;
+            } else if (e.clientX || e.clientY) {
+            posx = e.clientX + document.body.scrollLeft +
+                               document.documentElement.scrollLeft;
+            posy = e.clientY + document.body.scrollTop +
+                               document.documentElement.scrollTop;
+        }
+        return { x: posx, y: posy }
+    }
+    function positionMenu(menu, e) {
+      menuPosition = getPosition(e);
+      menuPositionX = menuPosition.x + "px";
+      menuPositionY = menuPosition.y + "px";
+
+      menu.style.left = menuPositionX;
+      menu.style.top = menuPositionY;
+    }
+    function toggleMenuOn(menu, e) {
+        positionMenu(menu, e);
+        menu.classList.add("context-menu--active");
+    }
+    function toggleMenuOff() {
+        let menus = document.querySelectorAll('.context-menu');
+        menus.forEach(menu => {
+            menu.classList.remove("context-menu--active");
+        });
+    }
+    document.body.addEventListener('keyup', function (e) {
+        var key = e.keyCode;
+        if (key == 27) {
+            toggleMenuOff();
+        };
+    }, false);
+    document.addEventListener( "click", function(e) {
+        var button = e.which || e.button;
+        if ( button === 1 ) { toggleMenuOff(); }
+    });
 });
