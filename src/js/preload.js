@@ -249,7 +249,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
     document
         .getElementById("timelineCurrent")
-        .addEventListener("change", updateRange);
+        .addEventListener("change", () => {
+            updateRange();
+            frontendEvents.getEvents();
+        });
 
     document
         .getElementById("timelineEnd")
