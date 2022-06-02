@@ -6,29 +6,14 @@ function createEvents(dateMode, road)
     let selectedGroup = scene.getObjectByName("Dates");
     let whichLine = null;
     let iterateBy = null;
+    let findLine  = null;
     let cachename = null;
+
     switch (dateMode){
         case 0:
             iterateBy = cacheModule.iterateYears;
             cachename = "events_year";
-            break;
-        case 1:
-            iterateBy = cacheModule.iterateMonths;
-            cachename = "events_month";
-            break;
-        case 2:
-            iterateBy = cacheModule.iterateDays;
-            cachename = "events_day";
-            break;
-    }
-    iterateBy(road, function(date) {
-        let events = cache[cachename][road][date];
-        let date_tokens = date.split('-');
-        let yy = date_tokens[0], mm = date_tokens[1], dd = date_tokens[2];
-        let i = -1;
-        switch (dateMode)
-        {
-            case 0:
+            findLine = function (dd, mm, yy, i) {
                 selectedGroup.traverse(function (child) {
                     if (yy == child.name)
                     {
@@ -36,8 +21,12 @@ function createEvents(dateMode, road)
                     }
                     i++;
                 })
-                break;
-            case 1:
+            }
+            break;
+        case 1:
+            iterateBy = cacheModule.iterateMonths;
+            cachename = "events_month";
+            findLine = function (dd, mm, yy, i) {
                 selectedGroup.traverse(function (child) {
                     if ((mm + '.' + yy) == child.name)
                     {
@@ -45,8 +34,12 @@ function createEvents(dateMode, road)
                     }
                     i++;
                 })
-                break;
-            case 2:
+            }
+            break;
+        case 2:
+            iterateBy = cacheModule.iterateDays;
+            cachename = "events_day";
+            findLine = function (dd, mm, yy, i) {
                 selectedGroup.traverse(function (child) {
                     if ((dd + '.' + mm + '.' + yy) == child.name)
                     {
@@ -54,21 +47,22 @@ function createEvents(dateMode, road)
                     }
                     i++;
                 })
-                break;
-        }
+            }
+            break;
+    }
+
+    iterateBy(road, function(date) {
+        let events = cache[cachename][road][date];
+        let date_tokens = date.split('-');
+        let yy = date_tokens[0], mm = date_tokens[1], dd = date_tokens[2];
+        let i = -1;
+
+        findLine(dd, mm, yy, i);
+
         const loader = new THREE.TextureLoader();
         const geometry = new THREE.PlaneGeometry( 0.75, 0.75 );
-        let selectedGroup1 = scene.getObjectByName("group " + road);
-        let color;
-        selectedGroup1.traverse(function (child) {
-            if (child.name !== "line")
-            {
-                if ((child instanceof THREE.Mesh) && (child.name !== "name"))
-                {
-                    color = child.material[0].color
-                }
-            }
-        });
+        let color = cache["roads"][road].color;
+
         if (events.length > 1)
         {
             const material = new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/stack.png')});
@@ -161,8 +155,6 @@ function stackClick(plane, scale)
             events = cache["events_day"][selectedStack.about["path_id"]][selectedStack.about["date"]];
             break;
     }
-    console.log(cache["events_month"])
-    console.log(events)
     let axisOffset = 0;
     events.forEach(function (event){
         let eventObj = scene.getObjectByName("event " + event.event_id);

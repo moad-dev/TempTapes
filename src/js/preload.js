@@ -53,7 +53,8 @@ window.addEventListener("DOMContentLoaded", () => {
     // Обработчики событий html
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    // Скролл событий
+    // ~~~~~~~~~~~~~~~~ Скролл событий
+
     window.addEventListener("wheel", onScroll, false);
     let lastScrollTop = 0;
     function detectMouseWheelDirection( e )
@@ -96,7 +97,7 @@ window.addEventListener("DOMContentLoaded", () => {
     document
         .getElementById("makePathSubmit")
         .addEventListener("click", function(e) {
-            closeParentModal(this);
+            modalWindow.closeParentModal(this);
             frontendEvents.makePath();
         });
     document
@@ -104,7 +105,7 @@ window.addEventListener("DOMContentLoaded", () => {
         .addEventListener("click", () => {
             let paths = document.getElementById("deletePathId");
             paths.innerHTML = "";
-            frontendEvents.getCache()["roads"].forEach(function(path) {
+            cacheModule.getCache()["roads"].forEach(function(path) {
                 let option = document.createElement("option");
                 option.innerHTML = path.name;
                 option.value = path.path_id;
@@ -114,14 +115,14 @@ window.addEventListener("DOMContentLoaded", () => {
     document
         .getElementById("deletePathSubmit")
         .addEventListener("click", function(e) {
-            closeParentModal(this);
+            modalWindow.closeParentModal(this);
             frontendEvents.deletePath();
         });
 
     document
         .getElementById("editPathPath")
         .addEventListener("change", () => {
-            let path = frontendEvents.getCache()["roads"].filter(
+            let path = cacheModule.getCache()["roads"].filter(
                 obj => {
                     return obj.path_id == document.getElementById("editPathPath").value;
                 })[0];
@@ -139,7 +140,7 @@ window.addEventListener("DOMContentLoaded", () => {
     document
         .getElementById("editPathBtn")
         .addEventListener("click", () => {
-            let cachedRoads = frontendEvents.getCache()["roads"];
+            let cachedRoads = cacheModule.getCache()["roads"];
             let paths = document.getElementById("editPathPath");
             paths.innerHTML = "";
             cachedRoads.forEach(function(path) {
@@ -165,42 +166,43 @@ window.addEventListener("DOMContentLoaded", () => {
     document
         .getElementById("editPathSubmit")
         .addEventListener("click", function(e) {
-            closeParentModal(this);
+            modalWindow.closeParentModal(this);
             frontendEvents.editPath();
         });
 
     document
         .getElementById("makeEventSubmit")
         .addEventListener("click", function(e) {
-            closeParentModal(this);
+            modalWindow.closeParentModal(this);
             frontendEvents.makeEvent();
         });
 
     document
         .getElementById("editEventSubmit")
         .addEventListener("click", function(e) {
-            closeParentModal(this);
-            frontendEvents.cmdEditEvent();
+            modalWindow.closeParentModal(this);
+            frontendEvents.editEvent();
         });
     document
         .getElementById("deleteEventSubmit")
         .addEventListener("click", function(e) {
-            closeParentModal(this);
-            frontendEvents.cmdDeleteEvent();
+            modalWindow.closeParentModal(this);
+            frontendEvents.deleteEvent();
         });
 
     setStackClickHandler(function (event, obj){
         stackClick(obj, getScale());
     });
+
     // ~~~~~~~~~~~~~ Обработчики событий для вызова контекстного меню
 
     // меню дороги
     setPathClickHandler(function (event, id) {
         if((event || window.event).which == 3) // если ПКМ
         {
-            console.log(id);
         }
     });
+
     // меню события
     setEventClickHandler(function (event, id) {
         if((event || window.event).which == 3) // если ПКМ
@@ -212,7 +214,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("editEventColorPeeker").value = selected_event.color;
                 document.getElementById("editEventDate").value = selected_event.date;
                 document.getElementById("editEventDescription").value = selected_event.description;
-                console.log(selected_event.icon);
                 document.getElementById("editEventIcon").childNodes.forEach(elem => {
                     elem.removeAttribute("selected");
                 });
@@ -221,7 +222,7 @@ window.addEventListener("DOMContentLoaded", () => {
                         elem.setAttribute('selected', 'selected');
                     }
                 });
-                path_name = frontendEvents.getCache()["roads"]
+                path_name = cacheModule.getCache()["roads"]
                     .filter(obj => { return obj.path_id == selected_event.path_id; })[0]
                     .name;
                 document.getElementById("editEventPath").childNodes.forEach(elem => {
@@ -236,7 +237,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("deleteEventId").value = id;
 
                 // Включаем контекстное меню
-                toggleMenuOn(document.getElementById("eventsContextMenu"), event);
+                contextMenu.toggleMenuOn(document.getElementById("eventsContextMenu"), event);
             }
         }
     });
@@ -295,135 +296,15 @@ window.addEventListener("DOMContentLoaded", () => {
             selectScale("Г", 0);
         });
 
-    //~~~~~~~~~~~~~~~~
-    // Модальные окна
-    //~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //            Модальные окна
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    /* Записываем в переменные массив элементов-кнопок и подложку.
-      Подложке зададим id, чтобы не влиять на другие элементы с классом overlay*/
-    var modalButtons = document.querySelectorAll('.js-open-modal'),
-       overlay      = document.querySelector('.js-overlay-modal'),
-       closeButtons = document.querySelectorAll('.js-modal-close');
-
-    /* Перебираем массив кнопок */
-    modalButtons.forEach(function(item){
-
-      /* Назначаем каждой кнопке обработчик клика */
-      item.addEventListener('click', function(e) {
-
-         /* Предотвращаем стандартное действие элемента. Так как кнопку разные
-            люди могут сделать по-разному. Кто-то сделает ссылку, кто-то кнопку.
-            Нужно подстраховаться. */
-         e.preventDefault();
-
-         /* При каждом клике на кнопку мы будем забирать содержимое атрибута data-modal
-            и будем искать модальное окно с таким же атрибутом. */
-         var modalId = this.getAttribute('data-modal'),
-             modalElem = document.querySelector('.modal[data-modal="' + modalId + '"]');
-
-         /* После того как нашли нужное модальное окно, добавим классы
-            подложке и окну чтобы показать их. */
-         modalElem.classList.add('active');
-         overlay.classList.add('active');
-      }); // end click
-
-    }); // end foreach
-
-    closeButtons.forEach(function(item){
-
-      item.addEventListener('click', function(e) {
-         var parentModal = this.closest('.modal');
-         parentModal.classList.remove('active');
-         overlay.classList.remove('active');
-      });
-
-    }); // end foreach
-
-    document.body.addEventListener('keyup', function (e) {
-        var key = e.keyCode;
-
-        if (key == 27) {
-
-            document.querySelector('.modal.active').classList.remove('active');
-            document.querySelector('.overlay').classList.remove('active');
-        };
-    }, false);
-
-    overlay.addEventListener('click', function() {
-        document.querySelector('.modal.active').classList.remove('active');
-        this.classList.remove('active');
-    });
-
-    function closeParentModal(child) {
-        var parentModal = child.closest('.modal');
-        var overlay = document.querySelector('.js-overlay-modal');
-        parentModal.classList.remove('active');
-        overlay.classList.remove('active');
-    }
-
-    function showModal(modalId) {
-        overlay = document.querySelector('.js-overlay-modal');
-        modalElem = document.querySelector('.modal[data-modal="' + modalId + '"]');
-        overlay.classList.add('active');
-        modalElem.classList.add('active');
-    }
+    const modalWindow = require("./view/modalWindow.js");
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Контекстное меню для событий и дорог
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    function getPosition(e) {
-        var posx = 0;
-        var posy = 0;
-        if (!e) var e = window.event;
-        if (e.pageX || e.pageY) {
-            posx = e.pageX;
-            posy = e.pageY;
-            } else if (e.clientX || e.clientY) {
-            posx = e.clientX + document.body.scrollLeft +
-                               document.documentElement.scrollLeft;
-            posy = e.clientY + document.body.scrollTop +
-                               document.documentElement.scrollTop;
-        }
-        return { x: posx, y: posy }
-    }
-    function positionMenu(menu, e) {
-      menuPosition = getPosition(e);
-      menuPositionX = menuPosition.x + "px";
-      menuPositionY = menuPosition.y + "px";
-
-      menu.style.left = menuPositionX;
-      menu.style.top = menuPositionY;
-    }
-    function toggleMenuOn(menu, e) {
-        positionMenu(menu, e);
-        menu.classList.add("context-menu--active");
-    }
-    function toggleMenusOff() {
-        let menus = document.querySelectorAll('.context-menu');
-        menus.forEach(menu => {
-            menu.classList.remove("context-menu--active");
-        });
-    }
-    // ~ отключаем контекстное меню
-    // при ESC
-    document.body.addEventListener('keyup', function (e) {
-        var key = e.keyCode;
-        if (key == 27) {
-            toggleMenusOff();
-        };
-    }, false);
-    // при клике
-    document.addEventListener( "click", function(e) {
-        var button = e.which || e.button;
-        if ( button === 1 ) { toggleMenusOff(); }
-    });
-    // при изменении размера окна
-    window.addEventListener( "resize", function(e) {
-        toggleMenusOff();
-    });
-    // при скролле
-    window.addEventListener( "wheel", function(e) {
-        toggleMenusOff();
-    });
+    const contextMenu = require("./view/contextMenu.js");
 });

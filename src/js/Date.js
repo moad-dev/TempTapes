@@ -92,7 +92,6 @@ module.exports = class DateLines
                     scene.add(group)
                     count += 1;
                     j++;
-                    console.log(j + " " + count);
                     if (j > 12)
                     {
                         j = 1;

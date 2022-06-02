@@ -75,24 +75,6 @@ function setup() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // const {createGroup, deleteGroup, editGroup} = require("../js/Road.js");
-    // const {createEvent, deleteEvent, editEvent} = require("../js/Event.js");
-
-    // const {createGroup} = require("../js/Road.js")
-    //
-    // createGroup(0x00ff00, "picture.png", 0, "lorem ipsum", -1);
-    // createGroup(0x00ffff, "picture.png", 1, "lorem ipsum", 0);
-    // createGroup(0x00cfff, "picture.png", 2, "lorem ipsum", 1);
-    // createGroup(0x00cfff, 0x00ff00, 3, "lorem ipsum", 2);
-    // editGroup(0xff00ff, 0xccffff, 3, "Вода");
-
-    // console.log(scene.getObjectByName("group 0").position.x);
-    // createEvent(2, "picture.png", "group 1", 2);
-    // editEvent(2, "picture.png", "group 1", 5);
-    // const {createEvent} = require("../js/Event.js")
-    // createEvent(1, "picture.png", "group 1", "line 2");
-    // createEvent(3, "picture.png", "group 2", "line 13");
-
     camera.position.z = 4;
     camera.position.y = 2;
     camera.position.x = 0;

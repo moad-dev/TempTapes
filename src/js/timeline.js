@@ -242,7 +242,6 @@ function setEndDate(value, asdate=false) {
 
 function incrementCurrentDate() {
     var date = getCurrentDate(true);
-    console.log(addScale(date, 1));
     setCurrentDate(addScale(date, 1), true);
 }
 

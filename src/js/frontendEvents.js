@@ -5,13 +5,16 @@
 const {ipcRenderer} = require("electron");
 
 const {createGroup, deleteGroup, editGroup} = require("../js/Road.js");
-const {createEvents, deleteEvent, editEvent, deleteAllEvents, stackClick} = require("../js/Event.js");
+
+//{createEvents, deleteEvent, editEvent, deleteAllEvents}
+const eventModule = require("../js/Event.js");
 
 const {setScale, getScale} = require('../js/timescale.js');
 const {
     initTimeline, updateRange, updateCurrentDate, adjustDate,
     getCurrentDate, getEndDate, getStartDate, getVisibleDate
 } = require("../js/timeline.js");
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Инициализация переменных
@@ -25,17 +28,13 @@ let axisCenter;
 const Watcher = require("../js/multipleProcessWatcher.js");
 let events_watcher = null;
 
-//~~~~~~~~~~
-// Геттеры
-//~~~~~~~~~~
 
-function getCache() {
-    return cache;
-}
+// ~~~ Проверить идёт ли передача событий из базы в данный момент (экспорт)
 
 function isEventsTransfering() {
     return events_watcher.any_running();
 }
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Функции-интерфейсы для фронта
@@ -44,7 +43,7 @@ function isEventsTransfering() {
 
 function getEvents()
 {
-    deleteAllEvents()
+    eventModule.deleteAllEvents()
     cache["events_day"] = {};
     cache["events_month"] = {};
     cache["events_year"] = {};
@@ -52,7 +51,6 @@ function getEvents()
     Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
     Dates.createDates(axisCenter + 1);
     events_watcher.set_status(true);
-    console.log(getVisibleDate);
     cache["roads"].forEach(road => {
         ipcRenderer.send(
             "get events",
@@ -145,7 +143,7 @@ function makeEvent()
     }
 }
 
-function cmdEditEvent()
+function editEvent()
 {
     let name = document.getElementById('editEventName').value;
     let color = document.getElementById('editEventColorPeeker').value;
@@ -154,7 +152,6 @@ function cmdEditEvent()
     let description = document.getElementById('editEventDescription').value;
     let path_id = document.getElementById('editEventPath').value;
     let event_id = document.getElementById('editEventId').value;
-    console.log(name, color, icon, date, description, path_id, event_id);
     if(!name || !icon || !date || !path_id || !event_id) {
         console.log("edit event error: name, icon, date, path_id cannot be null");
     } else {
@@ -173,7 +170,7 @@ function cmdEditEvent()
     }
 }
 
-function cmdDeleteEvent()
+function deleteEvent()
 {
     let id = document.getElementById('deleteEventId').value;
     if(!id) {
@@ -188,6 +185,7 @@ function cmdDeleteEvent()
     }
 }
 
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Обработчики событий сообщений от сервера
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -198,7 +196,7 @@ ipcRenderer.on("send root roads", (event, reply) =>
     if(cache["roads"]) {
         cache["roads"].forEach((elem) => {
             deleteGroup(elem["path_id"]);
-            deleteAllEvents();
+            eventModule.deleteAllEvents();
             Dates.deleteDates();
         });
     }
@@ -242,7 +240,7 @@ ipcRenderer.on("send events", (event, reply) =>
         cache["events_year"][reply["path_id"]][year].push(event);
 
     });
-    createEvents(Dates.mode, reply["path_id"])
+    eventModule.createEvents(Dates.mode, reply["path_id"])
     let index = cache["roads"].map( el => el.path_id ).indexOf(reply["path_id"]);
     events_watcher.process_complete([index]);
 });
@@ -329,13 +327,12 @@ ipcRenderer.on("event deleted", (event, reply) =>
 
 
 module.exports = {
-    getCache: getCache,
     isEventsTransfering: isEventsTransfering,
     getEvents: getEvents,
     makePath: makePath,
     editPath: editPath,
     deletePath: deletePath,
     makeEvent: makeEvent,
-    cmdEditEvent: cmdEditEvent,
-    cmdDeleteEvent: cmdDeleteEvent
+    editEvent: editEvent,
+    deleteEvent: deleteEvent
 }
