@@ -156,6 +156,10 @@ function stackClick(plane, scale)
             break;
     }
     let axisOffset = 0;
+    let step = {x: 0.85, y: 1};
+    let side = Math.ceil(Math.sqrt(events.length));
+    side = side + Math.ceil(1/3*(side));
+    let start_point = {x: -side/2 * step.x + step.x/2, y: step.y};
     events.forEach(function (event){
         let eventObj = scene.getObjectByName("event " + event.event_id);
         if (eventObj)
@@ -169,8 +173,8 @@ function stackClick(plane, scale)
             const material = new THREE.MeshBasicMaterial({color: event.color, map: loader.load('../../storage/img/' + event.icon)});
             const plane = new THREE.Mesh( geometry, material );
             plane.position.set(
-                selectedStack.position.x - axisOffset * 0.85,
-                selectedStack.position.y + 1,
+                selectedStack.position.x + start_point.x + (axisOffset % side) * step.x,
+                selectedStack.position.y + start_point.y + Math.floor((axisOffset / side)) * step.y,
                 selectedStack.position.z
             );
             plane.name = "event " + event.event_id;
