@@ -206,7 +206,7 @@ function run(database, ipcMain) {
     ipcMain.on("delete event", (event, request) =>
     {
         request = JSON.parse(request);
-        var reply = {};
+        var reply = {event_id: request["event_id"]};
         database.deleteEvent(request["event_id"], (err) => {
             event.reply(
                 "event deleted",

@@ -133,6 +133,35 @@ function findEventInCache(id) {
     }
     return null;
 }
+function editEventInCache(id, event) {
+    for (var road in cache["events_day"]) {
+        for(var date in cache["events_day"][road]) {
+            const index = cache["events_day"][road][date]
+                            .findIndex(element => element.event_id == id);
+            if(!(index < 0)) {
+                cache["events_day"][road][date][index] = event;
+                return 0;
+            }
+        }
+    }
+    return -1;
+}
+function removeEventFromCache(id) {
+    for (var road in cache["events_day"]) {
+        for(var date in cache["events_day"][road]) {
+            const index = cache["events_day"][road][date]
+                            .findIndex(element => element.event_id == id);
+            if(!(index < 0)) {
+                if(cache["events_day"][road][date].length == 1)
+                    delete cache["events_day"][road][date];
+                else
+                    cache["events_day"][road][date].splice(index, 1);
+                return 0;
+            }
+        }
+    }
+    return -1;
+}
 function iterateDays(path_id, callback) {
     for(let date in cache["events_day"][path_id])
     {
@@ -157,6 +186,8 @@ function getCache() {
 
 module.exports = {
     findEventInCache: findEventInCache,
+    editEventInCache: editEventInCache,
+    removeEventFromCache: removeEventFromCache,
     getCache: getCache,
     iterateDays: iterateDays,
     iterateMonths: iterateMonths,

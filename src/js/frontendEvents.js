@@ -31,9 +31,14 @@ let axisCenter;
 // Инициируют запросы к серверу
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function getEvents()
+function getEvents(action_id = null, action_event = null)
 {
     eventModule.deleteAllEvents()
+    if(action_id)
+        if(action_event)
+            cacheModule.editEventInCache(action_id, action_event);
+        else
+            cacheModule.removeEventFromCache(action_id);
     Dates.deleteDates();
     Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
     Dates.createDates(axisCenter + 1);
@@ -280,12 +285,12 @@ ipcRenderer.on("event added", (event, reply) =>
 ipcRenderer.on("event edited", (event, reply) =>
 {
     reply = JSON.parse(reply);
-    getEvents();
+    getEvents(reply["event"].event_id, reply["event"]);
 });
 ipcRenderer.on("event deleted", (event, reply) =>
 {
     reply = JSON.parse(reply);
-    getEvents();
+    getEvents(reply["event_id"]);
 });
 
 
