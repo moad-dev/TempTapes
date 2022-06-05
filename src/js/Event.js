@@ -95,7 +95,6 @@ function createEvents(dateMode, road)
             {
                 material = new THREE.MeshBasicMaterial({color: events[0].color, map: loader.load('../../storage/img/' + events[0].icon)});
             }
-            console.log(material)
             const plane = new THREE.Mesh( geometry, material );
             let tr = new THREE.Vector3();
             scene.getObjectByName(whichLine).getWorldPosition(tr);
