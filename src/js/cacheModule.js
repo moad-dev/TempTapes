@@ -1,5 +1,4 @@
 const {ipcRenderer} = require("electron");
-const timeline = require("../js/timeline.js");
 
 // Происходит когда события загружены и готовы к отрисовке
 var onEventsReady = null;
