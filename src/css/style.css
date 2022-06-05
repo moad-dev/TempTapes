@@ -1,5 +1,6 @@
 html {
     height: 100%;
+    overflow: hidden;
 }
 
 body {
@@ -7,53 +8,53 @@ body {
 }
 
 .N {
-    position: fixed;
+    position: relative;
     top: 0;
     left: 50%;
     right: 50%;
 }
 
 .S {
-    position: fixed;
+    position: relative;
     bottom: 0;
     left: 50%;
     right: 50%;
 }
 
 .W {
-    position: fixed;
+    position: relative;
     left: 0;
     top: 50%;
     bottom: 50%;
 }
 
 .E {
-    position: fixed;
+    position: relative;
     right: 0;
     top: 50%;
     bottom: 50%;
 }
 
 .NW {
-    position: fixed;
+    position: relative;
     top: 0;
     left: 0;
 }
 
 .NE {
-    position: fixed;
+    position: relative;
     top: 0;
     right: 0;
 }
 
 .SE {
-    position: fixed;
+    position: relative;
     bottom: 0;
     right: 0;
 }
 
 .SW {
-    position: fixed;
+    position: relative;
     bottom: 0;
     left: 0;
 }
@@ -182,6 +183,11 @@ Side menu
 .left,
 .right {
     float: left;
+}
+
+.side-menu {
+    overflow-y: auto;
+    height: 100vh;
 }
 
 /*~~~~~~~~~~~~~~
