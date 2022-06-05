@@ -26,6 +26,7 @@ const {
 } = require("./setup");
 const {getScale} = require("./timescale");
 const sideMenu = require("./view/sideMenu");
+const {getLastValue, setLastValue} = require("./horizontallScrollBar");
 
 // const addText = (selector, text) => {
 //     const element = document.getElementById(selector);
@@ -296,6 +297,32 @@ window.addEventListener("DOMContentLoaded", () => {
         .addEventListener("click", () => {
             selectScale("Г", 0);
         });
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //         Горизонтальный скролл
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    document
+        .getElementById("scrollBar")
+        .addEventListener("input",
+            function() {
+                let lastScrollValue = getLastValue();
+                let currentScrollValue = document.getElementById("scrollBar").value;
+                let camera = window.camera;
+                console.log(lastScrollValue + " " + currentScrollValue)
+                if (Number(lastScrollValue) < Number(currentScrollValue))
+                {
+                    console.log("вправо")
+                    camera.position.x += 1;
+                    setLastValue(currentScrollValue);
+                }
+                else
+                {
+                    console.log("влево")
+                    camera.position.x -= 1;
+                    setLastValue(currentScrollValue);
+                }
+                console.log(document.getElementById("scrollBar").max + " " + document.getElementById("scrollBar").min)
+            });
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //            Модальные окна

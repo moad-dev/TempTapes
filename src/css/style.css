@@ -114,6 +114,54 @@ timeline
     justify-content: space-between;
 }
 
+/*~~~~~~~~~~~~~~~~~~~~
+Горизонтальный скролл
+~~~~~~~~~~~~~~~~~~~~~*/
+/* БАЗА обнуление дефолтного стиля */
+#scrollBar {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+}
+#scrollBar:focus {
+    outline: none;
+}
+
+#scrollBar::-ms-track{
+    width: 100%;
+    cursor: pointer;
+
+    /* Hides the slider so custom styles can be added */
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+}
+/* Стилизация пальчика */
+#scrollBar::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    border: 1px solid #000000;
+    height: 36px;
+    width: 16px;
+    border-radius: 3px;
+    background: #ffffff;
+    cursor: pointer;
+    margin-top: -14px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
+}
+/* Стилизация дороги для пальчика */
+#scrollBar::-webkit-slider-runnable-track{
+    width: 100%;
+    height: 8.4px;
+    cursor: pointer;
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    background: #3071a9;
+    border-radius: 1.3px;
+    border: 0.2px solid #010101;
+}
+#scrollBar:focus::-webkit-slider-runnable-track{
+    background: #367ebd;
+}
+
 /*~~~~~~~~~~~~~~
 Выпадающий список
 ~~~~~~~~~~~~~~*/

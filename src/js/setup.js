@@ -94,6 +94,7 @@ function setup() {
     camera.position.x = 0;
     camera.lookAt(camera.position.x, 1.5, 0);
 }
+
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);

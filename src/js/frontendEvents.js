@@ -15,6 +15,7 @@ const {
     getCurrentDate, getEndDate, getStartDate, getVisibleDate
 } = require("../js/timeline.js");
 
+const {checkBarVisibility, getLastValue, setLastValue} = require('../js/horizontallScrollBar');
 //~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Инициализация переменных
 //~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -188,6 +189,7 @@ function deleteEvent()
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 function onRoadsReady() {
+    checkBarVisibility(cache);
     axisCenter = -cache["roads"].length / 2 + 0.5;
     Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
     cache["roads"].forEach(road => {
