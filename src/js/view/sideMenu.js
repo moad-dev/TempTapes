@@ -65,6 +65,15 @@ function showEventDetails(event) {
     sideMenu.appendChild(container);
 }
 
+window.addEventListener('keyup', function (e) {
+    var key = e.keyCode;
+
+    if (key == 27) {
+        close();
+    };
+}, false);
+
+
 module.exports.showEventDetails = showEventDetails;
 module.exports.show = show;
 module.exports.close = close;

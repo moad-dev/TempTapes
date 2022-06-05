@@ -52,7 +52,6 @@ window.addEventListener("DOMContentLoaded", () => {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
     const sideMenu = require("./view/sideMenu");
 
-
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Инициализация приложения
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -354,11 +353,4 @@ window.addEventListener("DOMContentLoaded", () => {
                 }
                 console.log(document.getElementById("scrollBar").max + " " + document.getElementById("scrollBar").min)
             });
-
-    document.getElementById("testSideOpen").addEventListener("click", function (){
-        sideMenu.show();
-    });
-    document.getElementById("testSideClose").addEventListener("click", function (){
-        sideMenu.close();
-    });
 });
