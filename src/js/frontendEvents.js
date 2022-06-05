@@ -121,7 +121,11 @@ function deletePath()
 function makeEvent()
 {
     let name = document.getElementById('makeEventName').value;
-    let color = document.getElementById('makeEventColorPeeker').value;
+    let color = null;
+    if (document.getElementById('makeEventColorTransparent').checked == false)
+    {
+        color = document.getElementById('makeEventColorPeeker').value;
+    }
     let icon = document.getElementById('makeEventIcon').value;
     let date = document.getElementById('makeEventDate').value;
     let description = document.getElementById('makeEventDescription').value;
@@ -146,7 +150,11 @@ function makeEvent()
 function editEvent()
 {
     let name = document.getElementById('editEventName').value;
-    let color = document.getElementById('editEventColorPeeker').value;
+    let color = null;
+    if (document.getElementById('editEventColorTransparent').checked == false)
+    {
+        color = document.getElementById('editEventColorPeeker').value;
+    }
     let icon = document.getElementById('editEventIcon').value;
     let date = document.getElementById('editEventDate').value;
     let description = document.getElementById('editEventDescription').value;

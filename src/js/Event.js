@@ -1,6 +1,8 @@
 const cacheModule = require("../js/cacheModule.js")
 let cache = cacheModule.getCache();
 let availableStacks = [];
+//TODO: сделать горизонтальный скролл, который будет доступен только тогда, когда дорожки вылезут за рамки, после этого добавлять const в левую и правую длины
+//const material = new THREE.MeshBasicMaterial({map: loader.load('../../storage/img/instagram.png'), opacity: 1, transparent: true});
 function createEvents(dateMode, road)
 {
     let selectedGroup = scene.getObjectByName("Dates");
@@ -84,7 +86,16 @@ function createEvents(dateMode, road)
         }
         else
         {
-            const material = new THREE.MeshBasicMaterial({color: events[0].color, map: loader.load('../../storage/img/' + events[0].icon)});
+            let material = null;
+            if (events[0].color == null)
+            {
+                material = new THREE.MeshBasicMaterial({map: loader.load('../../storage/img/' + events[0].icon), opacity: 1, transparent: true});
+            }
+            else
+            {
+                material = new THREE.MeshBasicMaterial({color: events[0].color, map: loader.load('../../storage/img/' + events[0].icon)});
+            }
+            console.log(material)
             const plane = new THREE.Mesh( geometry, material );
             let tr = new THREE.Vector3();
             scene.getObjectByName(whichLine).getWorldPosition(tr);
@@ -105,6 +116,14 @@ function editEvent(id, ico, color,  groupName, whichLine)
     let selectedPlane = scene.getObjectByName("event " + id);
     let tr = new THREE.Vector3();
     scene.getObjectByName(whichLine).getWorldPosition(tr);
+    if (color == null)
+    {
+        selectedPlane.material = new THREE.MeshBasicMaterial({map: loader.load('../../storage/img/' + ico), opacity: 1, transparent: true})
+    }
+    else
+    {
+        selectedPlane.material = new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/' + ico)})
+    }
     selectedPlane.material = new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/' + ico)})
     selectedPlane.position.set(scene.getObjectByName(groupName).position.x, tr.y + 1, tr.z)
 }
@@ -168,9 +187,17 @@ function stackClick(plane, scale)
         }
         else
         {
+            let material = null;
             const loader = new THREE.TextureLoader();
             const geometry = new THREE.PlaneGeometry( 0.75, 0.75 );
-            const material = new THREE.MeshBasicMaterial({color: event.color, map: loader.load('../../storage/img/' + event.icon)});
+            if (event.color == null)
+            {
+                material = new THREE.MeshBasicMaterial({map: loader.load('../../storage/img/' + event.icon), opacity: 1, transparent: true});
+            }
+            else
+            {
+                material = new THREE.MeshBasicMaterial({color: event.color, map: loader.load('../../storage/img/' + event.icon)});
+            }
             const plane = new THREE.Mesh( geometry, material );
             plane.position.set(
                 selectedStack.position.x + start_point.x + (axisOffset % side) * step.x,
