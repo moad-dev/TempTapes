@@ -268,6 +268,10 @@ window.addEventListener("DOMContentLoaded", () => {
                 ipcRenderer.send(
                     "get event tags", JSON.stringify({"event_id": selected_event["event_id"]})
                 );
+            else {
+                sideMenu.show();
+                sideMenu.showEventDetails(selected_event);
+            }
         }
     });
 
