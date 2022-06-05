@@ -14,12 +14,12 @@ function setStackClickHandler  (handler) { window.stackClickHandler  = handler; 
 
 function setup() {
     const parentElementId = "right";
-    
+
     var parentElement = document.getElementById(parentElementId);
     var width = parentElement.offsetWidth;
     var height = parentElement.offsetHeight;
 
-    window.addEventListener("resize", onWindowResize, false);
+    // window.addEventListener("resize", onWindowResize, false);
     //мастшабирование дороги(через событие onWindowResize)
     function onWindowResize() {
         var parentElement = document.getElementById(parentElementId);
@@ -31,8 +31,9 @@ function setup() {
 
         renderer.setSize(width, height);
     }
+    new ResizeObserver(onWindowResize).observe(parentElement);
 
-    window.addEventListener("mousedown", onMouseDown, false);
+    parentElement.addEventListener("mousedown", onMouseDown, false);
     //реакция события на клик
     var raycaster = new THREE.Raycaster();
     var mouse = new THREE.Vector2();
@@ -41,8 +42,8 @@ function setup() {
         var width = parentElement.offsetWidth;
         var height = parentElement.offsetHeight;
 
-        mouse.x = (event.clientX / width) * 2 - 1;
-        mouse.y = -(event.clientY / height) * 2 + 1;
+        mouse.x =  (event.offsetX / width ) * 2 - 1;
+        mouse.y = -(event.offsetY / height) * 2 + 1;
         // update the picking ray with the camera and mouse position
         raycaster.setFromCamera(mouse, camera);
         // calculate objects intersecting the picking ray
