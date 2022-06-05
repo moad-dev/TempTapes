@@ -1,17 +1,3 @@
-function showSideMenu() {
-    const left = document.getElementById("left");
-    const right = document.getElementById("right");
-    left.style.display = "";
-    right.classList.add("right");
-}
-
-function closeSideMenu() {
-    const left = document.getElementById("left");
-    const right = document.getElementById("right");
-    left.style.display = "none";
-    right.classList.remove("right");
-}
-
 function hashCode(str) {
     var hash = 5381;
 
@@ -22,7 +8,7 @@ function hashCode(str) {
 }
 
 function pickColor(str) {
-    return `hsl(${hashCode(str) % 360}, 100%, 80%)`;
+    return `hsl(${hashCode(str) % 360}, 100%, 40%)`;
 }
 
 
@@ -35,22 +21,21 @@ function createTagElement(name) {
     return tag;
 }
 
-function viewEvent(e) {
-    var sideMenu = document.getElementById('sideMenu');
+function show() {
+    const left = document.getElementById("left");
+    const right = document.getElementById("right");
+    left.style.display = "";
+    right.classList.add("right");
+}
 
-    while(sideMenu.firstChild)
-        sideMenu.removeChild(sideMenu.firstChild);
-
-    sideMenu.append(
-        createTagElement("tsdfsdft"),
-        createTagElement("tsdfsdfy"),
-        createTagElement("test2"),
-        createTagElement("test3")
-    );
+function close() {
+    const left = document.getElementById("left");
+    const right = document.getElementById("right");
+    left.style.display = "none";
+    right.classList.remove("right");
 }
 
 function showEventDetails(event) {
-    console.log(event);
     var sideMenu = document.getElementById("sideMenu");
     sideMenu.innerHTML = "";
     var container = document.createElement("div");
@@ -65,14 +50,21 @@ function showEventDetails(event) {
     var description = document.createElement("div");
         description.classList.add("text");
         description.innerHTML = event.description;
+    var tagsContainer = document.createElement("div");
+        tagsContainer.classList.add("text");
+    for (var tag of event.tags) {
+        tagsContainer.appendChild(
+            createTagElement(tag),
+        );
+    }
     iconContainer.appendChild(icon);
     container.appendChild(iconContainer);
     container.appendChild(name);
     container.appendChild(description);
+    container.appendChild(tagsContainer);
     sideMenu.appendChild(container);
 }
 
-module.exports.viewEvent = viewEvent;
 module.exports.showEventDetails = showEventDetails;
-module.exports.showSideMenu = showSideMenu;
-module.exports.closeSideMenu = closeSideMenu;
+module.exports.show = show;
+module.exports.close = close;

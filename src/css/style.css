@@ -388,6 +388,7 @@ Side menu
     border-radius: 0.25em;
     color: white;
     background-color: firebrick;
+    margin: 5px;
     /* TODO: remove */
 }
 

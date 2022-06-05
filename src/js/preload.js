@@ -35,6 +35,24 @@ const {getLastValue, setLastValue} = require("./horizontallScrollBar");
 
 window.addEventListener("DOMContentLoaded", () => {
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //            Модальные окна
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    const modalWindow = require("./view/modalWindow.js");
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Контекстное меню для событий и дорог
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    const contextMenu = require("./view/contextMenu.js");
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //      Side menu
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~
+    const sideMenu = require("./view/sideMenu");
+
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Инициализация приложения
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -242,10 +260,14 @@ window.addEventListener("DOMContentLoaded", () => {
                 contextMenu.toggleMenuOn(document.getElementById("eventsContextMenu"), event);
             }
         }
-        if((event || window.event).which == 1)
+        if ((event || window.event).which == 1) // если ЛКМ
         {
-            sideMenu.showEventDetails(selected_event);
-            sideMenu.showSideMenu();
+            let selected_event = cacheModule.findEventInCache(id);
+
+            if (selected_event.tags == null)
+                ipcRenderer.send(
+                    "get event tags", JSON.stringify({"event_id": selected_event["event_id"]})
+                );
         }
     });
 
@@ -329,26 +351,10 @@ window.addEventListener("DOMContentLoaded", () => {
                 console.log(document.getElementById("scrollBar").max + " " + document.getElementById("scrollBar").min)
             });
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //            Модальные окна
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    const modalWindow = require("./view/modalWindow.js");
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Контекстное меню для событий и дорог
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    const contextMenu = require("./view/contextMenu.js");
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //      Side menu
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     document.getElementById("testSideOpen").addEventListener("click", function (){
-        sideMenu.showSideMenu();
+        sideMenu.show();
     });
     document.getElementById("testSideClose").addEventListener("click", function (){
-        sideMenu.closeSideMenu();
+        sideMenu.close();
     });
 });
