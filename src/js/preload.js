@@ -307,4 +307,29 @@ window.addEventListener("DOMContentLoaded", () => {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     const contextMenu = require("./view/contextMenu.js");
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //      Side menu
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    function showSideMenu() {
+        const left = document.getElementById("left");
+        const right = document.getElementById("right");
+        left.style.display = "";
+        right.classList.add("right");
+    }
+
+    function closeSideMenu() {
+        const left = document.getElementById("left");
+        const right = document.getElementById("right");
+        left.style.display = "none";
+        right.classList.remove("right");
+    }
+
+    document.getElementById("testSideOpen").addEventListener("click", function (){
+        showSideMenu();
+    });
+    document.getElementById("testSideClose").addEventListener("click", function (){
+        closeSideMenu();
+    });
 });

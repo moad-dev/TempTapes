@@ -16,46 +16,46 @@
     <script src="../../src/js/three.js"></script>
     <script src="../../src/js/setup.js"></script>
     <script type="text/javascript">
-        setup();
-        animate();
+        window.addEventListener("DOMContentLoaded", () => {
+            setup();
+            animate();
+        });
     </script>
     <link href="../css/style.css" rel="stylesheet">
 
-    <div id="timeline" class="NE">
-        <input id="timelineRange" type="range" min="0" max="100">
-        <div class="container">
-            <input id="timelineStart" type="date" placeholder="dd-mm-yyyy">
-            <input id="timelineCurrent" type="date" placeholder="dd-mm-yyyy">
-            <input id="timelineEnd" type="date" placeholder="dd-mm-yyyy">
-        </div>
+    <div class="left" id="left" style="display: none;">
+        side menu
     </div>
 
-    <div class="W" style="margin-left: 10px">
-        <div class="item-menu" id="menu" style="display: none">
-            sodfhisj
-        </div>
-    </div>
-
-    <div class="E" style="margin-right: 60px;">
-        <div class="dropdown">
-            <button class="dropbtn" id="select-scale" style="">Д</button>
-            <div class="dropdown-content">
-                <div style="cursor: pointer;" class="elem" id="select-scale-day">День</div>
-                <div style="cursor: pointer;" class="elem" id="select-scale-month">Месяц</div>
-                <div style="cursor: pointer;" class="elem" id="select-scale-year">Год</div>
+    <div class="canvas-container" id="right">
+        <div id="timeline" style="position: absolute; top: 0; left: 0;">
+            <input id="timelineRange" type="range" min="0" max="100">
+            <div class="container">
+                <input id="timelineStart" type="date" placeholder="dd-mm-yyyy">
+                <input id="timelineCurrent" type="date" placeholder="dd-mm-yyyy">
+                <input id="timelineEnd" type="date" placeholder="dd-mm-yyyy">
             </div>
         </div>
-    </div>
 
-    <div class="btn-row SW">
-        <button class="js-open-modal btn dark-opaque" data-modal="pathAdd" id="makePathBtn"> Добавить дорогу </button>
-        <button class="js-open-modal btn dark-opaque" data-modal="pathDelete" id="deletePathBtn"> Удалить дорогу </button>
-        <button class="js-open-modal btn dark-opaque" data-modal="pathEdit" id="editPathBtn"> Редактировать </button>
-    </div>
-    <div class="btn-row SE">
-        <button class="js-open-modal btn dark-opaque" data-modal="eventAdd" id="makeEventBtn"> Добавить событие </button>
-        <button class="btn dark-opaque"> Удалить событие </button>
-        <button class="btn dark-opaque"> Редактировать </button>
+        <div class="E" style="margin-right: 60px;">
+            <div class="dropdown">
+                <button class="dropbtn" id="select-scale" style="">Д</button>
+                <div class="dropdown-content">
+                    <div style="cursor: pointer;" class="elem" id="select-scale-day">День</div>
+                    <div style="cursor: pointer;" class="elem" id="select-scale-month">Месяц</div>
+                    <div style="cursor: pointer;" class="elem" id="select-scale-year">Год</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-row" style="position: absolute; bottom: 0; left: 0;">
+            <button class="js-open-modal btn dark-opaque" data-modal="pathAdd" id="makePathBtn"> Добавить дорогу </button>
+            <button class="js-open-modal btn dark-opaque" data-modal="pathDelete" id="deletePathBtn"> Удалить дорогу </button>
+            <button class="js-open-modal btn dark-opaque" data-modal="pathEdit" id="editPathBtn"> Редактировать дорогу</button>
+            <button class="js-open-modal btn dark-opaque" data-modal="eventAdd" id="makeEventBtn"> Добавить событие </button>
+            <button class="btn dark-opaque" id="testSideOpen"> open side </button>
+            <button class="btn dark-opaque" id="testSideClose"> close side </button>
+        </div>
     </div>
 
     <div class="modal" data-modal="pathAdd">

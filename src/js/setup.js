@@ -13,13 +13,23 @@ function setPathClickHandler  (handler) { window.pathClickHandler  = handler; }
 function setStackClickHandler  (handler) { window.stackClickHandler  = handler; }
 
 function setup() {
+    const parentElementId = "right";
+    
+    var parentElement = document.getElementById(parentElementId);
+    var width = parentElement.offsetWidth;
+    var height = parentElement.offsetHeight;
+
     window.addEventListener("resize", onWindowResize, false);
     //мастшабирование дороги(через событие onWindowResize)
     function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
+        var parentElement = document.getElementById(parentElementId);
+        var width = parentElement.offsetWidth;
+        var height = parentElement.offsetHeight;
+
+        camera.aspect = width / height;
         camera.updateProjectionMatrix();
 
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(width, height);
     }
 
     window.addEventListener("mousedown", onMouseDown, false);
@@ -27,8 +37,12 @@ function setup() {
     var raycaster = new THREE.Raycaster();
     var mouse = new THREE.Vector2();
     function onMouseDown(event) {
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        var parentElement = document.getElementById(parentElementId);
+        var width = parentElement.offsetWidth;
+        var height = parentElement.offsetHeight;
+
+        mouse.x = (event.clientX / width) * 2 - 1;
+        mouse.y = -(event.clientY / height) * 2 + 1;
         // update the picking ray with the camera and mouse position
         raycaster.setFromCamera(mouse, camera);
         // calculate objects intersecting the picking ray
@@ -67,13 +81,13 @@ function setup() {
 
     camera = new THREE.PerspectiveCamera(
         75,
-        window.innerWidth / window.innerHeight,
+        width / height,
         0.1,
         1000
     );
     renderer = new THREE.WebGLRenderer({antialias: true});
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+    renderer.setSize(width, height);
+    parentElement.appendChild(renderer.domElement);
 
     camera.position.z = 4;
     camera.position.y = 2;

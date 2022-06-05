@@ -1,3 +1,11 @@
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+}
+
 .N {
     position: fixed;
     top: 0;
@@ -155,6 +163,27 @@ timeline
     background-color: #3e8e41;
 }
 
+/*~~~~~~~~~~
+Side menu
+~~~~~~~~~~~~*/
+.canvas-container {
+    height: 100%;
+}
+
+.left {
+    width: 15%;
+}
+
+.right {
+    width: 85%;
+    position: relative;
+}
+
+.left,
+.right {
+    float: left;
+}
+
 /*~~~~~~~~~~~~~~
 Модальные окна
 ~~~~~~~~~~~~~~*/
@@ -222,11 +251,6 @@ timeline
     margin-top: 20px;
     margin-bottom: 20px;
 }
-
-/*~~~~~~~~~~~~~~~~~~~
-Меню описания события
-~~~~~~~~~~~~~~~~~~~~~*/
-.item-menu {}
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Контекстное меню для событий
