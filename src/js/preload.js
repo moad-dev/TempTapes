@@ -73,7 +73,7 @@ window.addEventListener("DOMContentLoaded", () => {
         return direction;
     }
     function onScroll(e) {
-        if(!frontendEvents.isEventsTransfering())
+        if(!cacheModule.isEventsTransfering())
         {
             var scrollDirection = detectMouseWheelDirection( e );
             if (scrollDirection === "up"){
@@ -263,7 +263,7 @@ window.addEventListener("DOMContentLoaded", () => {
         .getElementById("timelineRange")
         .addEventListener("input",
         function() {
-            if(!frontendEvents.isEventsTransfering()){
+            if(!cacheModule.isEventsTransfering()){
                 updateCurrentDate();
                 frontendEvents.getEvents();
             }
@@ -272,7 +272,7 @@ window.addEventListener("DOMContentLoaded", () => {
     // Переключение масштаба
 
     function selectScale(symbol, scale) {
-        if(!frontendEvents.isEventsTransfering()){
+        if(!cacheModule.isEventsTransfering()){
             document.getElementById("select-scale").innerHTML = symbol;
             timescale.setScale(scale);
             updateRange();

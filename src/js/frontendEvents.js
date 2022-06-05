@@ -15,7 +15,6 @@ const {
     getCurrentDate, getEndDate, getStartDate, getVisibleDate
 } = require("../js/timeline.js");
 
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Инициализация переменных
 //~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,16 +24,6 @@ let Dates;
 const cacheModule = require("../js/cacheModule.js");
 let cache = cacheModule.getCache();
 let axisCenter;
-const Watcher = require("../js/multipleProcessWatcher.js");
-let events_watcher = null;
-
-
-// ~~~ Проверить идёт ли передача событий из базы в данный момент (экспорт)
-
-function isEventsTransfering() {
-    return events_watcher.any_running();
-}
-
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Функции-интерфейсы для фронта
@@ -44,23 +33,23 @@ function isEventsTransfering() {
 function getEvents()
 {
     eventModule.deleteAllEvents()
-    cache["events_day"] = {};
-    cache["events_month"] = {};
-    cache["events_year"] = {};
     Dates.deleteDates();
     Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
     Dates.createDates(axisCenter + 1);
-    events_watcher.set_status(true);
-    cache["roads"].forEach(road => {
-        ipcRenderer.send(
-            "get events",
-            JSON.stringify({
-                path_id: road.path_id,
-                first_date: getCurrentDate(),
-                end_date: getVisibleDate()
-            })
-        );
-    });
+
+    cacheModule.getEvents(getCurrentDate(true), getVisibleDate(true), Dates.mode);
+}
+
+function getRoads() {
+    if(cache["roads"]) {
+        cache["roads"].forEach((elem) => {
+            deleteGroup(elem["path_id"]);
+            eventModule.deleteAllEvents();
+            Dates.deleteDates();
+        });
+    }
+
+    cacheModule.getRoads();
 }
 
 function makePath()
@@ -198,20 +187,10 @@ function deleteEvent()
 // Обработчики событий сообщений от сервера
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ipcRenderer.on("send root roads", (event, reply) =>
-{
-    reply = JSON.parse(reply);
-    if(cache["roads"]) {
-        cache["roads"].forEach((elem) => {
-            deleteGroup(elem["path_id"]);
-            eventModule.deleteAllEvents();
-            Dates.deleteDates();
-        });
-    }
-    axisCenter = -reply["roads"].length / 2 + 0.5;
+function onRoadsReady() {
+    axisCenter = -cache["roads"].length / 2 + 0.5;
     Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
-    cache["roads"] = reply["roads"];
-    reply["roads"].forEach(road => {
+    cache["roads"].forEach(road => {
         createGroup(
             road.color,
             road.icon,
@@ -221,57 +200,31 @@ ipcRenderer.on("send root roads", (event, reply) =>
         );
     });
     Dates.createDates(axisCenter + 1);
-    events_watcher = new Watcher(reply["roads"].length);
     setScale(2)
     getEvents();
     ipcRenderer.send("get all roads", "{}");
-});
-ipcRenderer.on("send events", (event, reply) =>
-{
-    reply = JSON.parse(reply);
-    let path_index = cache["roads"].map( el => el.path_id ).indexOf(reply["path_id"]);
-    cache["events_day"][reply["path_id"]] = {};
-    cache["events_month"][reply["path_id"]] = {};
-    cache["events_year"][reply["path_id"]] = {};
-    reply["events"].forEach(event => {
-        let date_tokens = event.date.split('-');
-        let month = date_tokens[0] + '-' + date_tokens[1];
-        let year = date_tokens[0];
-        if(!cache["events_day"][reply["path_id"]][event.date])
-            cache["events_day"][reply["path_id"]][event.date] = [];
-        cache["events_day"][reply["path_id"]][event.date].push(event);
-        if(!cache["events_month"][reply["path_id"]][month])
-            cache["events_month"][reply["path_id"]][month] = [];
-        cache["events_month"][reply["path_id"]][month].push(event);
-        if(!cache["events_year"][reply["path_id"]][year])
-            cache["events_year"][reply["path_id"]][year] = [];
-        cache["events_year"][reply["path_id"]][year].push(event);
+}
+cacheModule.setOnRoadsReady(onRoadsReady);
 
-    });
-    eventModule.createEvents(Dates.mode, reply["path_id"])
-    let index = cache["roads"].map( el => el.path_id ).indexOf(reply["path_id"]);
-    events_watcher.process_complete([index]);
-});
+function onEventsReady(path_id) {
+    eventModule.createEvents(getCurrentDate(false), getVisibleDate(false),  Dates.mode, path_id);
+}
+cacheModule.setOnEventsReady(onEventsReady);
+
 ipcRenderer.on("path added", (event, reply) =>
 {
     reply = JSON.parse(reply);
-    ipcRenderer.send(
-        "get root roads", "{}"
-    );
+    getRoads();
 });
 ipcRenderer.on("path deleted", (event, reply) =>
 {
     reply = JSON.parse(reply);
-    ipcRenderer.send(
-        "get root roads", "{}"
-    );
+    getRoads();
 });
 ipcRenderer.on("path edited", (event, reply) =>
 {
     reply = JSON.parse(reply);
-    ipcRenderer.send(
-        "get root roads", "{}"
-    );
+    getRoads();
 });
 ipcRenderer.on("send images", (event, reply) =>
 {
@@ -335,8 +288,8 @@ ipcRenderer.on("event deleted", (event, reply) =>
 
 
 module.exports = {
-    isEventsTransfering: isEventsTransfering,
     getEvents: getEvents,
+    getRoads: getRoads,
     makePath: makePath,
     editPath: editPath,
     deletePath: deletePath,

@@ -3,12 +3,13 @@ let cache = cacheModule.getCache();
 let availableStacks = [];
 //TODO: сделать горизонтальный скролл, который будет доступен только тогда, когда дорожки вылезут за рамки, после этого добавлять const в левую и правую длины
 //const material = new THREE.MeshBasicMaterial({map: loader.load('../../storage/img/instagram.png'), opacity: 1, transparent: true});
-function createEvents(dateMode, road)
+function createEvents(startDate, endDate, dateMode, road)
 {
     let selectedGroup = scene.getObjectByName("Dates");
     let whichLine = null;
     let iterateBy = null;
     let findLine  = null;
+    let dateValidation = null;
     let cachename = null;
 
     switch (dateMode){
@@ -24,6 +25,12 @@ function createEvents(dateMode, road)
                     i++;
                 })
             }
+            dateValidation = function (dd, mm, yy) {
+                date = yy + '-01-01';
+                if(date < startDate || date > endDate)
+                    return false;
+                return true;
+            }
             break;
         case 1:
             iterateBy = cacheModule.iterateMonths;
@@ -36,6 +43,12 @@ function createEvents(dateMode, road)
                     }
                     i++;
                 })
+            }
+            dateValidation = function (dd, mm, yy) {
+                date = yy + "-" + mm + "-01";
+                if(date < startDate || date > endDate)
+                    return false;
+                return true;
             }
             break;
         case 2:
@@ -50,14 +63,24 @@ function createEvents(dateMode, road)
                     i++;
                 })
             }
+            dateValidation = function (dd, mm, yy) {
+                date = yy + "-" + mm + "-" + dd;
+                if(date < startDate || date > endDate)
+                    return false;
+                return true;
+            }
             break;
     }
 
     iterateBy(road, function(date) {
+
         let events = cache[cachename][road][date];
         let date_tokens = date.split('-');
         let yy = date_tokens[0], mm = date_tokens[1], dd = date_tokens[2];
         let i = -1;
+
+        if(!dateValidation(dd, mm, yy))
+            return;
 
         findLine(dd, mm, yy, i);
 
@@ -95,7 +118,6 @@ function createEvents(dateMode, road)
             {
                 material = new THREE.MeshBasicMaterial({color: events[0].color, map: loader.load('../../storage/img/' + events[0].icon)});
             }
-            console.log(material)
             const plane = new THREE.Mesh( geometry, material );
             let tr = new THREE.Vector3();
             scene.getObjectByName(whichLine).getWorldPosition(tr);

@@ -170,16 +170,24 @@ function getEndDate(asdate=false) {
     return getInputDate('timelineEnd', asdate);
 }
 
-function getVisibleDate() {
-    var date = getCurrentDate(true);
+function getVisibleDate(asdate=false) {
+    let date = getCurrentDate(true);
+    let result_date = null;
     switch (getScaleString()) {
         case "day":
-            return date.addDays(12);
+            result_date = date.addDays(12);
+        break;
         case "month":
-            return date.addMonths(12);
+            result_date = date.addMonths(12);
+        break;
         case "year":
-            return date.addYears(12);
+            result_date = date.addYears(12);
+        break;
     }
+    if(asdate)
+        return result_date;
+    else
+        return result_date.formatted();
 }
 
 
