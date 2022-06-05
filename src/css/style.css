@@ -123,21 +123,22 @@ timeline
     width: 100%;
     background: transparent;
 }
+
 #scrollBar:focus {
     outline: none;
 }
 
-#scrollBar::-ms-track{
+#scrollBar::-ms-track {
     width: 100%;
     cursor: pointer;
-
     /* Hides the slider so custom styles can be added */
     background: transparent;
     border-color: transparent;
     color: transparent;
 }
+
 /* Стилизация пальчика */
-#scrollBar::-webkit-slider-thumb{
+#scrollBar::-webkit-slider-thumb {
     -webkit-appearance: none;
     border: 1px solid #000000;
     height: 36px;
@@ -145,11 +146,14 @@ timeline
     border-radius: 3px;
     background: #ffffff;
     cursor: pointer;
-    margin-top: -14px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
+    margin-top: -14px;
+    /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    /* Add cool effects to your sliders! */
 }
+
 /* Стилизация дороги для пальчика */
-#scrollBar::-webkit-slider-runnable-track{
+#scrollBar::-webkit-slider-runnable-track {
     width: 100%;
     height: 8.4px;
     cursor: pointer;
@@ -158,7 +162,8 @@ timeline
     border-radius: 1.3px;
     border: 0.2px solid #010101;
 }
-#scrollBar:focus::-webkit-slider-runnable-track{
+
+#scrollBar:focus::-webkit-slider-runnable-track {
     background: #367ebd;
 }
 
@@ -212,15 +217,16 @@ timeline
     background-color: #3e8e41;
 }
 
-/*~~~~~~~~~~
+/*~~~~~~~~~~~~~~~~~
 Side menu
-~~~~~~~~~~~~*/
+~~~~~~~~~~~~~~~~~~~*/
 .canvas-container {
     height: 100%;
 }
 
 .left {
     width: 15%;
+    background-color: rgb(230, 230, 230);
 }
 
 .right {
@@ -236,6 +242,36 @@ Side menu
 #sideMenu {
     overflow-y: auto;
     height: 100vh;
+}
+
+.sidemenu__details {
+    padding: 10px;
+    margin: auto;
+    width: 90%;
+}
+
+.sidemenu__details .image {
+    width: 75px;
+    height: 75px;
+    margin: auto;
+}
+
+.sidemenu__details .image img {
+    width: 75px;
+    height: 75px;
+}
+
+.sidemenu__details .head {
+    text-align: center;
+    size: 30px;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.sidemenu__details .text {
+    text-align: justify;
+    size: 20px;
+    margin-top: 15px;
 }
 
 /*~~~~~~~~~~~~~~
@@ -340,22 +376,21 @@ Side menu
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Тэги
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
 .tag {
-  display: inline-block;
-  padding: 0.35em 0.65em;
-  font-size: 0.75em;
-  font-weight: 700;
-  line-height: 1;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: baseline;
-  border-radius: 0.25em;
-  color: white;
-  background-color: firebrick; /* TODO: remove */
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25em;
+    color: white;
+    background-color: firebrick;
+    /* TODO: remove */
 }
 
 .tag:empty {
     display: none;
 }
-

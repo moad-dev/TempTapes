@@ -207,10 +207,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // меню события
     setEventClickHandler(function (event, id) {
+        let selected_event = cacheModule.findEventInCache(id);
         if((event || window.event).which == 3) // если ПКМ
         {
             // Устанавливаем начальные значения выбранного элемента в модальных окнах
-            let selected_event = cacheModule.findEventInCache(id);
             if(selected_event) {
                 document.getElementById("editEventName").value = selected_event.name;
                 document.getElementById("editEventColorPeeker").value = selected_event.color;
@@ -241,6 +241,11 @@ window.addEventListener("DOMContentLoaded", () => {
                 // Включаем контекстное меню
                 contextMenu.toggleMenuOn(document.getElementById("eventsContextMenu"), event);
             }
+        }
+        if((event || window.event).which == 1)
+        {
+            sideMenu.showEventDetails(selected_event);
+            sideMenu.showSideMenu();
         }
     });
 
@@ -340,25 +345,10 @@ window.addEventListener("DOMContentLoaded", () => {
     //      Side menu
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    function showSideMenu() {
-        const left = document.getElementById("left");
-        const right = document.getElementById("right");
-        left.style.display = "";
-        sideMenu.viewEvent(null);
-        right.classList.add("right");
-    }
-
-    function closeSideMenu() {
-        const left = document.getElementById("left");
-        const right = document.getElementById("right");
-        left.style.display = "none";
-        right.classList.remove("right");
-    }
-
     document.getElementById("testSideOpen").addEventListener("click", function (){
-        showSideMenu();
+        sideMenu.showSideMenu();
     });
     document.getElementById("testSideClose").addEventListener("click", function (){
-        closeSideMenu();
+        sideMenu.closeSideMenu();
     });
 });
