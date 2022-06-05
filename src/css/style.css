@@ -1,5 +1,6 @@
 html {
     height: 100%;
+    overflow: hidden;
 }
 
 body {
@@ -7,53 +8,53 @@ body {
 }
 
 .N {
-    position: fixed;
+    position: relative;
     top: 0;
     left: 50%;
     right: 50%;
 }
 
 .S {
-    position: fixed;
+    position: relative;
     bottom: 0;
     left: 50%;
     right: 50%;
 }
 
 .W {
-    position: fixed;
+    position: relative;
     left: 0;
     top: 50%;
     bottom: 50%;
 }
 
 .E {
-    position: fixed;
+    position: relative;
     right: 0;
     top: 50%;
     bottom: 50%;
 }
 
 .NW {
-    position: fixed;
+    position: relative;
     top: 0;
     left: 0;
 }
 
 .NE {
-    position: fixed;
+    position: relative;
     top: 0;
     right: 0;
 }
 
 .SE {
-    position: fixed;
+    position: relative;
     bottom: 0;
     right: 0;
 }
 
 .SW {
-    position: fixed;
+    position: relative;
     bottom: 0;
     left: 0;
 }
@@ -184,6 +185,11 @@ Side menu
     float: left;
 }
 
+.side-menu {
+    overflow-y: auto;
+    height: 100vh;
+}
+
 /*~~~~~~~~~~~~~~
 Модальные окна
 ~~~~~~~~~~~~~~*/
@@ -282,3 +288,26 @@ Side menu
 .context-menu--active {
     display: block;
 }
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Тэги
+~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+.tag {
+  display: inline-block;
+  padding: 0.35em 0.65em;
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25em;
+  color: white;
+  background-color: firebrick; /* TODO: remove */
+}
+
+.tag:empty {
+    display: none;
+}
+
