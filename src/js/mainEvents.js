@@ -55,6 +55,18 @@ function run(database, ipcMain) {
                 }
             );
     });
+    
+    ipcMain.on("get event tags", (event, request) =>
+    {
+        request = JSON.parse(request);
+        var reply = {event_id: request["event_id"], tags: []};
+        database.getEventTags(request["event_id"], (err, rows) => {
+            rows.forEach(row => {
+                reply["tags"].push(row.name); 
+            });
+            event.reply("send event tags", JSON.stringify(reply));
+        });
+    });
 
     ipcMain.on("get events one day", (event, request) =>
     {

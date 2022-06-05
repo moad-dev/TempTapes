@@ -172,6 +172,17 @@ function getEventsByPath(path_id, callback) {
     });
 }
 
+
+function getEventTags(event_id, callback) {
+    db.all(
+        `SELECT tags.name FROM bind_event_tag 
+        JOIN tags ON bind_event_tag.tag_id == tags.tag_id
+        WHERE event_id == ?`,
+        event_id, 
+        (err, rows) => { callback(err, rows);}
+    );
+}
+
 function makePath(name, color, icon = null, parent_id = null, callback) {
     db.run(
         `
@@ -300,8 +311,9 @@ module.exports = {
     getAllPaths: getAllPaths,
     getRootPaths: getRootPaths,
     getPathsByParent: getPathsByParent,
-
     getEventsByPath: getEventsByPath,
+    getEventTags: getEventTags,
+
 
     makePath: makePath,
     deletePath: deletePath,

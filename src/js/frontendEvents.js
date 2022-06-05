@@ -16,6 +16,7 @@ const {
 } = require("../js/timeline.js");
 
 const {checkBarVisibility, getLastValue, setLastValue} = require('../js/horizontallScrollBar');
+const sideMenu = require("./view/sideMenu");
 //~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Инициализация переменных
 //~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -291,6 +292,13 @@ ipcRenderer.on("event deleted", (event, reply) =>
 {
     reply = JSON.parse(reply);
     getEvents(reply["event_id"]);
+});
+
+ipcRenderer.on("send event tags", (event, reply) => {
+    reply = JSON.parse(reply);
+    cacheModule.findEventInCache(reply["event_id"])["tags"] = reply["tags"];
+    sideMenu.show();
+    sideMenu.viewEvent(cacheModule.findEventInCache(reply["event_id"]))
 });
 
 
