@@ -185,7 +185,7 @@ Side menu
     float: left;
 }
 
-.side-menu {
+#sideMenu {
     overflow-y: auto;
     height: 100vh;
 }

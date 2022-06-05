@@ -25,6 +25,7 @@ const {
     setStackClickHandler
 } = require("./setup");
 const {getScale} = require("./timescale");
+const sideMenu = require("./view/sideMenu");
 
 // const addText = (selector, text) => {
 //     const element = document.getElementById(selector);
@@ -316,6 +317,7 @@ window.addEventListener("DOMContentLoaded", () => {
         const left = document.getElementById("left");
         const right = document.getElementById("right");
         left.style.display = "";
+        sideMenu.viewEvent(null);
         right.classList.add("right");
     }
 
