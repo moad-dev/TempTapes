@@ -116,7 +116,51 @@ function createEvents(startDate, endDate, dateMode, road)
             }
             else
             {
-                material = new THREE.MeshBasicMaterial({color: events[0].color, map: loader.load('../../storage/img/' + events[0].icon)});
+                function vertexShader() {
+                    return `
+                        varying vec3 vUv;
+                        void main() {
+                          vUv = position;
+                          vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+                          gl_Position = projectionMatrix * modelViewPosition;
+                        }
+                    `
+                }
+                function fragmentShader() {
+                    return `
+                        #ifdef GL_ES
+                        precision highp float;
+                        #endif
+
+                        uniform vec3 color;
+                        uniform sampler2D ico;
+
+                        varying vec3 vUv;
+
+                        void main(void)
+                        {
+                            vec3 c;
+                            vec4 Cb = vec4(color, 1);
+                            vec4 Ca = texture2D(ico, vec2(vUv.x+0.333, vUv.y+0.333)*1.5);
+                            c = Ca.rgb * Ca.a + Cb.rgb * Cb.a * (1.0 - Ca.a);
+                            gl_FragColor = vec4(c, 1);
+                        }
+                    `
+                }
+                const texture = new THREE.TextureLoader().load( '../../storage/img/' + events[0].icon );
+                let uniforms = {
+                    color: {type: 'vec3', value: new THREE.Color(events[0].color)},
+                    // THREE.ImageUtils.loadTexture( '../../storage/img/' + events[0].icon)
+                    ico:   {type: "t",    value: texture}
+                }
+                var attributes = {}; // custom attributes
+                material =  new THREE.ShaderMaterial({
+                    uniforms: uniforms,
+                    attributes: attributes,
+                    fragmentShader: fragmentShader(),
+                    vertexShader: vertexShader(),
+                })
+                // material = new THREE.MeshBasicMaterial({color: events[0].color, map: loader.load('../../storage/img/' + events[0].icon)});
             }
             const plane = new THREE.Mesh( geometry, material );
             let tr = new THREE.Vector3();
