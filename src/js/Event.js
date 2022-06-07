@@ -41,6 +41,21 @@ function fragmentShader() {
     `
 }
 
+function makeMaterialWithShader(src, color, loader) {
+    const texture = loader.load( '../../storage/img/' + src)
+    const uniforms = {
+        color: {type: 'vec3', value: new THREE.Color(color)},
+        ico:   {type: "t",    value: texture}
+    }
+    const attributes = {};
+    material =  new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        fragmentShader: fragmentShader(),
+        vertexShader: vertexShader(),
+    })
+    return material;
+}
+
 
 function createEvents(startDate, endDate, dateMode, road)
 {
@@ -155,17 +170,7 @@ function createEvents(startDate, endDate, dateMode, road)
             }
             else
             {
-                const texture = THREE.ImageUtils.loadTexture( '../../storage/img/' + events[0].icon)
-                const uniforms = {
-                    color: {type: 'vec3', value: new THREE.Color(events[0].color)},
-                    ico:   {type: "t",    value: texture}
-                }
-                const attributes = {};
-                material =  new THREE.ShaderMaterial({
-                    uniforms: uniforms,
-                    fragmentShader: fragmentShader(),
-                    vertexShader: vertexShader(),
-                })
+                material = makeMaterialWithShader(events[0].icon, events[0].color, loader);
                 // material = new THREE.MeshBasicMaterial({color: events[0].color, map: loader.load('../../storage/img/' + events[0].icon)});
             }
             const plane = new THREE.Mesh( geometry, material );
@@ -268,17 +273,7 @@ function stackClick(plane, scale)
             }
             else
             {
-                const texture = THREE.ImageUtils.loadTexture( '../../storage/img/' + event.icon)
-                const uniforms = {
-                    color: {type: 'vec3', value: new THREE.Color(event.color)},
-                    ico:   {type: "t",    value: texture}
-                }
-                const attributes = {};
-                material =  new THREE.ShaderMaterial({
-                    uniforms: uniforms,
-                    fragmentShader: fragmentShader(),
-                    vertexShader: vertexShader(),
-                })
+                material = makeMaterialWithShader(event.icon, event.color, loader);
                 // material = new THREE.MeshBasicMaterial({color: event.color, map: loader.load('../../storage/img/' + event.icon)});
             }
             const plane = new THREE.Mesh( geometry, material );

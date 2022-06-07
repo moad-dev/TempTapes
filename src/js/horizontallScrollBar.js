@@ -50,7 +50,6 @@ function checkBarVisibility(cache)
 function addTrackRange(cache)
 {
     let scrollBar = getScrollBar();
-    console.log(scrollBar.max);
     if (cache["roads"].length % 2 == 0)
     {
         scrollBar.max = cache["roads"].length;
@@ -61,13 +60,11 @@ function addTrackRange(cache)
         scrollBar.max = cache["roads"].length + 1;
         scrollBar.value = Number(scrollBar.max) / 2;
     }
-    console.log(scrollBar.max);
 }
 
 function popTrackRange(cache)
 {
     let scrollBar = getScrollBar();
-    console.log(scrollBar.max);
     if (cache["roads"].length % 2 == 0)
     {
         scrollBar.max = cache["roads"].length;
@@ -78,7 +75,6 @@ function popTrackRange(cache)
         scrollBar.max = cache["roads"].length + 1;
         scrollBar.value = Number(scrollBar.max) / 2;
     }
-    console.log(scrollBar.max)
 }
 
 function getLastValue()
