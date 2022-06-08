@@ -92,6 +92,7 @@ ipcRenderer.on("send events", (event, reply) =>
     cache["events_year"][reply["path_id"]] = {};
     reply["events"].forEach(event => {
         event.tags = null;
+        event.road_name = cache["roads"][reply["path_id"]].name;
         let date_tokens = event.date.split('-');
         let month = date_tokens[0] + '-' + date_tokens[1];
         let year = date_tokens[0];
