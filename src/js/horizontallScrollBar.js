@@ -1,27 +1,30 @@
+//
 let cacheLength = 0;
 let lastValue = 6;
-//TODO: оптимизировать код
 //TODO: Есть графический баг, при очень быстром передвижении ползунка на край, из-за чего камера смещается
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//          Получение объекта
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getScrollBar()
 {
     return document.getElementById('scrollBar');
 }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  Функция проверки видимости объекта
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function checkBarVisibility(cache)
 {
     if (cacheLength > cache["roads"].length)
     {
         cacheLength = cache["roads"].length;
         let scrollBar = getScrollBar();
-        if (cacheLength > 11)
-        {
-            scrollBar.style.visibility = "";
-            window.camera.position.x = 0; //TODO: вынести эту хуйню
-        }
-        else
+        if (cacheLength <= 11)
         {
             scrollBar.style.visibility = "hidden";
-            window.camera.position.x = 0; //TODO: вынести эту хуйню
         }
+        window.camera.position.x = 0;
         popTrackRange(cache);
         lastValue = Number(scrollBar.max) / 2;
     }
@@ -34,19 +37,17 @@ function checkBarVisibility(cache)
             if (cacheLength > 11)
             {
                 scrollBar.style.visibility = "";
-                window.camera.position.x = 0;
             }
-            else
-            {
-                scrollBar.style.visibility = "hidden";
-                window.camera.position.x = 0;
-            }
+            window.camera.position.x = 0;
             addTrackRange(cache);
             lastValue = Number(scrollBar.max) / 2;
         }
     }
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  Функция добавления длины скролла
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function addTrackRange(cache)
 {
     let scrollBar = getScrollBar();

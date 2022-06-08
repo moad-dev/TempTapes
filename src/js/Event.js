@@ -1,7 +1,6 @@
 const cacheModule = require("../js/cacheModule.js")
 let cache = cacheModule.getCache();
 let availableStacks = [];
-//TODO: сделать горизонтальный скролл, который будет доступен только тогда, когда дорожки вылезут за рамки, после этого добавлять const в левую и правую длины
 //const material = new THREE.MeshBasicMaterial({map: loader.load('../../storage/img/instagram.png'), opacity: 1, transparent: true});
 
 
