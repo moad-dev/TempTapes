@@ -1,17 +1,43 @@
+/**
+ * Модуль для работы с боковым меню
+ * Изменяет отображение бокового меню
+ * @module view/sideMenu
+ */
+
+
+/** 
+ * Внутренняя функция модуля. Вычисление хэш-суммы с помощью алгоритма djb2 (Bernstein hash).
+ * Используется для раскраски тэгов в меню.
+ * @param {string} str - Входная строка.
+ * @returns {number} - Вычисленное хэш-значение.
+ */
 function hashCode(str) {
     var hash = 5381;
 
     for (var i = 0; i < str.length; i++)
-        hash = ((hash << 5) + hash) + str.charCodeAt(i);
+        hash = ((hash << 5) + hash) ^ str.charCodeAt(i);
 
-    return hash;
+    return hash >>> 0;
 }
 
+
+/** 
+ * Внутренняя функция модуля.
+ * Вычисляет цвет тэга исходя из его названия.
+ * @param {string} str - Название тэга.
+ * @returns {string} - Вычисленный цвет в цветовой модели HSL.
+ */
 function pickColor(str) {
     return `hsl(${hashCode(str) % 360}, 100%, 40%)`;
 }
 
 
+/** 
+ * Внутренняя функция модуля.
+ * Создание DOM элемента для тэга
+ * @param {name} str - название тэга.
+ * @returns {HTMLElement} - DOM элемент тэга.
+ */
 function createTagElement(name) {
     var tag = document.createElement("span");
     tag.className = "tag";
@@ -21,6 +47,7 @@ function createTagElement(name) {
     return tag;
 }
 
+/** Открывает боковое меню. */
 function show() {
     const left = document.getElementById("left");
     const right = document.getElementById("right");
@@ -28,6 +55,7 @@ function show() {
     right.classList.add("right");
 }
 
+/** Закрывает боковое меню. */
 function close() {
     const left = document.getElementById("left");
     const right = document.getElementById("right");
@@ -35,6 +63,10 @@ function close() {
     right.classList.remove("right");
 }
 
+/** 
+ * Показывает информацию о событии в боковом меню.
+ * @param {Object} event - Объект события для показа.
+ */
 function showEventDetails(event) {
     var sideMenu = document.getElementById("sideMenu");
     sideMenu.innerHTML = "";
@@ -69,6 +101,7 @@ function showEventDetails(event) {
     sideMenu.appendChild(container);
 }
 
+/* Обработчик события нажатия на ESC (закрывает меню) */
 window.addEventListener('keyup', function (e) {
     var key = e.keyCode;
 

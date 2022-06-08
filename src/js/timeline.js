@@ -1,41 +1,105 @@
+/**
+ * Модуль для работы с временным диапазоном
+ * Работает с четырьмя основными сущностями - начальной и конечной датами, определяющими границы диапазона
+ * текущей датой и ползунком для перемещения по диапазону
+ *  1.  Валидирует входные данные со стороны пользователя (граф. интерфейса или других программных модулей)
+ *  2.  Определяет логику обновления состояния при изменении состояний связанных сущностей 
+ *  3.  Изменяет представление сущностей в граф. интерфейсе
+ *  4.  Предоставляет пользователю интерфейс для изменения состояния сущностей  
+ * @module timeline
+ */
+
 const {getScaleString} = require("./timescale.js");
+
+/** 
+ * Внутрення константа модуля. Количество секунд в одном дне
+ * @constant {number} 
+ */
 const ONE_DAY = 1000 * 60 * 60 * 24;
 
+
+/** 
+ * Расширение прототипа Date. Возвращает новый объект Date, смещенный по дням.
+ * @param {number} days - Количество дней.
+ * @returns {Date} - Смещенная дата.
+ */
 Date.prototype.addDays = function(days) {
     var date = new Date(this.valueOf());
     date.setDate(date.getDate() + days);
     return date;
 }
 
+/** 
+ * Расширение прототипа Date. Возвращает новый объект Date, смещенный по месяцам. 
+ * @param {number} months - Количество месяцев.
+ * @returns {Date} - Смещенная дата.
+ */
 Date.prototype.addMonths = function(months) {
     var date = new Date(this.valueOf());
     date.setMonth(date.getMonth() + months);
     return date;
 }
 
+
+/** 
+ * Расширение прототипа Date. Возвращает новый объект Date, смещенный по годам.
+ * @param {number} months - Количество лет.
+ * @returns {Date} - Смещенная дата.
+ */
 Date.prototype.addYears = function(years) {
     var date = new Date(this.valueOf());
     date.setFullYear(date.getFullYear() + years);
     return date;
 }
 
+
+/** 
+ * Расширение прототипа Date. Возвращает значение Date в строке формата YYYY-MM-DD (совместимой с форматом даты в БД). 
+ * @returns {string} - Дата в формате YYYY-MM-DD.
+ */
 Date.prototype.formatted = function() {
     var date = new Date(this.valueOf());
     return date.toISOString().slice(0, 10);
 }
 
+/** 
+ * Внутренняя функция модуля. Используется для валидации границ временного диапазона.
+ * @param {Date} date_start - Начальная дата.
+ * @param {Date} date_end - Конечная дата.
+ * @returns {boolean} - Промежуток правильный.
+ */
 function isValidRange(date_start, date_end) {
     return date_start < date_end;
 }
 
+/** 
+ * Внутренняя функция модуля. Используется для проверки вхождения текущей даты в границы временного диапазона.
+ * @param {Date} date_start - Начальная дата.
+ * @param {Date} current - Текущая дата.
+ * @param {Date} date_end - Конечная дата.
+ * @returns {boolean} - Дата входит в промежуток.
+ */
 function isInRange(date_start, current, date_end) {
     return date_start <= current && current <= date_end;
 }
 
+
+/** 
+ * Внутренняя функция модуля. Вычисляет количество *полных* дней между датами. 
+ * @param {Date} date_start - Начальная дата.
+ * @param {Date} date_end - Конечная дата.
+ * @returns {number} - Количество дней.
+ */
 function daysDiff(date_start, date_end) {
     return (date_end - date_start) / ONE_DAY;
 }
 
+/** 
+ * Внутренняя функция модуля. Вычисляет количество *полных* месяцев между датами.
+ * @param {Date} date_start - Начальная дата.
+ * @param {Date} date_end - Конечная дата.
+ * @returns {number} - Количество месяцев.
+ */
 function monthsDiff(date_start, date_end) {
     var months;
     months = (date_end.getFullYear() - date_start.getFullYear()) * 12;
@@ -44,12 +108,23 @@ function monthsDiff(date_start, date_end) {
     return months <= 0 ? 0 : months;
 }
 
+/** 
+ * Внутренняя функция модуля. Вычисляет количество *полных* лет между датами.
+ * @param {Date} date_start - Начальная дата.
+ * @param {Date} date_end - Конечная дата.
+ * @returns {number} - Количество лет.
+ */
 function yearsDiff(date_start, date_end) {
     var years = date_end.getFullYear() - date_start.getFullYear();
     return years <= 0 ? 0 : years;
 }
 
 
+/** 
+ * Внутренняя функция модуля. Смещает текущую дату в зависимости от масштаба. Использует модуль timescale.
+ * @param {Date} date - Смещаемая дата.
+ * @returns {Date} - Cмещенная дата.
+ */
 function addScale(date, value) {
     switch (getScaleString()) {
         case "day":
@@ -61,6 +136,12 @@ function addScale(date, value) {
     }
 }
 
+
+/** 
+ * Инициализация начальной и конечной границ временного диапазона. 
+ * @param {string} date_start - Начальная дата в формате YYYY-MM-DD.
+ * @param {string} date_end - Конечная дата в формате YYYY-MM-DD.
+ */
 function initTimeline(date_start, date_end) {
     var tm_start = document.getElementById('timelineStart');
     var tm_current = document.getElementById('timelineCurrent');
@@ -77,13 +158,18 @@ function initTimeline(date_start, date_end) {
     updateRange();
 }
 
+
+/** Установка текущей даты в зависимости от значения ползунка. Вызывается на событие изменения ползунка */
 function updateCurrentDate() {
     var value = Number(document.getElementById('timelineRange').value);
     var date = getStartDate(document.getElementById('timelineRange'));
     setCurrentDate(addScale(date, value), true);
 }
 
-/* TODO: Buggy, rewrite later */
+/** 
+ * Расширяет диапазон до минимальной единицы деления для текущего масштаба (days - один день, months - один месяц...), 
+ * если диапазон меньше минимальной единицы.
+ */
 function adjustDate() {
     switch (getScaleString()) {
         case "month":
@@ -114,6 +200,15 @@ function adjustDate() {
     }
 }
 
+/**
+ * Внутренняя функция модуля.
+ * Синхронизация параметров ползунка под границы временного диапазона и текущую дату.
+ * Устанавливает количество делений как разницу между границами диапазона в единицах текущего масштаба.
+ * Устанавливает текущее значение ползунка как разницу между началом диапазона и текущей датой в единицах текущего масштаба.
+ * @param {Date} date_start - Начальная дата.
+ * @param {Date} date_current - Текущая дата.
+ * @param {Date} date_end - Конечная дата.
+ */
 function syncRange(date_start, date_current, date_end) {
     var range = document.getElementById('timelineRange');
 
@@ -136,6 +231,7 @@ function syncRange(date_start, date_current, date_end) {
     }
 }
 
+/** Синхронизация временного диапазона с предварительной валидацией данных. */
 function updateRange() {
     var date_start = getStartDate(true);
     var date_current = getCurrentDate(true);
@@ -151,6 +247,12 @@ function updateRange() {
     this.old = this.value;
 }
 
+/** 
+ * Внутренняя функция модуля. Получение даты из форм ввода.
+ * @param {string} input_id - id нужного DOM-элемента (input type=date).
+ * @param {boolean} [asdate=false] - Вернуть как объект класса Date если true, иначе как строку формата YYYY-MM-DD.
+ * @returns {(Date|string)} - Дата из указанной формы ввода.
+ */
 function getInputDate(input_id, asdate=false) {
     var value = document.getElementById(input_id).value;
     if (asdate)
@@ -158,18 +260,38 @@ function getInputDate(input_id, asdate=false) {
     return value;
 }
 
+/** Получить начало временного диапазона 
+ * @param {boolean} [asdate=false] - Вернуть как объект класса Date если true, иначе как строку формата YYYY-MM-DD.
+ * @returns {(Date|string)} - Начальная дата.
+ */
 function getStartDate(asdate=false) {
     return getInputDate('timelineStart', asdate);
 }
 
+/** 
+ * Получить текущую дату 
+ * @param {boolean} [asdate=false] - Вернуть как объект класса Date если true, иначе как строку формата YYYY-MM-DD.
+ * @returns {(Date|string)} - Текущая дата.
+ */
 function getCurrentDate(asdate=false) {
     return getInputDate('timelineCurrent', asdate);
 }
 
+/** 
+ * Получить конец временного диапазона 
+ * @param {boolean} [asdate=false] - Вернуть как объект класса Date если true, иначе как строку формата YYYY-MM-DD.
+ * @returns {(Date|string)} - Конечная дата.
+ */
 function getEndDate(asdate=false) {
     return getInputDate('timelineEnd', asdate);
 }
 
+/** Получить конец видимого пользователем на дороге временного промежутка
+ * Используется для экономии ресурсов с помощью обработки только тех событий, которые пользователь напрямую видит, 
+ * а так же для реализации кэширования
+ * @param {boolean} [asdate=false] - Вернуть как объект класса Date если true, иначе как строку формата YYYY-MM-DD.
+ * @returns {(Date|string)} - Конец видимого временного промежутка.
+ */
 function getVisibleDate(asdate=false) {
     let date = getCurrentDate(true);
     let result_date = null;
@@ -191,7 +313,11 @@ function getVisibleDate(asdate=false) {
 }
 
 
-/* TODO: rewrite later */
+/**
+ * Установить начальную дату 
+ * @param {(Date|string)} - Устанавливаемое значение
+ * @param {boolean} [asdate=false] - Если true, то value обрабатывается как объект класса Date, иначе как строка формата YYYY-MM-DD.
+ */
 function setStartDate(value, asdate=false) {
     var date_start = asdate ? value : new Date(value);
     var date_current = getCurrentDate(true);
@@ -210,6 +336,12 @@ function setStartDate(value, asdate=false) {
     syncRange(date_start, date_current, date_end);
 }
 
+
+/**
+ * Установить текущую дату 
+ * @param {(Date|string)} - Устанавливаемое значение
+ * @param {boolean} [asdate=false] - Если true, то value обрабатывается как объект класса Date, иначе как строка формата YYYY-MM-DD.
+ */
 function setCurrentDate(value, asdate=false) {
     var date_start = getStartDate(true);
     var date_current = asdate ? value : new Date(value);
@@ -230,6 +362,12 @@ function setCurrentDate(value, asdate=false) {
     syncRange(date_start, date_current, date_end);
 }
 
+/**
+ * Установить конечную дату 
+ * Установить текущую дату 
+ * @param {(Date|string)} - Устанавливаемое значение
+ * @param {boolean} [asdate=false] - Если true, то value обрабатывается как объект класса Date, иначе как строка формата YYYY-MM-DD.
+ */
 function setEndDate(value, asdate=false) {
     var date_start = getStartDate(true);
     var date_current = getCurrentDate(true);
@@ -249,13 +387,14 @@ function setEndDate(value, asdate=false) {
     syncRange(date_start, date_end, date_end);
 }
 
-
+/** Увеличить текущую дату на одну единицу в зависимости от масштаба. */
 function incrementCurrentDate() {
     var date = getCurrentDate(true);
     setCurrentDate(addScale(date, 1), true);
 }
 
-function decrementCurrentDate(value=-1) {
+/** Уменьшить текущую дату на одну единицу в зависимости от масштаба. */
+function decrementCurrentDate() {
     var date = getCurrentDate(true);
     setCurrentDate(addScale(date, -1), true);
 }
