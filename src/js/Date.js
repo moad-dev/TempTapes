@@ -185,9 +185,10 @@ module.exports = class DateLines
     deleteDates()
     {
         let selectedGroup = scene.getObjectByName("Dates");
-        selectedGroup.traverse(function (date) {
-            deleteObject(date);
-        })
-        scene.remove(selectedGroup);
+        if(selectedGroup) {
+            selectedGroup.traverse(function (date) {
+                deleteObject(date);
+            })
+        }
     }
 }
