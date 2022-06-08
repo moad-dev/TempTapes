@@ -126,7 +126,7 @@ function createEvents(startDate, endDate, dateMode, road)
             break;
     }
 
-    iterateBy(road, async function(date) {
+    iterateBy(road, function(date) {
 
         let events = cache[cachename][road][date];
         let date_tokens = date.split('-');
@@ -144,7 +144,8 @@ function createEvents(startDate, endDate, dateMode, road)
 
         if (events.length > 1)
         {
-            const material = new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/stack.png')});
+            const material = makeMaterialWithShader('../../storage/img/stack.png', color, loader);
+            // const material = new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/stack.png')});
             const plane = new THREE.Mesh( geometry, material );
             let tr = new THREE.Vector3();
             scene.getObjectByName(whichLine).getWorldPosition(tr);
@@ -205,9 +206,28 @@ function editEvent(id, ico, color,  groupName, whichLine)
     selectedPlane.position.set(scene.getObjectByName(groupName).position.x, tr.y + 1, tr.z)
 }
 
-function deleteEvent(id)
+function deleteObject(object)
 {
-    scene.remove( scene.getObjectByName("event " + id) );
+    if(object) {
+        if (object.geometry) {
+            object.geometry.dispose()
+        }
+        if (object.material) {
+            if (object.material.length) {
+                for (let i = 0; i < object.material.length; ++i) {
+                    object.material[i].dispose()
+                }
+            }
+            else {
+                object.material.dispose()
+            }
+        }
+        scene.remove( object );
+    }
+}
+
+function deleteEvent(id) {
+    deleteObject(scene.getObjectByName("event " + id));
 }
 
 function deleteAllEvents()
@@ -218,12 +238,12 @@ function deleteAllEvents()
         {
             let events = cache["events_day"][road][date];
             events.forEach(function (elem){
-                scene.remove(scene.getObjectByName("event " + elem.event_id))
+                deleteObject(scene.getObjectByName("event " + elem.event_id));
             })
         }
     }
     availableStacks.forEach(function (stack){
-        scene.remove(stack)
+        deleteObject(stack);
     });
     availableStacks = []
 }
