@@ -60,6 +60,7 @@ function getEvents(startDate, endDate, dateMode) {
 
         lastEndDate = endDate;
         lastStartDate = startDate;
+        lastDateMode = dateMode;
 
         cache["events_day"] = {};
         cache["events_month"] = {};
