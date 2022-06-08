@@ -1,60 +1,9 @@
-const cacheModule = require("../js/cacheModule.js")
+const cacheModule = require("../js/cacheModule.js");
 let cache = cacheModule.getCache();
 let availableStacks = [];
 //const material = new THREE.MeshBasicMaterial({map: loader.load('../../storage/img/instagram.png'), opacity: 1, transparent: true});
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//   Шейдеры для отрисовки событий
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-function vertexShader() {
-    return `
-        varying vec2 vUv;
-        void main() {
-            vUv = uv;
-            vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
-            gl_Position = projectionMatrix * modelViewPosition;
-        }
-    `;
-}
-function fragmentShader() {
-    return `
-        #ifdef GL_ES
-        precision highp float;
-        #endif
-
-        uniform vec3 color;
-        uniform sampler2D ico;
-
-        varying vec2 vUv;
-
-        void main(void)
-        {
-            vec3 c;
-            vec4 Cb = vec4(color, 1);
-            vec4 Ca = texture2D(ico, vUv);
-            c = Ca.rgb * Ca.a + Cb.rgb * Cb.a * (1.0 - Ca.a);
-            gl_FragColor = vec4(c, 1);
-        }
-    `
-}
-
-function makeMaterialWithShader(src, color, loader) {
-    const texture = loader.load( '../../storage/img/' + src)
-    const uniforms = {
-        color: {type: 'vec3', value: new THREE.Color(color)},
-        ico:   {type: "t",    value: texture}
-    }
-    const attributes = {};
-    material =  new THREE.ShaderMaterial({
-        uniforms: uniforms,
-        fragmentShader: fragmentShader(),
-        vertexShader: vertexShader(),
-    })
-    return material;
-}
-
+const makeMaterialWithShader = require("../js/view/iconShader.js");
 
 function createEvents(startDate, endDate, dateMode, road)
 {

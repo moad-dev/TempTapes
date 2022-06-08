@@ -1,3 +1,5 @@
+const makeMaterialWithShader = require("../js/view/iconShader.js");
+
 function createGroup(color, ico, id, text, posX)
 {
     const line_material = new THREE.LineBasicMaterial( { color: 0x000000 } );
@@ -17,7 +19,7 @@ function createGroup(color, ico, id, text, posX)
     {
         if (i === 0)
         {
-            material = [temp, temp, temp, temp, new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/' + ico)}), temp];
+            material = [temp, temp, temp, temp, makeMaterialWithShader('../../storage/img/' + ico, color, loader), temp];
         }
         else
         {
@@ -91,7 +93,7 @@ function editGroup(color, ico, id, newText)
     let temp = new THREE.MeshBasicMaterial({color: color});
     let material = [temp, temp, temp, temp, temp, temp];
     const loader = new THREE.TextureLoader();
-    let facematerial = [temp, temp, temp, temp, new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/' + ico)}), temp];
+    let facematerial = [temp, temp, temp, temp, makeMaterialWithShader('../../storage/img/' + ico, color, loader), temp];
     let i = 0;
     selectedGroup.traverse(function (child)
     {
