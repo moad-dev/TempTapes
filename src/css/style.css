@@ -274,6 +274,12 @@ Side menu
     margin-top: 15px;
 }
 
+.sidemenu__details .date {
+    text-align: center;
+    size: 20px;
+    margin-top: 15px;
+}
+
 /*~~~~~~~~~~~~~~
 Модальные окна
 ~~~~~~~~~~~~~~*/

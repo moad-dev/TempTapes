@@ -16,6 +16,7 @@ let events_watcher = null;
 
 let lastEndDate = undefined;
 let lastStartDate = undefined;
+let lastDateMode = undefined;
 
 let cache =
 {
@@ -31,7 +32,7 @@ function isEventsTransfering() {
 }
 
 function getEvents(startDate, endDate, dateMode) {
-    if(startDate >= lastStartDate && endDate <= lastEndDate) {
+    if(startDate >= lastStartDate && endDate <= lastEndDate && lastDateMode == dateMode) {
         if(onEventsReady) {
             cache["roads"].forEach((road) => {
                 onEventsReady(road.path_id);
@@ -91,6 +92,7 @@ ipcRenderer.on("send events", (event, reply) =>
     cache["events_year"][reply["path_id"]] = {};
     reply["events"].forEach(event => {
         event.tags = null;
+        event.road_name = cache["roads"][reply["path_id"]].name;
         let date_tokens = event.date.split('-');
         let month = date_tokens[0] + '-' + date_tokens[1];
         let year = date_tokens[0];

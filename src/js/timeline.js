@@ -347,6 +347,8 @@ function setCurrentDate(value, asdate=false) {
     var date_current = asdate ? value : new Date(value);
     var date_end = getEndDate(true);
 
+    date_current.setHours(11, 0, 0);
+
     if (!isValidRange(date_start, date_end) ||
         !isInRange(date_start, date_current, date_end)) {
 

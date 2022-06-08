@@ -46,7 +46,10 @@ function showEventDetails(event) {
         icon.src = "../../storage/img/" + event.icon;
     var name = document.createElement("div");
         name.classList.add("head");
-        name.innerHTML = event.name;
+        name.innerHTML = event.name + " — " + event.road_name;
+    var date = document.createElement("div");
+        date.classList.add("date");
+        date.innerHTML = event.date;
     var description = document.createElement("div");
         description.classList.add("text");
         description.innerHTML = event.description;
@@ -60,6 +63,7 @@ function showEventDetails(event) {
     iconContainer.appendChild(icon);
     container.appendChild(iconContainer);
     container.appendChild(name);
+    container.appendChild(date);
     container.appendChild(description);
     container.appendChild(tagsContainer);
     sideMenu.appendChild(container);
