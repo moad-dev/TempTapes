@@ -17,16 +17,15 @@
   ],
   "license": "UNLICENSED",
   "build": {
-      "appId": "temptapes",
-      "files" : [
-      ],
-      "extraFiles": [
-        "database/database_module.js",
-        "storage/**/*",
-        "node_modules/**/*"
-      ],
-      "win": {},
-      "linux": {}
+    "appId": "temptapes",
+    "files": [],
+    "extraFiles": [
+      "database/database_module.js",
+      "storage/**/*",
+      "node_modules/**/*"
+    ],
+    "win": {},
+    "linux": {}
   },
   "scripts": {
     "start": "electron .",
