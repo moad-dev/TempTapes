@@ -175,10 +175,10 @@ function getEventsByPath(path_id, callback) {
 
 function getEventTags(event_id, callback) {
     db.all(
-        `SELECT tags.name FROM bind_event_tag 
+        `SELECT tags.name FROM bind_event_tag
         JOIN tags ON bind_event_tag.tag_id == tags.tag_id
         WHERE event_id == ?`,
-        event_id, 
+        event_id,
         (err, rows) => { callback(err, rows);}
     );
 }
@@ -253,7 +253,7 @@ function makeEvent(name, color, icon, date, description, path_id, callback) {
             6: path_id
         },
         function (err) {
-            callback(err);
+            callback(err, this.lastID);
         }
     );
 }

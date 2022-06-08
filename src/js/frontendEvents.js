@@ -40,6 +40,9 @@ function getEvents(action_id = null, action_event = null)
             cacheModule.editEventInCache(action_id, action_event);
         else
             cacheModule.removeEventFromCache(action_id);
+    else
+        if(action_event)
+            cacheModule.addEventToCache(action_event);
     Dates.deleteDates();
     Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
     Dates.createDates(axisCenter + 1);
@@ -281,7 +284,7 @@ ipcRenderer.on("send all roads", (event, reply) =>
 ipcRenderer.on("event added", (event, reply) =>
 {
     reply = JSON.parse(reply);
-    getEvents();
+    getEvents(null, reply["event"]);
 });
 ipcRenderer.on("event edited", (event, reply) =>
 {

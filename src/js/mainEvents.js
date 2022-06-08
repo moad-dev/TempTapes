@@ -55,14 +55,14 @@ function run(database, ipcMain) {
                 }
             );
     });
-    
+
     ipcMain.on("get event tags", (event, request) =>
     {
         request = JSON.parse(request);
         var reply = {event_id: request["event_id"], tags: []};
         database.getEventTags(request["event_id"], (err, rows) => {
             rows.forEach(row => {
-                reply["tags"].push(row.name); 
+                reply["tags"].push(row.name);
             });
             event.reply("send event tags", JSON.stringify(reply));
         });
@@ -164,9 +164,10 @@ function run(database, ipcMain) {
                 request["date"],
                 request["description"],
                 request["path_id"],
-            (err) => {
+            function (err, lastID) {
                 if(!err) {
                     reply["event"] = {
+                        event_id: lastID,
                         name: request["name"],
                         color: request["color"],
                         icon: request["icon"],

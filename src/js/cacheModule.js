@@ -92,21 +92,7 @@ ipcRenderer.on("send events", (event, reply) =>
     cache["events_month"][reply["path_id"]] = {};
     cache["events_year"][reply["path_id"]] = {};
     reply["events"].forEach(event => {
-        event.tags = null;
-        event.road_name = cache["roads"][reply["path_id"]].name;
-        let date_tokens = event.date.split('-');
-        let month = date_tokens[0] + '-' + date_tokens[1];
-        let year = date_tokens[0];
-        if(!cache["events_day"][reply["path_id"]][event.date])
-            cache["events_day"][reply["path_id"]][event.date] = [];
-        cache["events_day"][reply["path_id"]][event.date].push(event);
-        if(!cache["events_month"][reply["path_id"]][month])
-            cache["events_month"][reply["path_id"]][month] = [];
-        cache["events_month"][reply["path_id"]][month].push(event);
-        if(!cache["events_year"][reply["path_id"]][year])
-            cache["events_year"][reply["path_id"]][year] = [];
-        cache["events_year"][reply["path_id"]][year].push(event);
-
+        addEventToCache(event);
     });
 
     if(onEventsReady)
@@ -124,7 +110,22 @@ ipcRenderer.on("send root roads", (event, reply) =>
     if(onRoadsReady)
         onRoadsReady();
 });
-
+function addEventToCache(event) {
+    event.tags = null;
+    event.road_name = cache["roads"][event.path_id].name;
+    let date_tokens = event.date.split('-');
+    let month = date_tokens[0] + '-' + date_tokens[1];
+    let year = date_tokens[0];
+    if(!cache["events_day"][event.path_id][event.date])
+        cache["events_day"][event.path_id][event.date] = [];
+    cache["events_day"][event.path_id][event.date].push(event);
+    if(!cache["events_month"][event.path_id][month])
+        cache["events_month"][event.path_id][month] = [];
+    cache["events_month"][event.path_id][month].push(event);
+    if(!cache["events_year"][event.path_id][year])
+        cache["events_year"][event.path_id][year] = [];
+    cache["events_year"][event.path_id][year].push(event);
+}
 function findEventInCache(id) {
     for (var road in cache["events_day"]) {
         for(var date in cache["events_day"][road]) {
@@ -189,6 +190,7 @@ function getCache() {
 }
 
 module.exports = {
+    addEventToCache: addEventToCache,
     findEventInCache: findEventInCache,
     editEventInCache: editEventInCache,
     removeEventFromCache: removeEventFromCache,
