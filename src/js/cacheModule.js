@@ -16,6 +16,7 @@ let events_watcher = null;
 
 let lastEndDate = undefined;
 let lastStartDate = undefined;
+let lastDateMode = undefined;
 
 let cache =
 {
@@ -31,7 +32,7 @@ function isEventsTransfering() {
 }
 
 function getEvents(startDate, endDate, dateMode) {
-    if(startDate >= lastStartDate && endDate <= lastEndDate) {
+    if(startDate >= lastStartDate && endDate <= lastEndDate && lastDateMode == dateMode) {
         if(onEventsReady) {
             cache["roads"].forEach((road) => {
                 onEventsReady(road.path_id);
