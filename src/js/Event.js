@@ -280,7 +280,7 @@ function stackClick(plane, scale)
         let eventObj = scene.getObjectByName("event " + event.event_id);
         if (eventObj)
         {
-            scene.remove(eventObj);
+            deleteObject(eventObj);
         }
         else
         {

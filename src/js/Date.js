@@ -1,3 +1,22 @@
+function deleteObject(object)
+{
+    if(object) {
+        if (object.geometry) {
+            object.geometry.dispose()
+        }
+        if (object.material) {
+            if (object.material.length) {
+                for (let i = 0; i < object.material.length; ++i) {
+                    object.material[i].dispose()
+                }
+            }
+            else {
+                object.material.dispose()
+            }
+        }
+        scene.remove( object );
+    }
+}
 
 module.exports = class DateLines
 {
@@ -165,6 +184,6 @@ module.exports = class DateLines
     deleteDates()
     {
         let selectedGroup = scene.getObjectByName("Dates");
-        scene.remove(selectedGroup);
+        deleteObject(selectedGroup);
     }
 }
