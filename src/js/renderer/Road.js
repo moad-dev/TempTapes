@@ -1,4 +1,4 @@
-const makeMaterialWithShader = require("../js/view/iconShader.js");
+const makeMaterialWithShader = require("./view/iconShader.js");
 
 function createGroup(color, ico, id, text, posX)
 {

@@ -1,9 +1,9 @@
-const cacheModule = require("../js/cacheModule.js");
+const cacheModule = require("./cacheModule.js");
 let cache = cacheModule.getCache();
 let availableStacks = [];
 //const material = new THREE.MeshBasicMaterial({map: loader.load('../../storage/img/instagram.png'), opacity: 1, transparent: true});
 
-const makeMaterialWithShader = require("../js/view/iconShader.js");
+const makeMaterialWithShader = require("./view/iconShader.js");
 
 function createEvents(startDate, endDate, dateMode, road)
 {

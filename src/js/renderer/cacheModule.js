@@ -11,7 +11,7 @@ function setOnRoadsReady (func) {
     onRoadsReady = func;
 }
 
-const Watcher = require("../js/multipleProcessWatcher.js");
+const Watcher = require("./multipleProcessWatcher.js");
 let events_watcher = null;
 
 let lastEndDate = undefined;

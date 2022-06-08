@@ -14,10 +14,10 @@ const {
     incrementCurrentDate,
     decrementCurrentDate
 } = require("./timeline");
-const {stackClick} = require("../js/Event.js")
-const timescale = require('../js/timescale.js');
-const frontendEvents = require("../js/frontendEvents.js");
-const cacheModule = require("../js/cacheModule.js");
+const {stackClick} = require("./Event.js")
+const timescale = require('./timescale.js');
+const frontendEvents = require("./frontendEvents.js");
+const cacheModule = require("./cacheModule.js");
 // Сеттеры для обработчиков событий кликов по элементам интерфейса three.js
 const {
     setEventClickHandler,
@@ -26,7 +26,7 @@ const {
 } = require("./setup");
 const {getScale} = require("./timescale");
 const sideMenu = require("./view/sideMenu");
-const {getLastValue, setLastValue} = require("./horizontallScrollBar");
+const {getLastValue, setLastValue} = require("./view/horizontallScrollBar");
 
 // const addText = (selector, text) => {
 //     const element = document.getElementById(selector);

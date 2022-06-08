@@ -4,26 +4,26 @@
 
 const {ipcRenderer} = require("electron");
 
-const {createGroup, deleteGroup, editGroup} = require("../js/Road.js");
+const {createGroup, deleteGroup, editGroup} = require("./Road.js");
 
 //{createEvents, deleteEvent, editEvent, deleteAllEvents}
-const eventModule = require("../js/Event.js");
+const eventModule = require("./Event.js");
 
-const {setScale, getScale} = require('../js/timescale.js');
+const {setScale, getScale} = require('./timescale.js');
 const {
     initTimeline, updateRange, updateCurrentDate, adjustDate,
     getCurrentDate, getEndDate, getStartDate, getVisibleDate
-} = require("../js/timeline.js");
+} = require("./timeline.js");
 
-const {checkBarVisibility, getLastValue, setLastValue} = require('../js/horizontallScrollBar');
+const {checkBarVisibility, getLastValue, setLastValue} = require('./view/horizontallScrollBar');
 const sideMenu = require("./view/sideMenu");
 //~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Инициализация переменных
 //~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-let DateLines = require("../js/Date.js");
+let DateLines = require("./Date.js");
 let Dates;
-const cacheModule = require("../js/cacheModule.js");
+const cacheModule = require("./cacheModule.js");
 let cache = cacheModule.getCache();
 let axisCenter;
 
