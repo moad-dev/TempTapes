@@ -5,6 +5,7 @@ function deleteObject(object)
             object.geometry.dispose()
         }
         if (object.material) {
+            object.material.map.dispose();
             if (object.material.length) {
                 for (let i = 0; i < object.material.length; ++i) {
                     object.material[i].dispose()
@@ -184,6 +185,9 @@ module.exports = class DateLines
     deleteDates()
     {
         let selectedGroup = scene.getObjectByName("Dates");
-        deleteObject(selectedGroup);
+        selectedGroup.traverse(function (date) {
+            deleteObject(date);
+        })
+        scene.remove(selectedGroup);
     }
 }

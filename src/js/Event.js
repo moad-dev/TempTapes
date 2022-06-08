@@ -213,6 +213,9 @@ function deleteObject(object)
             object.geometry.dispose()
         }
         if (object.material) {
+            if(material.uniforms) {
+                material.uniforms.ico.value.dispose();
+            }
             if (object.material.length) {
                 for (let i = 0; i < object.material.length; ++i) {
                     object.material[i].dispose()
