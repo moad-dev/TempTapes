@@ -1,18 +1,37 @@
 {
   "name": "temptapes",
   "version": "1.0.0",
-  "author": "MOAD team",
-  "contributors" : [
-      "Dmitry Shuharin <89324713054@mail.ru>",
-      "Danil Krivorogov <daniil.k@mail.ru>",
-      "Arseny Khodyrev",
-      "Albert Fazlyev <albert.fz@yandex.ru>"
+  "author": "MOAD team <89324713054@mail.ru>",
+  "contributors": [
+    "Dmitry Shuharin <89324713054@mail.ru>",
+    "Danil Krivorogov <daniil.k@mail.ru>",
+    "Arseny Khodyrev",
+    "Albert Fazlyev <albert.fz@yandex.ru>"
   ],
   "description": "Приложение для визуализации хронологических лент и событий на них",
-  "keywords": ["timeline", "временные ленты", "chronology", "визуализация событий"],
+  "keywords": [
+    "timeline",
+    "временные ленты",
+    "chronology",
+    "визуализация событий"
+  ],
   "license": "UNLICENSED",
+  "build": {
+      "appId": "temptapes",
+      "files" : [
+      ],
+      "extraFiles": [
+        "database/database_module.js",
+        "storage/**/*",
+        "node_modules/**/*"
+      ],
+      "win": {},
+      "linux": {}
+  },
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "main": "src/js/index.js",
   "dependencies": {
@@ -20,6 +39,6 @@
   },
   "devDependencies": {
     "electron": "^19.0.3",
-    "electron-packager": "^15.5.1"
+    "electron-builder": "^23.0.3"
   }
 }
