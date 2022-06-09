@@ -106,6 +106,17 @@ ipcRenderer.on("send root roads", (event, reply) =>
 {
     reply = JSON.parse(reply);
     cache["roads"] = reply["roads"];
+    cache["roads"].forEach(function(path)
+    {
+        if(!cache["events_day"][path.path_id]
+            || !cache["events_month"][path.path_id]
+            || !cache["events_year"][path.path_id])
+        {
+            cache["events_day"][path.path_id] = {};
+            cache["events_month"][path.path_id] = {};
+            cache["events_year"][path.path_id] = {};
+        }
+    })
     events_watcher = new Watcher(reply["roads"].length);
     if(onRoadsReady)
         onRoadsReady();
