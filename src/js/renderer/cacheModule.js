@@ -112,7 +112,6 @@ ipcRenderer.on("send root roads", (event, reply) =>
 });
 function addEventToCache(event) {
     event.tags = null;
-    event.road_name = cache["roads"][event.path_id].name;
     let date_tokens = event.date.split('-');
     let month = date_tokens[0] + '-' + date_tokens[1];
     let year = date_tokens[0];
@@ -152,7 +151,31 @@ function removeEventFromCache(id) {
                     delete cache["events_day"][road][date];
                 else
                     cache["events_day"][road][date].splice(index, 1);
-                return 0;
+            }
+        }
+    }
+    for (var road in cache["events_month"]) {
+        for(var date in cache["events_month"][road]) {
+            console.log(date);
+            const index = cache["events_month"][road][date]
+                .findIndex(element => element.event_id == id);
+            if(!(index < 0)) {
+                if(cache["events_month"][road][date].length == 1)
+                    delete cache["events_month"][road][date];
+                else
+                    cache["events_month"][road][date].splice(index, 1);
+            }
+        }
+    }
+    for (var road in cache["events_year"]) {
+        for(var date in cache["events_year"][road]) {
+            const index = cache["events_year"][road][date]
+                .findIndex(element => element.event_id == id);
+            if(!(index < 0)) {
+                if(cache["events_year"][road][date].length == 1)
+                    delete cache["events_year"][road][date];
+                else
+                    cache["events_year"][road][date].splice(index, 1);
             }
         }
     }

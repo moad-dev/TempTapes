@@ -3,8 +3,7 @@
  * Изменяет отображение бокового меню
  * @module view/sideMenu
  */
-
-
+const cacheModule = require("../cacheModule.js");
 /** 
  * Внутренняя функция модуля. Вычисление хэш-суммы с помощью алгоритма djb2 (Bernstein hash).
  * Используется для раскраски тэгов в меню.
@@ -78,7 +77,7 @@ function showEventDetails(event) {
         icon.src = "../../storage/img/" + event.icon;
     var name = document.createElement("div");
         name.classList.add("head");
-        name.innerHTML = event.name + " — " + event.road_name;
+        name.innerHTML = event.name + " — " + cacheModule.getCache()["roads"][event.path_id].name;
     var date = document.createElement("div");
         date.classList.add("date");
         date.innerHTML = event.date;
