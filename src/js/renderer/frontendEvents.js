@@ -211,7 +211,8 @@ function onRoadsReady() {
         );
     });
     Dates.createDates(axisCenter + 1);
-    setScale(2)
+    setScale(2);
+    document.getElementById("select-scale").innerHTML = "Д";
     getEvents();
     ipcRenderer.send("get all roads", "{}");
 }
