@@ -88,7 +88,7 @@ function createEvents(startDate, endDate, dateMode, road)
 
         const loader = new THREE.TextureLoader();
         const geometry = new THREE.PlaneGeometry( 0.75, 0.75 );
-        let color = cache["roads"][road].color;
+        let color = cache["roads"][cache["roads"].map( el => el.path_id ).indexOf(road)].color;
 
         if (events.length > 1)
         {
