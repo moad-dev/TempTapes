@@ -233,6 +233,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("editEventColorPeeker").value = selected_event.color;
                 document.getElementById("editEventDate").value = selected_event.date;
                 document.getElementById("editEventDescription").value = selected_event.description;
+                document.getElementById("editEventColorTransparent").checked = selected_event.color == null;
                 document.getElementById("editEventIcon").childNodes.forEach(elem => {
                     elem.removeAttribute("selected");
                 });
