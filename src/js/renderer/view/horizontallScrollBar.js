@@ -16,11 +16,12 @@ function getScrollBar()
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function checkBarVisibility(cache)
 {
+    const numberOfRoadsWhenShowing = 9
     if (cacheLength > cache["roads"].length)
     {
         cacheLength = cache["roads"].length;
         let scrollBar = getScrollBar();
-        if (cacheLength <= 11)
+        if (cacheLength <= numberOfRoadsWhenShowing)
         {
             scrollBar.style.visibility = "hidden";
         }
@@ -34,7 +35,7 @@ function checkBarVisibility(cache)
         {
             cacheLength = cache["roads"].length;
             let scrollBar = getScrollBar();
-            if (cacheLength > 11)
+            if (cacheLength > numberOfRoadsWhenShowing)
             {
                 scrollBar.style.visibility = "";
             }
