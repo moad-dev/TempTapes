@@ -128,7 +128,7 @@ function makeEvent()
     let icon = document.getElementById('makeEventIcon').value;
     let date = document.getElementById('makeEventDate').value;
     let description = document.getElementById('makeEventDescription').value;
-    let path_id = document.getElementById('makeEventPath').value;
+    let path_id = Number(document.getElementById('makeEventPath').value);
     if(!name || !icon || !date || !path_id) {
         console.log("make event error: name, icon, date, path_id cannot be null");
     } else {
