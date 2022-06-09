@@ -139,17 +139,8 @@ function findEventInCache(id) {
     return null;
 }
 function editEventInCache(id, event) {
-    for (var road in cache["events_day"]) {
-        for(var date in cache["events_day"][road]) {
-            const index = cache["events_day"][road][date]
-                            .findIndex(element => element.event_id == id);
-            if(!(index < 0)) {
-                cache["events_day"][road][date][index] = event;
-                return 0;
-            }
-        }
-    }
-    return -1;
+    removeEventFromCache(id);
+    addEventToCache(event);
 }
 function removeEventFromCache(id) {
     for (var road in cache["events_day"]) {
