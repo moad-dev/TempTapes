@@ -203,6 +203,10 @@ function getCache() {
     return cache;
 }
 
+function findPathById(id) {
+    return cache["roads"][cache["roads"].map( el => el.path_id ).indexOf(id)];
+}
+
 module.exports = {
     addEventToCache: addEventToCache,
     findEventInCache: findEventInCache,
@@ -216,5 +220,6 @@ module.exports = {
     setOnEventsReady: setOnEventsReady,
     isEventsTransfering: isEventsTransfering,
     getEvents: getEvents,
-    getRoads: getRoads
+    getRoads: getRoads,
+    findPathById: findPathById
 }

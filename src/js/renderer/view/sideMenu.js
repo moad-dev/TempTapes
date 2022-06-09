@@ -4,7 +4,7 @@
  * @module view/sideMenu
  */
 const cacheModule = require("../cacheModule.js");
-/** 
+/**
  * Внутренняя функция модуля. Вычисление хэш-суммы с помощью алгоритма djb2 (Bernstein hash).
  * Используется для раскраски тэгов в меню.
  * @param {string} str - Входная строка.
@@ -20,7 +20,7 @@ function hashCode(str) {
 }
 
 
-/** 
+/**
  * Внутренняя функция модуля.
  * Вычисляет цвет тэга исходя из его названия.
  * @param {string} str - Название тэга.
@@ -31,7 +31,7 @@ function pickColor(str) {
 }
 
 
-/** 
+/**
  * Внутренняя функция модуля.
  * Создание DOM элемента для тэга
  * @param {name} str - название тэга.
@@ -62,7 +62,7 @@ function close() {
     right.classList.remove("right");
 }
 
-/** 
+/**
  * Показывает информацию о событии в боковом меню.
  * @param {Object} event - Объект события для показа.
  */
@@ -77,7 +77,7 @@ function showEventDetails(event) {
         icon.src = "../../storage/img/" + event.icon;
     var name = document.createElement("div");
         name.classList.add("head");
-        name.innerHTML = event.name + " — " + cacheModule.getCache()["roads"][event.path_id].name;
+        name.innerHTML = event.name + " — " + cacheModule.findPathById(event.path_id).name;
     var date = document.createElement("div");
         date.classList.add("date");
         date.innerHTML = event.date;
