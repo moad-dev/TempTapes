@@ -3,6 +3,12 @@ const {ipcRenderer} = require("electron");
 
 let allForms = document.querySelectorAll('form');
 
+function isNumeric(str) {
+  if (typeof str != "string") return false // we only process strings!
+  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+}
+
 allForms.forEach(function (form) {
     form.addEventListener("submit", function(e) {
         e.preventDefault();
@@ -19,7 +25,11 @@ allForms.forEach(function (form) {
                     if(!value || value == "") {
                         request[name] = null;
                     } else {
-                        request[name] = value;
+                        if(isNumeric(value)) {
+                            request[name] = Number(value);
+                        } else {
+                            request[name] = value;
+                        }
                     }
                 }
             }
