@@ -116,54 +116,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // ~~~~~~~~~ Обработчики событий элементов управления событиями и дорогами
 
-    document
-        .getElementById("deletePathBtn")
-        .addEventListener("click", () => {
-            let paths_select = document.querySelector("form[data-action='delete path']")
-                                .querySelector("select[name='path_id']");
-
-            let values = [];
-            cacheModule.getCache()["roads"].forEach(function(path) {
-                values.push({text: path.name, value: path.path_id})
-            });
-            formsProcessing.fillSelectTag(paths_select, values);
-        });
-
-    document
-        .querySelector("form[data-action='edit path']")
-        .querySelector("select[name=path_id]")
-        .addEventListener("change", () => {
-            let form = document.querySelector("form[data-action='edit path']");
-            let path = cacheModule.findPathById(form.querySelector("select[name=path_id]").value);
-            formsProcessing.setForm({
-                name: path.name,
-                color: path.color,
-                icon: path.icon
-            }, form);
-        });
-    document
-        .getElementById("editPathBtn")
-        .addEventListener("click", () => {
-            let cachedRoads = cacheModule.getCache()["roads"];
-            let form = document.querySelector("form[data-action='edit path']");
-            let paths_select = form.querySelector("select[name=path_id]");
-
-            let values = [];
-            cachedRoads.forEach(function(path) {
-                values.push({text: path.name, value: path.path_id})
-            });
-            formsProcessing.fillSelectTag(paths_select, values);
-
-            if(!(cachedRoads === undefined || cachedRoads.length == 0)) {
-                let path = cachedRoads[0];
-                formsProcessing.setForm({
-                    name: path.name,
-                    color: path.color,
-                    icon: path.icon
-                }, form);
-            }
-        });
-
     setStackClickHandler(function (event, obj){
         stackClick(obj, getScale());
     });
@@ -172,8 +124,23 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // меню дороги
     setPathClickHandler(function (event, id) {
+        let selected_path = cacheModule.findPathById(id);
         if((event || window.event).which == 3) // если ПКМ
         {
+            if(selected_path) {
+                // Устанавливаем начальные значения выбранного элемента в модальных окнах
+                formsProcessing.setForm({
+                    name: selected_path.name,
+                    color: selected_path.color,
+                    icon: selected_path.icon,
+                    path_id: selected_path.path_id
+                }, document.querySelector("form[data-action='edit path']"));
+                formsProcessing.setForm({
+                    path_id: selected_path.path_id
+                }, document.querySelector("form[data-action='delete path']"));
+                // Включаем контекстное меню
+                contextMenu.toggleMenuOn(document.getElementById("pathsContextMenu"), event);
+            }
         }
     });
 
