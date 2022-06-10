@@ -79,12 +79,12 @@
                 <select name="icon"></select>
             </div>
             <input name="parent_id" type="hidden" value="">
-            <input type="submit" value="Создать">
+            <input class="modal__button" type="submit" value="Создать">
         </form>
     </div>
 
     <!--  Модальное окно удаления дороги  -->
-    <div class="modal" data-modal="pathDelete">
+    <div class="modal modal__warning" data-modal="pathDelete">
         <!--   Svg иконка для закрытия окна  -->
         <svg class="modal__cross js-modal-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
@@ -94,7 +94,7 @@
                 <input type="hidden" value="" name="path_id"></input>
                 <div style="text-align: center;">
                     <h4>Вы действительно хотите удалить дорогу?</h4>
-                    <input type="submit" value="Удалить">
+                    <input class="modal__button modal__button_warning" type="submit" value="Удалить">
                 </div>
             </div>
         </form>
@@ -124,7 +124,7 @@
                 <select name="icon"></select>
             </div>
             <input name="parent_id" type="hidden" value="">
-            <input type="submit" value="Редактировать">
+            <input class="modal__button" type="submit" value="Редактировать">
         </form>
     </div>
 
@@ -162,7 +162,7 @@
                 <label>Дорога</label>
                 <select name="path_id"></select>
             </div>
-            <input type="submit" value="Создать">
+            <input class="modal__button" type="submit" value="Создать">
         </form>
     </div>
 
@@ -201,12 +201,12 @@
                 <select name="path_id"></select>
             </div>
             <input name="event_id" type="hidden" value="">
-            <input type="submit" value="Редактировать">
+            <input class="modal__button" type="submit" value="Редактировать">
         </form>
     </div>
 
     <!--  Модальное окно удаления события  -->
-    <div class="modal" data-modal="eventDelete">
+    <div class="modal modal__warning" data-modal="eventDelete">
         <!--   Svg иконка для закрытия окна  -->
         <svg class="modal__cross js-modal-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
@@ -215,7 +215,7 @@
             <input type="hidden" name="event_id" value="">
             <div style="text-align: center;">
                 <h4>Вы действительно хотите удалить событие?</h4>
-                <input type="submit" value="Удалить">
+                <input class="modal__button modal__button_warning" type="submit" value="Удалить">
             </div>
         </form>
     </div>

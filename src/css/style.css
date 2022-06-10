@@ -5,6 +5,7 @@ html {
 
 body {
     height: 100%;
+    font-family: sans-serif;
 }
 
 .N {
@@ -321,6 +322,11 @@ Side menu
     transition: 0.3s all;
 }
 
+.modal__warning {
+    background-color: #f00;
+    color: #fff;
+}
+
 /* Стили для активных классов подложки и окна */
 .modal.active,
 .overlay.active {
@@ -346,6 +352,19 @@ Side menu
 .modal__field {
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+.modal__button {
+    border-radius: 10px;
+    border-width: 2px;
+    background: none;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.modal__button_warning {
+    border-color: #fff;
+    color: #fff;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~
