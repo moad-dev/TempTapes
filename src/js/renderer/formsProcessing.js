@@ -53,14 +53,7 @@ function setForm(object, form) {
     form.querySelectorAll("select").forEach(function(select) {
         let value = object[select.name];
         if(typeof value == "number" || typeof value == "string") {
-            select.childNodes.forEach(option => {
-                option.removeAttribute("selected");
-            });
-            select.childNodes.forEach(option => {
-                if(option.value == value) {
-                    option.setAttribute('selected', 'selected');
-                }
-            });
+            select.value = value;
         }
     });
     form.querySelectorAll('input[type="checkbox"]').forEach(function(input) {

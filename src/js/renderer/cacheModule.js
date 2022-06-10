@@ -167,7 +167,6 @@ function removeEventFromCache(id) {
     }
     for (var road in cache["events_month"]) {
         for(var date in cache["events_month"][road]) {
-            console.log(date);
             const index = cache["events_month"][road][date]
                 .findIndex(element => element.event_id == id);
             if(!(index < 0)) {
