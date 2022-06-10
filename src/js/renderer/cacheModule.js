@@ -214,7 +214,8 @@ function getCache() {
 }
 
 function findPathById(id) {
-    return cache["roads"][cache["roads"].map( el => el.path_id ).indexOf(id)];
+    // return cache["roads"][cache["roads"].map( el => el.path_id ).indexOf(id)];
+    return cache["roads"].filter( path => { return path.path_id == id; } )[0];
 }
 
 module.exports = {

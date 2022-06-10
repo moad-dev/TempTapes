@@ -28,11 +28,6 @@ const {getScale} = require("./timescale");
 const sideMenu = require("./view/sideMenu");
 const {getLastValue, setLastValue} = require("./view/horizontallScrollBar");
 
-// const addText = (selector, text) => {
-//     const element = document.getElementById(selector);
-//     if (element) element.innerText += text;
-// };
-
 window.addEventListener("DOMContentLoaded", () => {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,15 +119,14 @@ window.addEventListener("DOMContentLoaded", () => {
     document
         .getElementById("deletePathBtn")
         .addEventListener("click", () => {
-            let paths = document.querySelector("form[data-action='delete path']")
+            let paths_select = document.querySelector("form[data-action='delete path']")
                                 .querySelector("select[name='path_id']");
-            paths.innerHTML = "";
+
+            let values = [];
             cacheModule.getCache()["roads"].forEach(function(path) {
-                let option = document.createElement("option");
-                option.innerHTML = path.name;
-                option.value = path.path_id;
-                paths.appendChild(option);
+                values.push({text: path.name, value: path.path_id})
             });
+            formsProcessing.fillSelectTag(paths_select, values);
         });
 
     document
@@ -140,10 +134,7 @@ window.addEventListener("DOMContentLoaded", () => {
         .querySelector("select[name=path_id]")
         .addEventListener("change", () => {
             let form = document.querySelector("form[data-action='edit path']");
-            let path = cacheModule.getCache()["roads"].filter(
-                obj => {
-                    return obj.path_id == form.querySelector("select[name=path_id]").value;
-                })[0];
+            let path = cacheModule.findPathById(form.querySelector("select[name=path_id]").value);
             formsProcessing.setForm({
                 name: path.name,
                 color: path.color,
@@ -156,13 +147,13 @@ window.addEventListener("DOMContentLoaded", () => {
             let cachedRoads = cacheModule.getCache()["roads"];
             let form = document.querySelector("form[data-action='edit path']");
             let paths_select = form.querySelector("select[name=path_id]");
-            paths_select.innerHTML = "";
+
+            let values = [];
             cachedRoads.forEach(function(path) {
-                let option = document.createElement("option");
-                option.innerHTML = path.name;
-                option.value = path.path_id;
-                paths_select.appendChild(option);
+                values.push({text: path.name, value: path.path_id})
             });
+            formsProcessing.fillSelectTag(paths_select, values);
+
             if(!(cachedRoads === undefined || cachedRoads.length == 0)) {
                 let path = cachedRoads[0];
                 formsProcessing.setForm({
