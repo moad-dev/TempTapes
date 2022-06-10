@@ -47,6 +47,7 @@ window.addEventListener("DOMContentLoaded", () => {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     const formsProcessing = require("./formsProcessing.js");
+    formsProcessing.setup();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Контекстное меню для событий и дорог
@@ -120,12 +121,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // ~~~~~~~~~ Обработчики событий элементов управления событиями и дорогами
 
-    // document
-    //     .getElementById("makePathSubmit")
-    //     .addEventListener("click", function(e) {
-    //         modalWindow.closeParentModal(this);
-    //         frontendEvents.makePath();
-    //     });
     document
         .getElementById("deletePathBtn")
         .addEventListener("click", () => {
@@ -149,16 +144,11 @@ window.addEventListener("DOMContentLoaded", () => {
                 obj => {
                     return obj.path_id == form.querySelector("select[name=path_id]").value;
                 })[0];
-            form.querySelector("input[name=name]").value = path.name;
-            form.querySelector("input[name=color]").value = path.color;
-            form.querySelector("input[name=icon]").childNodes.forEach(elem => {
-                elem.removeAttribute("selected");
-            });
-            form.querySelector("input[name=icon]").childNodes.forEach(elem => {
-                if(elem.innerHTML == path.icon) {
-                    elem.setAttribute('selected', 'selected');
-                }
-            });
+            formsProcessing.setForm({
+                name: path.name,
+                color: path.color,
+                icon: path.icon
+            }, form);
         });
     document
         .getElementById("editPathBtn")
@@ -175,16 +165,11 @@ window.addEventListener("DOMContentLoaded", () => {
             });
             if(!(cachedRoads === undefined || cachedRoads.length == 0)) {
                 let path = cachedRoads[0];
-                form.querySelector("input[name=name]").value = path.name;
-                form.querySelector("input[name=color]").value = path.color;
-                form.querySelector("input[name=icon]").childNodes.forEach(elem => {
-                    elem.removeAttribute("selected");
-                });
-                form.querySelector("input[name=icon]").childNodes.forEach(elem => {
-                    if(elem.innerHTML == path.icon) {
-                        elem.setAttribute('selected', 'selected');
-                    }
-                });
+                formsProcessing.setForm({
+                    name: path.name,
+                    color: path.color,
+                    icon: path.icon
+                }, form);
             }
         });
 
@@ -209,33 +194,19 @@ window.addEventListener("DOMContentLoaded", () => {
             // Устанавливаем начальные значения выбранного элемента в модальных окнах
             if(selected_event) {
                 let form = document.querySelector("form[data-action='edit event']");
-                form.querySelector("input[name=name]").value = selected_event.name;
-                form.querySelector("input[name=color]").value = selected_event.color;
-                form.querySelector("input[name=date]").value = selected_event.date;
-                form.querySelector("input[name=description]").value = selected_event.description;
-                form.querySelector("input[name=transparent]").checked = selected_event.color == null;
-                form.querySelector("select[name=icon]").childNodes.forEach(elem => {
-                    elem.removeAttribute("selected");
-                });
-                form.querySelector("select[name=icon]").childNodes.forEach(elem => {
-                    if(elem.innerHTML == selected_event.icon) {
-                        elem.setAttribute('selected', 'selected');
-                    }
-                });
-                path_name = cacheModule.getCache()["roads"]
-                    .filter(obj => { return obj.path_id == selected_event.path_id; })[0]
-                    .name;
-                form.querySelector("select[name=path_id]").childNodes.forEach(elem => {
-                    elem.removeAttribute("selected");
-                });
-                form.querySelector("select[name=path_id]").childNodes.forEach(elem => {
-                    if(elem.innerHTML == path_name) {
-                        elem.setAttribute('selected', 'selected');
-                    }
-                });
-                form.querySelector("input[name=event_id]").value = id;
-                document.querySelector("form[data-action='delete event']")
-                        .querySelector("input[name=event_id]").value = id;
+                formsProcessing.setForm({
+                    name: selected_event.name,
+                    color: selected_event.color,
+                    date: selected_event.date,
+                    description: selected_event.description,
+                    transparent: selected_event.color == null,
+                    icon: selected_event.icon,
+                    path_id: selected_event.path_id,
+                    event_id: id
+                }, form);
+                formsProcessing.setForm({
+                    event_id: id
+                },document.querySelector("form[data-action='delete event']"))
 
                 // Включаем контекстное меню
                 contextMenu.toggleMenuOn(document.getElementById("eventsContextMenu"), event);
