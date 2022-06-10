@@ -169,7 +169,7 @@ function run(database, ipcMain) {
                     reply["event"] = {
                         event_id: lastID,
                         name: request["name"],
-                        color: request["color"],
+                        color: request["transparent"] ? null : request["color"],
                         icon: request["icon"],
                         date: request["date"],
                         description: request["description"],
@@ -200,7 +200,7 @@ function run(database, ipcMain) {
                 if(!err) {
                     reply["event"] = {
                         name: request["name"],
-                        color: request["color"],
+                        color: request["transparent"] ? null : request["color"],
                         icon: request["icon"],
                         date: request["date"],
                         description: request["description"],

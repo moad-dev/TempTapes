@@ -67,19 +67,22 @@
             <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
         </svg>
         <p class="modal__title">Добавить дорогу</p>
-        <div class="modal__field">
-            <label for="name">Название дороги</label>
-            <input type="text" name="name" value="" id="makePathName">
-        </div>
-        <div class="modal__field">
-            <label for="color">Цвет дороги</label>
-            <input type="color" name="color" value="" id="makePathColorPeeker">
-        </div>
-        <div class="modal__field">
-            <label>Иконка</label>
-            <select id="makePathIcon"></select>
-        </div>
-        <button type="button" id="makePathSubmit">Создать</button>
+        <form data-action="make path" method="post">
+            <div class="modal__field">
+                <label for="name">Название дороги</label>
+                <input type="text" name="name" value="">
+            </div>
+            <div class="modal__field">
+                <label for="color">Цвет дороги</label>
+                <input type="color" name="color" value="">
+            </div>
+            <div class="modal__field">
+                <label>Иконка</label>
+                <select name="icon"></select>
+            </div>
+            <input name="parent_id" type="hidden" value="">
+            <input type="submit" value="Создать">
+        </form>
     </div>
 
     <!--  Модальное окно удаления дороги  -->
@@ -89,11 +92,13 @@
             <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
         </svg>
         <p class="modal__title">Удалить дорогу</p>
-        <div class="modal__field">
-            <label>Дорога</label>
-            <select id="deletePathId"></select>
-        </div>
-        <button type="button" id="deletePathSubmit">Удалить</button>
+        <form data-action="delete path">
+            <div class="modal__field">
+                <label>Дорога</label>
+                <select name="path_id"></select>
+            </div>
+            <input type="submit" value="удалить">
+        </form>
     </div>
 
     <!--  Модальное окно редактирования дороги  -->
@@ -103,23 +108,26 @@
             <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
         </svg>
         <p class="modal__title">Редактировать дорогу</p>
-        <div class="modal__field">
-            <label for="name">Дорога</label>
-            <select id="editPathPath"></select>
-        </div>
-        <div class="modal__field">
-            <label for="name">Название дороги</label>
-            <input type="text" name="name" value="" id="editPathName">
-        </div>
-        <div class="modal__field">
-            <label for="color">Цвет дороги</label>
-            <input type="color" name="color" value="" id="editPathColorPeeker">
-        </div>
-        <div class="modal__field">
-            <label>Иконка</label>
-            <select id="editPathIcon"></select>
-        </div>
-        <button type="button" id="editPathSubmit">Редактировать</button>
+        <form data-action="edit path" method="post">
+            <div class="modal__field">
+                <label for="name">Дорога</label>
+                <select name="path_id"></select>
+            </div>
+            <div class="modal__field">
+                <label for="name">Название дороги</label>
+                <input type="text" name="name" value="">
+            </div>
+            <div class="modal__field">
+                <label for="color">Цвет дороги</label>
+                <input type="color" name="color" value="">
+            </div>
+            <div class="modal__field">
+                <label>Иконка</label>
+                <select name="icon"></select>
+            </div>
+            <input name="parent_id" value="">
+            <input type="submit" value="Редактировать">
+        </form>
     </div>
 
     <!--  Модальное окно добавления события  -->
@@ -129,33 +137,35 @@
             <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
         </svg>
         <p class="modal__title">Добавить событие</p>
-        <div class="modal__field">
-            <label for="name">Название события</label>
-            <input type="text" name="name" value="" id="makeEventName">
-        </div>
-        <div class="modal__field">
-            <label for="date">Дата</label>
-            <input type="date" name="date" value="" id="makeEventDate">
-        </div>
-        <div class="modal__field">
-            <label for="description">Описание</label>
-            <input type="text" name="description" value="" id="makeEventDescription">
-        </div>
-        <div class="modal__field">
-            <label for="color">Цвет</label>
-            <input type="color" name="color" value="" id="makeEventColorPeeker">
-            <label for="transparent">Прозрачность</label>
-            <input type="checkbox" name="transparent" value="" id="makeEventColorTransparent">
-        </div>
-        <div class="modal__field">
-            <label>Иконка</label>
-            <select id="makeEventIcon"></select>
-        </div>
-        <div class="modal__field">
-            <label>Дорога</label>
-            <select id="makeEventPath"></select>
-        </div>
-        <button type="button" id="makeEventSubmit">Создать</button>
+        <form data-action="make event">
+            <div class="modal__field">
+                <label for="name">Название события</label>
+                <input type="text" name="name" value="">
+            </div>
+            <div class="modal__field">
+                <label for="date">Дата</label>
+                <input type="date" name="date" value="">
+            </div>
+            <div class="modal__field">
+                <label for="description">Описание</label>
+                <input type="text" name="description" value="">
+            </div>
+            <div class="modal__field">
+                <label for="color">Цвет</label>
+                <input type="color" name="color" value="">
+                <label for="transparent">Прозрачность</label>
+                <input type="checkbox" name="transparent" value="">
+            </div>
+            <div class="modal__field">
+                <label>Иконка</label>
+                <select name="icon"></select>
+            </div>
+            <div class="modal__field">
+                <label>Дорога</label>
+                <select name="path_id"></select>
+            </div>
+            <input type="submit" value="Создать">
+        </form>
     </div>
 
     <!--  Модальное окно редактирования события  -->
@@ -165,34 +175,36 @@
             <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
         </svg>
         <p class="modal__title">Редактировать событие</p>
-        <div class="modal__field">
-            <label for="name">Название события</label>
-            <input type="text" name="name" value="" id="editEventName">
-        </div>
-        <div class="modal__field">
-            <label for="date">Дата</label>
-            <input type="date" name="date" value="" id="editEventDate">
-        </div>
-        <div class="modal__field">
-            <label for="description">Описание</label>
-            <input type="text" name="description" value="" id="editEventDescription">
-        </div>
-        <div class="modal__field">
-            <label for="color">Цвет</label>
-            <input type="color" name="color" value="" id="editEventColorPeeker">
-            <label for="transparent">Прозрачность</label>
-            <input type="checkbox" name="transparent" value="" id="editEventColorTransparent">
-        </div>
-        <div class="modal__field">
-            <label>Иконка</label>
-            <select id="editEventIcon"></select>
-        </div>
-        <div class="modal__field">
-            <label>Дорога</label>
-            <select id="editEventPath"></select>
-        </div>
-        <input type="hidden" value="" id="editEventId">
-        <button type="button" id="editEventSubmit">Редактировать</button>
+        <form data-action="edit event">
+            <div class="modal__field">
+                <label for="name">Название события</label>
+                <input type="text" name="name" value="">
+            </div>
+            <div class="modal__field">
+                <label for="date">Дата</label>
+                <input type="date" name="date" value="">
+            </div>
+            <div class="modal__field">
+                <label for="description">Описание</label>
+                <input type="text" name="description" value="">
+            </div>
+            <div class="modal__field">
+                <label for="color">Цвет</label>
+                <input type="color" name="color" value="">
+                <label for="transparent">Прозрачность</label>
+                <input type="checkbox" name="transparent" value="">
+            </div>
+            <div class="modal__field">
+                <label>Иконка</label>
+                <select name="icon"></select>
+            </div>
+            <div class="modal__field">
+                <label>Дорога</label>
+                <select name="path_id"></select>
+            </div>
+            <input name="event_id" type="hidden" value="">
+            <input type="submit" value="Редактировать">
+        </form>
     </div>
 
     <!--  Модальное окно удаления события  -->
@@ -201,11 +213,13 @@
         <svg class="modal__cross js-modal-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
         </svg>
-        <input type="hidden" value="" id="deleteEventId">
-        <div style="text-align: center;">
-            <h4>Вы действительно хотите удалить событие?</h4>
-            <button type="button" id="deleteEventSubmit">Удалить</button>
-        </div>
+        <form data-action="delete event">
+            <input type="hidden" name="event_id" value="">
+            <div style="text-align: center;">
+                <h4>Вы действительно хотите удалить событие?</h4>
+                <input type="submit" value="Удалить">
+            </div>
+        </form>
     </div>
 
     <!-- Подложка под модальным окном -->

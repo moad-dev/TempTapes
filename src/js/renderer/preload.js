@@ -40,6 +40,13 @@ window.addEventListener("DOMContentLoaded", () => {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     const modalWindow = require("./view/modalWindow.js");
+    modalWindow.setup();
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Обработка форм отправки запросов
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    const formsProcessing = require("./formsProcessing.js");
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Контекстное меню для событий и дорог
@@ -113,16 +120,17 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // ~~~~~~~~~ Обработчики событий элементов управления событиями и дорогами
 
-    document
-        .getElementById("makePathSubmit")
-        .addEventListener("click", function(e) {
-            modalWindow.closeParentModal(this);
-            frontendEvents.makePath();
-        });
+    // document
+    //     .getElementById("makePathSubmit")
+    //     .addEventListener("click", function(e) {
+    //         modalWindow.closeParentModal(this);
+    //         frontendEvents.makePath();
+    //     });
     document
         .getElementById("deletePathBtn")
         .addEventListener("click", () => {
-            let paths = document.getElementById("deletePathId");
+            let paths = document.querySelector("form[data-action='delete path']")
+                                .querySelector("select[name='path_id']");
             paths.innerHTML = "";
             cacheModule.getCache()["roads"].forEach(function(path) {
                 let option = document.createElement("option");
@@ -131,26 +139,22 @@ window.addEventListener("DOMContentLoaded", () => {
                 paths.appendChild(option);
             });
         });
-    document
-        .getElementById("deletePathSubmit")
-        .addEventListener("click", function(e) {
-            modalWindow.closeParentModal(this);
-            frontendEvents.deletePath();
-        });
 
     document
-        .getElementById("editPathPath")
+        .querySelector("form[data-action='edit path']")
+        .querySelector("select[name=path_id]")
         .addEventListener("change", () => {
+            let form = document.querySelector("form[data-action='edit path']");
             let path = cacheModule.getCache()["roads"].filter(
                 obj => {
-                    return obj.path_id == document.getElementById("editPathPath").value;
+                    return obj.path_id == form.querySelector("select[name=path_id]").value;
                 })[0];
-            document.getElementById("editPathName").value = path.name;
-            document.getElementById("editPathColorPeeker").value = path.color;
-            document.getElementById("editPathIcon").childNodes.forEach(elem => {
+            form.querySelector("input[name=name]").value = path.name;
+            form.querySelector("input[name=color]").value = path.color;
+            form.querySelector("input[name=icon]").childNodes.forEach(elem => {
                 elem.removeAttribute("selected");
             });
-            document.getElementById("editPathIcon").childNodes.forEach(elem => {
+            form.querySelector("input[name=icon]").childNodes.forEach(elem => {
                 if(elem.innerHTML == path.icon) {
                     elem.setAttribute('selected', 'selected');
                 }
@@ -160,53 +164,28 @@ window.addEventListener("DOMContentLoaded", () => {
         .getElementById("editPathBtn")
         .addEventListener("click", () => {
             let cachedRoads = cacheModule.getCache()["roads"];
-            let paths = document.getElementById("editPathPath");
-            paths.innerHTML = "";
+            let form = document.querySelector("form[data-action='edit path']");
+            let paths_select = form.querySelector("select[name=path_id]");
+            paths_select.innerHTML = "";
             cachedRoads.forEach(function(path) {
                 let option = document.createElement("option");
                 option.innerHTML = path.name;
                 option.value = path.path_id;
-                paths.appendChild(option);
+                paths_select.appendChild(option);
             });
             if(!(cachedRoads === undefined || cachedRoads.length == 0)) {
                 let path = cachedRoads[0];
-                document.getElementById("editPathName").value = path.name;
-                document.getElementById("editPathColorPeeker").value = path.color;
-                document.getElementById("editPathIcon").childNodes.forEach(elem => {
+                form.querySelector("input[name=name]").value = path.name;
+                form.querySelector("input[name=color]").value = path.color;
+                form.querySelector("input[name=icon]").childNodes.forEach(elem => {
                     elem.removeAttribute("selected");
                 });
-                document.getElementById("editPathIcon").childNodes.forEach(elem => {
+                form.querySelector("input[name=icon]").childNodes.forEach(elem => {
                     if(elem.innerHTML == path.icon) {
                         elem.setAttribute('selected', 'selected');
                     }
                 });
             }
-        });
-    document
-        .getElementById("editPathSubmit")
-        .addEventListener("click", function(e) {
-            modalWindow.closeParentModal(this);
-            frontendEvents.editPath();
-        });
-
-    document
-        .getElementById("makeEventSubmit")
-        .addEventListener("click", function(e) {
-            modalWindow.closeParentModal(this);
-            frontendEvents.makeEvent();
-        });
-
-    document
-        .getElementById("editEventSubmit")
-        .addEventListener("click", function(e) {
-            modalWindow.closeParentModal(this);
-            frontendEvents.editEvent();
-        });
-    document
-        .getElementById("deleteEventSubmit")
-        .addEventListener("click", function(e) {
-            modalWindow.closeParentModal(this);
-            frontendEvents.deleteEvent();
         });
 
     setStackClickHandler(function (event, obj){
@@ -229,15 +208,16 @@ window.addEventListener("DOMContentLoaded", () => {
         {
             // Устанавливаем начальные значения выбранного элемента в модальных окнах
             if(selected_event) {
-                document.getElementById("editEventName").value = selected_event.name;
-                document.getElementById("editEventColorPeeker").value = selected_event.color;
-                document.getElementById("editEventDate").value = selected_event.date;
-                document.getElementById("editEventDescription").value = selected_event.description;
-                document.getElementById("editEventColorTransparent").checked = selected_event.color == null;
-                document.getElementById("editEventIcon").childNodes.forEach(elem => {
+                let form = document.querySelector("form[data-action='edit event']");
+                form.querySelector("input[name=name]").value = selected_event.name;
+                form.querySelector("input[name=color]").value = selected_event.color;
+                form.querySelector("input[name=date]").value = selected_event.date;
+                form.querySelector("input[name=description]").value = selected_event.description;
+                form.querySelector("input[name=transparent]").checked = selected_event.color == null;
+                form.querySelector("select[name=icon]").childNodes.forEach(elem => {
                     elem.removeAttribute("selected");
                 });
-                document.getElementById("editEventIcon").childNodes.forEach(elem => {
+                form.querySelector("select[name=icon]").childNodes.forEach(elem => {
                     if(elem.innerHTML == selected_event.icon) {
                         elem.setAttribute('selected', 'selected');
                     }
@@ -245,16 +225,17 @@ window.addEventListener("DOMContentLoaded", () => {
                 path_name = cacheModule.getCache()["roads"]
                     .filter(obj => { return obj.path_id == selected_event.path_id; })[0]
                     .name;
-                document.getElementById("editEventPath").childNodes.forEach(elem => {
+                form.querySelector("select[name=path_id]").childNodes.forEach(elem => {
                     elem.removeAttribute("selected");
                 });
-                document.getElementById("editEventPath").childNodes.forEach(elem => {
+                form.querySelector("select[name=path_id]").childNodes.forEach(elem => {
                     if(elem.innerHTML == path_name) {
                         elem.setAttribute('selected', 'selected');
                     }
                 });
-                document.getElementById("editEventId").value = id;
-                document.getElementById("deleteEventId").value = id;
+                form.querySelector("input[name=event_id]").value = id;
+                document.querySelector("form[data-action='delete event']")
+                        .querySelector("input[name=event_id]").value = id;
 
                 // Включаем контекстное меню
                 contextMenu.toggleMenuOn(document.getElementById("eventsContextMenu"), event);

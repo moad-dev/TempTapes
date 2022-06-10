@@ -62,6 +62,7 @@ function getRoads() {
     cacheModule.getRoads();
 }
 
+<<<<<<< HEAD
 function makePath()
 {
     let name = document.getElementById('makePathName').value;
@@ -193,6 +194,8 @@ function deleteEvent()
 }
 
 
+=======
+>>>>>>> test
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Обработчики событий сообщений от сервера
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -241,10 +244,14 @@ ipcRenderer.on("path edited", (event, reply) =>
 ipcRenderer.on("send images", (event, reply) =>
 {
     reply = JSON.parse(reply);
-    let path_icons_make = document.getElementById("makePathIcon");
-    let path_icons_edit = document.getElementById("editPathIcon");
-    let events_icons_make = document.getElementById("makeEventIcon");
-    let events_icons_edit = document.getElementById("editEventIcon");
+    let path_icons_make = document.querySelector("form[data-action='make path']")
+                                  .querySelector("select[name=icon]");
+    let path_icons_edit = document.querySelector("form[data-action='edit path']")
+                                  .querySelector("select[name=icon]");
+    let events_icons_make = document.querySelector("form[data-action='make event']")
+                                    .querySelector("select[name=icon]");
+    let events_icons_edit = document.querySelector("form[data-action='edit event']")
+                                    .querySelector("select[name=icon]");
     path_icons_make.innerHTML = "";
     path_icons_edit.innerHTML = "";
     events_icons_make.innerHTML = "";
@@ -267,8 +274,10 @@ ipcRenderer.on("send images", (event, reply) =>
 ipcRenderer.on("send all roads", (event, reply) =>
 {
     reply = JSON.parse(reply);
-    let events_paths_make = document.getElementById("makeEventPath");
-    let events_paths_edit = document.getElementById("editEventPath");
+    let events_paths_make = document.querySelector("form[data-action='make event']")
+                                    .querySelector("select[name=path_id]");
+    let events_paths_edit = document.querySelector("form[data-action='edit event']")
+                                    .querySelector("select[name=path_id]");
     events_paths_make.innerHTML = "";
     events_paths_edit.innerHTML = "";
     reply["roads"].forEach(function(path) {
@@ -308,11 +317,5 @@ ipcRenderer.on("send event tags", (event, reply) => {
 
 module.exports = {
     getEvents: getEvents,
-    getRoads: getRoads,
-    makePath: makePath,
-    editPath: editPath,
-    deletePath: deletePath,
-    makeEvent: makeEvent,
-    editEvent: editEvent,
-    deleteEvent: deleteEvent
+    getRoads: getRoads
 }
