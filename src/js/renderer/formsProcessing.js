@@ -64,7 +64,18 @@ function setForm(object, form) {
     });
 }
 
+function fillSelectTag(tag, values) {
+    tag.innerHTML = "";
+    values.forEach(function(value) {
+        let option = document.createElement("option");
+        option.innerHTML = value.text;
+        option.value = value.value;
+        tag.appendChild(option);
+    });
+}
+
 module.exports = {
     setup: setup,
-    setForm: setForm
+    setForm: setForm,
+    fillSelectTag: fillSelectTag
 }

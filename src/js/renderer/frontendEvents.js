@@ -17,6 +17,7 @@ const {
 
 const {checkBarVisibility, getLastValue, setLastValue} = require('./view/horizontallScrollBar');
 const sideMenu = require("./view/sideMenu");
+const formsProcessing = require("./formsProcessing");
 //~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Инициализация переменных
 //~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -118,24 +119,16 @@ ipcRenderer.on("send images", (event, reply) =>
                                     .querySelector("select[name=icon]");
     let events_icons_edit = document.querySelector("form[data-action='edit event']")
                                     .querySelector("select[name=icon]");
-    path_icons_make.innerHTML = "";
-    path_icons_edit.innerHTML = "";
-    events_icons_make.innerHTML = "";
-    events_icons_edit.innerHTML = "";
+
+    // Добавляем опции select тегов
+    let values = [];
     reply["images"].forEach(function(image) {
-        let option = document.createElement("option");
-        option.innerHTML = image;
-        path_icons_make.appendChild(option);
-        option = document.createElement("option");
-        option.innerHTML = image;
-        path_icons_edit.appendChild(option);
-        option = document.createElement("option");
-        option.innerHTML = image;
-        events_icons_make.appendChild(option);
-        option = document.createElement("option");
-        option.innerHTML = image;
-        events_icons_edit.appendChild(option);
+        values.push({text: image, value: image})
     });
+    formsProcessing.fillSelectTag(path_icons_make, values);
+    formsProcessing.fillSelectTag(path_icons_edit, values);
+    formsProcessing.fillSelectTag(events_icons_make, values);
+    formsProcessing.fillSelectTag(events_icons_edit, values);
 });
 ipcRenderer.on("send all roads", (event, reply) =>
 {
@@ -144,18 +137,14 @@ ipcRenderer.on("send all roads", (event, reply) =>
                                     .querySelector("select[name=path_id]");
     let events_paths_edit = document.querySelector("form[data-action='edit event']")
                                     .querySelector("select[name=path_id]");
-    events_paths_make.innerHTML = "";
-    events_paths_edit.innerHTML = "";
+
+    // Добавляем опции select тегов
+    let values = [];
     reply["roads"].forEach(function(path) {
-        let option = document.createElement("option");
-        option.innerHTML = path.name;
-        option.value = path.path_id;
-        events_paths_make.appendChild(option);
-        option = document.createElement("option");
-        option.innerHTML = path.name;
-        option.value = path.path_id;
-        events_paths_edit.appendChild(option);
+        values.push({text: path.name, value: path.path_id})
     });
+    formsProcessing.fillSelectTag(events_paths_make, values);
+    formsProcessing.fillSelectTag(events_paths_edit, values);
 });
 ipcRenderer.on("event added", (event, reply) =>
 {
