@@ -52,20 +52,21 @@ function getEvents(action_id = null, action_event = null)
 }
 
 function getRoads() {
-    if(cache["roads"]) {
-        cache["roads"].forEach((elem) => {
-            deleteGroup(elem["path_id"]);
-            eventModule.deleteAllEvents();
-            Dates.deleteDates();
-        });
-    }
-
     cacheModule.getRoads();
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Обработчики событий сообщений от сервера
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function beforeRoadsReady() {
+    if(cache["roads"]) {
+        cache["roads"].forEach((elem) => {
+            deleteGroup(elem["path_id"]);
+            Dates.deleteDates();
+        });
+    }
+}
+cacheModule.setBeforeRoadsReady(beforeRoadsReady);
 
 function onRoadsReady() {
     checkBarVisibility(cache);
@@ -85,6 +86,7 @@ function onRoadsReady() {
     document.getElementById("select-scale").innerHTML = "Д";
     getEvents();
     ipcRenderer.send("get all roads", "{}");
+    ipcRenderer.send("get profiles", "{}");
 }
 cacheModule.setOnRoadsReady(onRoadsReady);
 
@@ -130,6 +132,19 @@ ipcRenderer.on("send images", (event, reply) =>
     formsProcessing.fillSelectTag(events_icons_make, values);
     formsProcessing.fillSelectTag(events_icons_edit, values);
 });
+ipcRenderer.on("send profiles", (event, reply) =>
+{
+    reply = JSON.parse(reply);
+    let profiles_select = document.getElementById("profileSelector");
+
+    // Добавляем опции select тегов
+    let values = [];
+    reply["profiles"].forEach(function(profile) {
+        values.push({text: profile, value: profile})
+    });
+    formsProcessing.fillSelectTag(profiles_select, values);
+});
+
 ipcRenderer.on("send all roads", (event, reply) =>
 {
     reply = JSON.parse(reply);

@@ -4,6 +4,7 @@
 
 const sqlite3 = require("sqlite3");
 const path = require("path");
+const fs = require("fs");
 
 var db;
 
@@ -11,13 +12,27 @@ var db;
 //    Инициализация
 //~~~~~~~~~~~~~~~~~~~~~
 
-function Init(startup) {
+function Init(startup, filename = null) {
+    if(db) {
+        db.close();
+    }
+    if (!fs.existsSync("database/profiles")){
+        fs.mkdirSync("database/profiles");
+    }
+    if(!filename) {
+        profiles = fs.readdirSync('database/profiles');
+        if(profiles.length == 0) {
+            filename = "default";
+        } else {
+            filename = profiles[0];
+        }
+    }
     db = new sqlite3.Database(
-        "database/database.db",
+        "database/profiles/" + filename,
         sqlite3.OPEN_READWRITE | sqlite3.OPEN,
         err => {
             if (err && err.code == "SQLITE_CANTOPEN") {
-                createDatabase(startup);
+                createDatabase(startup, filename);
                 return;
             } else if (err) {
                 console.log("SQLITE DB OPEN ERROR: " + err);
@@ -30,9 +45,9 @@ function Init(startup) {
     );
 }
 
-function createDatabase(startup) {
+function createDatabase(startup, filename) {
     db = new sqlite3.Database(
-        path.join(process.cwd() + "/database/database.db"),
+        path.join(process.cwd() + "/database/profiles/" + filename),
         err => {
             if (err) {
                 console.log("SQLITE DB CREATE ERROR: " + err);
@@ -114,20 +129,6 @@ function createTables(db, startup) {
                ('path2', '#00FF00', null, 'picture.png'),
                ('path3', '#0000FF', null, 'picture.png'),
                ('path4', '#00FFFF', null, 'picture.png');
-
-    insert into events (date, name, color, path_id, icon)
-        values ('2020-01-01', 'event10', '#0000FF', 1, "picture.png"),
-               ('2020-01-01', 'event11', '#5522FF', 1, "picture.png"),
-               ('2020-01-01', 'event12', '#284683', 1, "picture.png"),
-               ('2020-01-01', 'event13', '#0000FF', 1, "picture.png"),
-               ('2020-01-01', 'event14', '#0000FF', 1, "picture.png"),
-               ('2020-01-01', 'event10', '#284683', 1, "picture.png"),
-               ('2020-01-01', 'event10', '#0000FF', 1, "picture.png"),
-               ('2020-01-01', 'event10', '#0000FF', 1, "picture.png"),
-               ('2020-01-02', 'event2', '#00FF00', 2, "picture.png"),
-               ('2020-01-03', 'event3', '#FF0000', 3, "picture.png"),
-               ('2020-01-04', 'event4', '#FF0000', 4, "picture.png");
-
 
         `,
         err => {

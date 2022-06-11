@@ -4,6 +4,9 @@
 
 const fs = require('fs');
 
+const path = require("path");
+const database = require(path.join(process.cwd(), "database/database_module"));
+
 function run(database, ipcMain) {
 
     ipcMain.on("get root roads", (event, request) =>
@@ -239,6 +242,43 @@ function run(database, ipcMain) {
             "send images",
             JSON.stringify(reply)
         );
+    });
+
+    ipcMain.on("get profiles", (event, request) =>
+    {
+        request = JSON.parse(request);
+        var reply = {profiles: []};
+        fs.readdirSync('database/profiles').forEach(file => {
+          reply.profiles.push(file);
+        });
+        event.reply(
+            "send profiles",
+            JSON.stringify(reply)
+        );
+    });
+
+    ipcMain.on("update profile", (event, request) =>
+    {
+        request = JSON.parse(request);
+        if(request["delete"]) {
+            fs.unlinkSync('database/profiles/'+request["name"]);
+        }
+        database.Init(function() {
+            var reply = {roads: []};
+            database.getRootPaths((err, rows) => {
+                rows.forEach(row => {
+                    road = {
+                        path_id: row.path_id,
+                        name: row.name,
+                        color: row.color,
+                        parent_id: row.parent_id,
+                        icon: row.icon
+                    };
+                    reply["roads"].push(road);
+                });
+                event.reply("send root roads", JSON.stringify(reply));
+            });
+        }, request["delete"] ? null : request["name"]);
     });
 
 }

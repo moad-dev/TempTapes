@@ -1,5 +1,6 @@
 # Project exclude paths
 /node_modules/
 /database/database.db
+/database/profiles/*
 /package-lock.json
 /dist

@@ -120,6 +120,28 @@ window.addEventListener("DOMContentLoaded", () => {
         stackClick(obj, getScale());
     });
 
+    // ~~~~~~~~~ Для окна управления профилями
+
+    document
+        .getElementById("profileSelector")
+        .addEventListener("change", () => {
+            let form = document.querySelector("form[data-action='update profile']");
+            let profile = document.getElementById("profileSelector").value;
+            formsProcessing.setForm({
+                name: profile,
+            }, form);
+        });
+
+    document
+        .getElementById("updateProfileBtn")
+        .addEventListener("click", () => {
+            let form = document.querySelector("form[data-action='update profile']");
+            let profile = document.getElementById("profileSelector").value;
+            formsProcessing.setForm({
+                name: profile,
+            }, form);
+        });
+
     // ~~~~~~~~~~~~~ Обработчики событий для вызова контекстного меню
 
     // меню дороги

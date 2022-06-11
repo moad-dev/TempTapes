@@ -54,6 +54,7 @@
         <div class="btn-row" style="position: absolute; bottom: 0; left: 0;">
             <button class="js-open-modal btn dark-opaque" data-modal="pathAdd" id="makePathBtn"> Добавить дорогу </button>
             <button class="js-open-modal btn dark-opaque" data-modal="eventAdd" id="makeEventBtn"> Добавить событие </button>
+            <button class="js-open-modal btn dark-opaque" data-modal="update profile" id="updateProfileBtn"> Обновить профиль </button>
         </div>
         <input id="scrollBar" style="position: absolute; bottom: 4em; left: 0; visibility: hidden" type="range" min="0" max="12">
     </div>
@@ -216,6 +217,32 @@
             <div style="text-align: center;">
                 <h4>Вы действительно хотите удалить событие?</h4>
                 <input class="modal__button modal__button_warning" type="submit" value="Удалить">
+            </div>
+        </form>
+    </div>
+
+    <!--  Модальное окно профилей БД  -->
+    <div class="modal" data-modal="update profile">
+        <!--   Svg иконка для закрытия окна  -->
+        <svg class="modal__cross js-modal-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
+        </svg>
+        <p class="modal__title">Обновить профиль</p>
+        <form data-action="update profile">
+            <div class="modal__field">
+                <label>Выберите профиль</label>
+                <select id="profileSelector"></select>
+            </div>
+            <div class="modal__field">
+                <label>Введите имя профиля</label>
+                <input type="text" name="name" value="">
+            </div>
+            <div class="modal__field">
+                <label>Удалить выбранный профиль</label>
+                <input type="checkbox" name="delete">
+            </div>
+            <div class="modal__field">
+                <input type="submit" value="Обновить">
             </div>
         </form>
     </div>

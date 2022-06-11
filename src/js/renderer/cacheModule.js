@@ -10,6 +10,11 @@ var onRoadsReady = null;
 function setOnRoadsReady (func) {
     onRoadsReady = func;
 }
+// Происходит перед тем как дороги загружены в кеш
+var beforeRoadsReady = null;
+function setBeforeRoadsReady (func) {
+    beforeRoadsReady = func;
+}
 
 const Watcher = require("./multipleProcessWatcher.js");
 let events_watcher = null;
@@ -104,20 +109,16 @@ ipcRenderer.on("send events", (event, reply) =>
 
 ipcRenderer.on("send root roads", (event, reply) =>
 {
+    if(beforeRoadsReady)
+        beforeRoadsReady();
+
+    lastEndDate = undefined;
+    lastStartDate = undefined;
+
     reply = JSON.parse(reply);
     cache["roads"] = reply["roads"];
-    cache["roads"].forEach(function(path)
-    {
-        if(!cache["events_day"][path.path_id]
-            || !cache["events_month"][path.path_id]
-            || !cache["events_year"][path.path_id])
-        {
-            cache["events_day"][path.path_id] = {};
-            cache["events_month"][path.path_id] = {};
-            cache["events_year"][path.path_id] = {};
-        }
-    })
     events_watcher = new Watcher(reply["roads"].length);
+
     if(onRoadsReady)
         onRoadsReady();
 });
@@ -229,6 +230,7 @@ module.exports = {
     iterateYears: iterateYears,
     setOnRoadsReady: setOnRoadsReady,
     setOnEventsReady: setOnEventsReady,
+    setBeforeRoadsReady: setBeforeRoadsReady,
     isEventsTransfering: isEventsTransfering,
     getEvents: getEvents,
     getRoads: getRoads,
