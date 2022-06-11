@@ -6,7 +6,14 @@ const sqlite3 = require("sqlite3");
 const path = require("path");
 const fs = require("fs");
 
+const constants = require(path.join(process.cwd(), "src/js/constants.js"));
+
 var db;
+
+var currentProfile;
+function getCurrentProfile() {
+    return currentProfile;
+}
 
 //~~~~~~~~~~~~~~~~~~~~~
 //    Инициализация
@@ -16,23 +23,26 @@ function Init(startup, filename = null) {
     if(db) {
         db.close();
     }
-    if (!fs.existsSync("database/profiles")){
-        fs.mkdirSync("database/profiles");
+    if (!fs.existsSync(constants.profilesDir)) {
+        fs.mkdirSync(constants.profilesDir);
     }
     if(!filename) {
-        profiles = fs.readdirSync('database/profiles');
+        profiles = fs.readdirSync(constants.profilesDir);
         if(profiles.length == 0) {
             filename = "default";
         } else {
             filename = profiles[0];
         }
     }
+
+    currentProfile = filename.toString();
+
     db = new sqlite3.Database(
-        "database/profiles/" + filename,
+        path.join(constants.profilesDir, currentProfile),
         sqlite3.OPEN_READWRITE | sqlite3.OPEN,
         err => {
             if (err && err.code == "SQLITE_CANTOPEN") {
-                createDatabase(startup, filename);
+                createDatabase(startup);
                 return;
             } else if (err) {
                 console.log("SQLITE DB OPEN ERROR: " + err);
@@ -45,9 +55,9 @@ function Init(startup, filename = null) {
     );
 }
 
-function createDatabase(startup, filename) {
+function createDatabase(startup) {
     db = new sqlite3.Database(
-        path.join(process.cwd() + "/database/profiles/" + filename),
+        path.join(process.cwd(), constants.profilesDir, currentProfile),
         err => {
             if (err) {
                 console.log("SQLITE DB CREATE ERROR: " + err);
@@ -322,5 +332,7 @@ module.exports = {
 
     makeEvent: makeEvent,
     editEvent: editEvent,
-    deleteEvent: deleteEvent
+    deleteEvent: deleteEvent,
+
+    getCurrentProfile: getCurrentProfile
 };

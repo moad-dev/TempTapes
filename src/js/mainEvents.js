@@ -7,6 +7,8 @@ const fs = require('fs');
 const path = require("path");
 const database = require(path.join(process.cwd(), "database/database_module"));
 
+constants = require("./constants");
+
 function run(database, ipcMain) {
 
     ipcMain.on("get root roads", (event, request) =>
@@ -24,6 +26,7 @@ function run(database, ipcMain) {
                 };
                 reply["roads"].push(road);
             });
+            reply.profile = database.getCurrentProfile();
             event.reply("send root roads", JSON.stringify(reply));
         });
     });
@@ -235,7 +238,7 @@ function run(database, ipcMain) {
     {
         request = JSON.parse(request);
         var reply = {images: []};
-        fs.readdirSync('storage/img').forEach(file => {
+        fs.readdirSync(constants.imagesDir).forEach(file => {
           reply.images.push(file);
         });
         event.reply(
@@ -248,7 +251,7 @@ function run(database, ipcMain) {
     {
         request = JSON.parse(request);
         var reply = {profiles: []};
-        fs.readdirSync('database/profiles').forEach(file => {
+        fs.readdirSync(constants.profilesDir).forEach(file => {
           reply.profiles.push(file);
         });
         event.reply(
@@ -261,7 +264,7 @@ function run(database, ipcMain) {
     {
         request = JSON.parse(request);
         if(request["delete"]) {
-            fs.unlinkSync('database/profiles/'+request["name"]);
+            fs.unlinkSync(path.join(process.cwd(), constants.profilesDir, request["name"].toString()));
         }
         database.Init(function() {
             var reply = {roads: []};
@@ -276,6 +279,7 @@ function run(database, ipcMain) {
                     };
                     reply["roads"].push(road);
                 });
+                reply.profile = database.getCurrentProfile();
                 event.reply("send root roads", JSON.stringify(reply));
             });
         }, request["delete"] ? null : request["name"]);

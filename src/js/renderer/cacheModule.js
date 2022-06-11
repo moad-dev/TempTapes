@@ -28,7 +28,8 @@ let cache =
     roads: [],
     events_day: {},
     events_month: {},
-    events_year: {}
+    events_year: {},
+    profile: ""
 };
 
 // ~~~ Проверить идёт ли передача событий из базы в данный момент (экспорт)
@@ -118,6 +119,8 @@ ipcRenderer.on("send root roads", (event, reply) =>
     reply = JSON.parse(reply);
     cache["roads"] = reply["roads"];
     events_watcher = new Watcher(reply["roads"].length);
+
+    cache["profile"] = reply["profile"];
 
     if(onRoadsReady)
         onRoadsReady();

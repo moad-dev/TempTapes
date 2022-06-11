@@ -18,6 +18,9 @@ const {
 const {checkBarVisibility, getLastValue, setLastValue} = require('./view/horizontallScrollBar');
 const sideMenu = require("./view/sideMenu");
 const formsProcessing = require("./formsProcessing");
+
+const constants = require("../constants");
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Инициализация переменных
 //~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,6 +90,7 @@ function onRoadsReady() {
     getEvents();
     ipcRenderer.send("get all roads", "{}");
     ipcRenderer.send("get profiles", "{}");
+    document.querySelector("title").innerHTML = constants.projectName + " — " + cache["profile"];
 }
 cacheModule.setOnRoadsReady(onRoadsReady);
 
