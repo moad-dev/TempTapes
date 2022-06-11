@@ -72,7 +72,7 @@ def gen_events(amount, roads, tags, start, end):
     events = []
     for i in range(amount):
         events.append({
-            "event_id" : i,
+            "event_id": i,
             "date": randdate(start, end),
             "name": randstr(8, 16),
             "color": randcolor(),
@@ -86,8 +86,8 @@ def gen_events(amount, roads, tags, start, end):
     return events
 
 
-def seed(roads_amount, events_amount, date_start, date_end, nested):
-    conn = sqlite3.connect("database.db")
+def seed(roads_amount, events_amount, date_start, date_end, nested, filename):
+    conn = sqlite3.connect(filename)
     sql = conn.cursor()
 
     sql.execute("pragma foreign_keys=on")
@@ -195,10 +195,17 @@ if __name__ == "__main__":
         action='store_true'
     )
 
+    parser.add_argument(
+        "--filename",
+        help="Файл БД",
+        type=str,
+        required=True
+    )
+
     args = parser.parse_args()
     random.seed(args.seed)
 
-    tm = seed(args.roads, args.events, *args.date, args.nested)
+    tm = seed(args.roads, args.events, *args.date, args.nested, args.filename)
 
     print(
         f"Generated {HI}{args.events}{END} events"
