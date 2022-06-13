@@ -101,7 +101,7 @@ function createTables(db, startup) {
 
     create table tags (
         tag_id integer primary key autoincrement,
-        name text
+        name text not null unique
     );
 
     create table documents (
@@ -191,6 +191,32 @@ function getEventTags(event_id, callback) {
         WHERE event_id == ?`,
         event_id,
         (err, rows) => { callback(err, rows);}
+    );
+}
+
+function makeTagIfNotExists(tag, callback) {
+    db.all(
+        `
+        INSERT OR IGNORE INTO tags (name) VALUES (?);
+        `,
+        tag,
+        function (err) { callback(err); }
+    );
+}
+
+function setEventTag(event_id, tag, callback) {
+    db.all(
+        `
+        INSERT INTO bind_event_tag (event_id, tag_id)
+        VALUES (?1,
+                (SELECT tag_id from tags where name = ?2)
+                );
+        `,
+        {
+            1: event_id,
+            2: tag
+        },
+        function (err) { callback(err); }
     );
 }
 
@@ -324,7 +350,8 @@ module.exports = {
     getPathsByParent: getPathsByParent,
     getEventsByPath: getEventsByPath,
     getEventTags: getEventTags,
-
+    makeTagIfNotExists: makeTagIfNotExists,
+    setEventTag: setEventTag,
 
     makePath: makePath,
     deletePath: deletePath,

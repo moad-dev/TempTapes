@@ -245,37 +245,37 @@ Side menu
     height: 100vh;
 }
 
-.sidemenu__details {
+#sidemenu__details {
     padding: 10px;
     margin: auto;
     width: 90%;
 }
 
-.sidemenu__details .image {
+#sidemenu__details .image {
     width: 75px;
     height: 75px;
     margin: auto;
 }
 
-.sidemenu__details .image img {
+#sidemenu__details .image img {
     width: 75px;
     height: 75px;
 }
 
-.sidemenu__details .head {
+#sidemenu__details .head {
     text-align: center;
     size: 30px;
     font-weight: bold;
     margin-top: 15px;
 }
 
-.sidemenu__details .text {
+#sidemenu__details .text {
     text-align: justify;
     size: 20px;
     margin-top: 15px;
 }
 
-.sidemenu__details .date {
+#sidemenu__details .date {
     text-align: center;
     size: 20px;
     margin-top: 15px;

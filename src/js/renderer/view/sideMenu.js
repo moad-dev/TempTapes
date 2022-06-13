@@ -5,6 +5,13 @@
  */
 const cacheModule = require("../cacheModule.js");
 const {ipcRenderer} = require("electron");
+
+/*
+ * ID элементов, которые явдяются общими контейнерами,
+ * предсталвяющими собой разные боковые меню
+*/
+const menuOptions = ["sidemenu__details"];
+
 /**
  * Внутренняя функция модуля. Вычисление хэш-суммы с помощью алгоритма djb2 (Bernstein hash).
  * Используется для раскраски тэгов в меню.
@@ -53,6 +60,9 @@ function show() {
     const right = document.getElementById("right");
     left.style.display = "";
     right.classList.add("right");
+    menuOptions.forEach((container) => {
+        document.getElementById(container).style.display = "none";
+    });
 }
 
 /** Закрывает боковое меню. */
@@ -68,38 +78,30 @@ function close() {
  * @param {Object} event - Объект события для показа.
  */
 function showEventDetails(event) {
-    var sideMenu = document.getElementById("sideMenu");
-    sideMenu.innerHTML = "";
-    var container = document.createElement("div");
-        container.classList.add("sidemenu__details");
-    var iconContainer = document.createElement("div");
-        iconContainer.classList.add("image");
-    var icon = document.createElement("img");
-        icon.src = "../../storage/img/" + event.icon;
-    var name = document.createElement("div");
-        name.classList.add("head");
-        name.innerHTML = event.name + " — " + cacheModule.findPathById(event.path_id).name;
-    var date = document.createElement("div");
-        date.classList.add("date");
-        date.innerHTML = event.date;
-    var description = document.createElement("div");
-        description.classList.add("text");
-        description.innerHTML = event.description;
-    var tagsContainer = document.createElement("div");
-        tagsContainer.classList.add("text");
-        tagsContainer.classList.add("tagsContainer");
-    iconContainer.appendChild(icon);
-    container.appendChild(iconContainer);
-    container.appendChild(name);
-    container.appendChild(date);
-    container.appendChild(description);
-    container.appendChild(tagsContainer);
-    sideMenu.appendChild(container);
-
+    const sideMenu = document.getElementById("sidemenu__details");
+    sideMenu.style.display = "";
+    sideMenu.querySelector(".image")
+            .querySelector("img").src = "../../storage/img/" + event.icon;
+    sideMenu.querySelector(".head").innerHTML = event.name + " — " + cacheModule.findPathById(event.path_id).name;
+    sideMenu.querySelector(".date").innerHTML = event.date;
+    sideMenu.querySelector(".description").innerHTML = event.description;
+    sideMenu.querySelector("input[name='event_id']").value = event.event_id;
     ipcRenderer.send(
         "get event tags", JSON.stringify({"event_id": event["event_id"]})
     );
 }
+
+ipcRenderer.on("send event tags", (event, reply) => {
+    reply = JSON.parse(reply);
+    const tagsContainer = document.getElementById("left")
+                                  .querySelector(".tagsContainer");
+    tagsContainer.innerHTML = "";
+    for (var tag of reply["tags"]) {
+        tagsContainer.appendChild(
+            createTagElement(tag),
+        );
+    }
+});
 
 /* Обработчик события нажатия на ESC (закрывает меню) */
 window.addEventListener('keyup', function (e) {
@@ -109,17 +111,6 @@ window.addEventListener('keyup', function (e) {
         close();
     };
 }, false);
-
-ipcRenderer.on("send event tags", (event, reply) => {
-    reply = JSON.parse(reply);
-    const tagsContainer = document.getElementById("left")
-                                  .querySelector(".tagsContainer")
-    for (var tag of reply["tags"]) {
-        tagsContainer.appendChild(
-            createTagElement(tag),
-        );
-    }
-});
 
 module.exports.showEventDetails = showEventDetails;
 module.exports.show = show;

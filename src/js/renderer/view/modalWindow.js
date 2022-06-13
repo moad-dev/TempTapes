@@ -63,8 +63,11 @@ function setup()
 function closeParentModal(child) {
     var parentModal = child.closest('.modal');
     var overlay = document.querySelector('.js-overlay-modal');
-    parentModal.classList.remove('active');
-    overlay.classList.remove('active');
+    if(parentModal)
+    {
+        parentModal.classList.remove('active');
+        overlay.classList.remove('active');
+    }
 }
 
 function showModal(modalId) {

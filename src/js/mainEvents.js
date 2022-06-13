@@ -11,6 +11,10 @@ constants = require("./constants");
 
 function run(database, ipcMain) {
 
+    /*
+     * Дороги
+    */
+
     ipcMain.on("get root roads", (event, request) =>
     {
         request = JSON.parse(request);
@@ -39,57 +43,6 @@ function run(database, ipcMain) {
             reply["roads"] = rows;
             event.reply("send all roads", JSON.stringify(reply));
         });
-    });
-
-    ipcMain.on("get events", (event, request) =>
-    {
-        request = JSON.parse(request);
-        var reply = {events: [], path_id: request["path_id"]};
-        database
-            .getDB()
-            .all(
-                `SELECT * FROM events WHERE path_id = ? AND date BETWEEN ? AND ?`,
-                request["path_id"],
-                request["first_date"],
-                request["end_date"],
-                (err, rows) => {
-                    reply["events"] = rows;
-                    event.reply(
-                        "send events",
-                        JSON.stringify(reply)
-                    );
-                }
-            );
-    });
-
-    ipcMain.on("get event tags", (event, request) =>
-    {
-        request = JSON.parse(request);
-        var reply = {event_id: request["event_id"], tags: []};
-        database.getEventTags(request["event_id"], (err, rows) => {
-            rows.forEach(row => {
-                reply["tags"].push(row.name);
-            });
-            event.reply("send event tags", JSON.stringify(reply));
-        });
-    });
-
-    ipcMain.on("get events one day", (event, request) =>
-    {
-        request = JSON.parse(request);
-        var reply = {events: []};
-        database.getDB().all(
-                `SELECT * FROM events WHERE path_id = ? AND date = ?`,
-                request["path_id"],
-                request["date"],
-                (err, rows) => {
-                    reply["events"] = rows;
-                    event.reply(
-                        "send events one day",
-                        JSON.stringify(reply)
-                    );
-                }
-            );
     });
 
     ipcMain.on("make path", (event, request) =>
@@ -157,6 +110,49 @@ function run(database, ipcMain) {
                 JSON.stringify(reply)
             );
         });
+    });
+
+    /*
+     * События
+    */
+
+    ipcMain.on("get events", (event, request) =>
+    {
+        request = JSON.parse(request);
+        var reply = {events: [], path_id: request["path_id"]};
+        database
+            .getDB()
+            .all(
+                `SELECT * FROM events WHERE path_id = ? AND date BETWEEN ? AND ?`,
+                request["path_id"],
+                request["first_date"],
+                request["end_date"],
+                (err, rows) => {
+                    reply["events"] = rows;
+                    event.reply(
+                        "send events",
+                        JSON.stringify(reply)
+                    );
+                }
+            );
+    });
+
+    ipcMain.on("get events one day", (event, request) =>
+    {
+        request = JSON.parse(request);
+        var reply = {events: []};
+        database.getDB().all(
+                `SELECT * FROM events WHERE path_id = ? AND date = ?`,
+                request["path_id"],
+                request["date"],
+                (err, rows) => {
+                    reply["events"] = rows;
+                    event.reply(
+                        "send events one day",
+                        JSON.stringify(reply)
+                    );
+                }
+            );
     });
 
     ipcMain.on("make event", (event, request) =>
@@ -234,6 +230,46 @@ function run(database, ipcMain) {
         });
     });
 
+    /*
+     * Теги
+    */
+
+    function sendEventTags(event, event_id) {
+        var reply = {event_id: event_id, tags: []};
+        database.getEventTags(event_id, (err, rows) => {
+            rows.forEach(row => {
+                reply["tags"].push(row.name);
+            });
+            event.reply("send event tags", JSON.stringify(reply));
+        });
+    }
+
+    ipcMain.on("get event tags", (event, request) =>
+    {
+        request = JSON.parse(request);
+        sendEventTags(event, request["event_id"]);
+    });
+
+    ipcMain.on("set event tag", (event, request) =>
+    {
+        request = JSON.parse(request);
+        database.getEventTags(request["event_id"], (err, rows) => {
+            // Продолжаем только если тег ещё не привязан
+            if(!rows.map((row) => row.name).includes(request["tag"])) {
+                database.makeTagIfNotExists(request["tag"], function(err) {
+                    database.setEventTag(request["event_id"], request["tag"],
+                        function (err) {
+                            sendEventTags(event, request["event_id"]);
+                        });
+                });
+            }
+        });
+    });
+
+    /*
+     * Изображения
+    */
+
     ipcMain.on("get images", (event, request) =>
     {
         request = JSON.parse(request);
@@ -246,6 +282,10 @@ function run(database, ipcMain) {
             JSON.stringify(reply)
         );
     });
+
+    /*
+     * Профили
+    */
 
     ipcMain.on("get profiles", (event, request) =>
     {
