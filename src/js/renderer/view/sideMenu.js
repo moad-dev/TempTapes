@@ -4,6 +4,7 @@
  * @module view/sideMenu
  */
 const cacheModule = require("../cacheModule.js");
+const {ipcRenderer} = require("electron");
 /**
  * Внутренняя функция модуля. Вычисление хэш-суммы с помощью алгоритма djb2 (Bernstein hash).
  * Используется для раскраски тэгов в меню.
@@ -86,11 +87,7 @@ function showEventDetails(event) {
         description.innerHTML = event.description;
     var tagsContainer = document.createElement("div");
         tagsContainer.classList.add("text");
-    for (var tag of event.tags) {
-        tagsContainer.appendChild(
-            createTagElement(tag),
-        );
-    }
+        tagsContainer.classList.add("tagsContainer");
     iconContainer.appendChild(icon);
     container.appendChild(iconContainer);
     container.appendChild(name);
@@ -98,6 +95,10 @@ function showEventDetails(event) {
     container.appendChild(description);
     container.appendChild(tagsContainer);
     sideMenu.appendChild(container);
+
+    ipcRenderer.send(
+        "get event tags", JSON.stringify({"event_id": event["event_id"]})
+    );
 }
 
 /* Обработчик события нажатия на ESC (закрывает меню) */
@@ -109,6 +110,16 @@ window.addEventListener('keyup', function (e) {
     };
 }, false);
 
+ipcRenderer.on("send event tags", (event, reply) => {
+    reply = JSON.parse(reply);
+    const tagsContainer = document.getElementById("left")
+                                  .querySelector(".tagsContainer")
+    for (var tag of reply["tags"]) {
+        tagsContainer.appendChild(
+            createTagElement(tag),
+        );
+    }
+});
 
 module.exports.showEventDetails = showEventDetails;
 module.exports.show = show;

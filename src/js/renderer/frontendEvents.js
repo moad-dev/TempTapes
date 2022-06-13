@@ -182,14 +182,6 @@ ipcRenderer.on("event deleted", (event, reply) =>
     getEvents(reply["event_id"]);
 });
 
-ipcRenderer.on("send event tags", (event, reply) => {
-    reply = JSON.parse(reply);
-    cacheModule.findEventInCache(reply["event_id"])["tags"] = reply["tags"];
-    sideMenu.show();
-    sideMenu.showEventDetails(cacheModule.findEventInCache(reply["event_id"]))
-});
-
-
 module.exports = {
     getEvents: getEvents,
     getRoads: getRoads

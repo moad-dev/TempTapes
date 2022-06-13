@@ -198,15 +198,8 @@ window.addEventListener("DOMContentLoaded", () => {
         if ((event || window.event).which == 1) // если ЛКМ
         {
             let selected_event = cacheModule.findEventInCache(id);
-
-            if (selected_event.tags == null)
-                ipcRenderer.send(
-                    "get event tags", JSON.stringify({"event_id": selected_event["event_id"]})
-                );
-            else {
-                sideMenu.show();
-                sideMenu.showEventDetails(selected_event);
-            }
+            sideMenu.show();
+            sideMenu.showEventDetails(selected_event);
         }
     });
 

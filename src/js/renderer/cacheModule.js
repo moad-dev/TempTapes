@@ -126,7 +126,6 @@ ipcRenderer.on("send root roads", (event, reply) =>
         onRoadsReady();
 });
 function addEventToCache(event) {
-    event.tags = null;
     let date_tokens = event.date.split('-');
     let month = date_tokens[0] + '-' + date_tokens[1];
     let year = date_tokens[0];
