@@ -123,12 +123,13 @@ window.addEventListener("DOMContentLoaded", () => {
     // ~~~~~~~~~ Для окна управления профилями
 
     document
-        .getElementById("profileSelector")
+        .querySelector("form[data-action='update profile']")
+        .querySelector("select[name=profileSelector]")
         .addEventListener("change", () => {
             let form = document.querySelector("form[data-action='update profile']");
-            let profile = document.getElementById("profileSelector").value;
+            let profile = form.querySelector("select[name=profileSelector]").value;
             formsProcessing.setForm({
-                name: profile,
+                name: profile
             }, form);
         });
 
@@ -136,9 +137,11 @@ window.addEventListener("DOMContentLoaded", () => {
         .getElementById("updateProfileBtn")
         .addEventListener("click", () => {
             let form = document.querySelector("form[data-action='update profile']");
-            let profile = document.getElementById("profileSelector").value;
+            const profile = cacheModule.getCache()["profile"];
             formsProcessing.setForm({
+                profileSelector: profile,
                 name: profile,
+                delete: false
             }, form);
         });
 

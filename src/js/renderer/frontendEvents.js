@@ -139,7 +139,8 @@ ipcRenderer.on("send images", (event, reply) =>
 ipcRenderer.on("send profiles", (event, reply) =>
 {
     reply = JSON.parse(reply);
-    let profiles_select = document.getElementById("profileSelector");
+    let profiles_select = document.querySelector("form[data-action='update profile']")
+                                  .querySelector("select[name=profileSelector]");
 
     // Добавляем опции select тегов
     let values = [];
