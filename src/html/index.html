@@ -32,12 +32,15 @@
                 <div class="head"></div>
                 <div class="date"></div>
                 <div class="text description"></div>
-                <form data-action="set event tag" style="display: flex; margin-top: 10px;">
-                    <input type="text" name="tag" placeholder="ваш тег">
+                <form data-action="set event tag">
+                    <input type="text" name="tag" placeholder="ваш тег" required>
                     <input type="hidden" name="event_id" value="">
                     <input type="submit" value="добавить">
                 </form>
                 <div class="text tagsContainer"></div>
+            </div>
+            <div id="sidemenu__searchByTag">
+
             </div>
         </div>
     </div>
@@ -83,7 +86,7 @@
         <form data-action="make path" method="post">
             <div class="modal__field">
                 <label for="name">Название дороги</label>
-                <input type="text" name="name" value="">
+                <input type="text" name="name" value="" required>
             </div>
             <div class="modal__field">
                 <label for="color">Цвет дороги</label>
@@ -91,7 +94,7 @@
             </div>
             <div class="modal__field">
                 <label>Иконка</label>
-                <select name="icon"></select>
+                <select name="icon" required></select>
             </div>
             <input name="parent_id" type="hidden" value="">
             <input class="modal__button" type="submit" value="Создать">
@@ -124,7 +127,7 @@
         <p class="modal__title">Редактировать дорогу</p>
         <form data-action="edit path" method="post">
             <div class="modal__field">
-                <input name="path_id" type="hidden" value="">
+                <input name="path_id" type="hidden" value="" required>
             </div>
             <div class="modal__field">
                 <label for="name">Название дороги</label>
@@ -136,7 +139,7 @@
             </div>
             <div class="modal__field">
                 <label>Иконка</label>
-                <select name="icon"></select>
+                <select name="icon" required></select>
             </div>
             <input name="parent_id" type="hidden" value="">
             <input class="modal__button" type="submit" value="Редактировать">
@@ -153,11 +156,11 @@
         <form data-action="make event">
             <div class="modal__field">
                 <label for="name">Название события</label>
-                <input type="text" name="name" value="">
+                <input type="text" name="name" value="" required>
             </div>
             <div class="modal__field">
                 <label for="date">Дата</label>
-                <input type="date" name="date" value="">
+                <input type="date" name="date" value="" required>
             </div>
             <div class="modal__field">
                 <label for="description">Описание</label>
@@ -171,11 +174,11 @@
             </div>
             <div class="modal__field">
                 <label>Иконка</label>
-                <select name="icon"></select>
+                <select name="icon" required></select>
             </div>
             <div class="modal__field">
                 <label>Дорога</label>
-                <select name="path_id"></select>
+                <select name="path_id" required></select>
             </div>
             <input class="modal__button" type="submit" value="Создать">
         </form>
@@ -191,11 +194,11 @@
         <form data-action="edit event">
             <div class="modal__field">
                 <label for="name">Название события</label>
-                <input type="text" name="name" value="">
+                <input type="text" name="name" value="" required>
             </div>
             <div class="modal__field">
                 <label for="date">Дата</label>
-                <input type="date" name="date" value="">
+                <input type="date" name="date" value="" required>
             </div>
             <div class="modal__field">
                 <label for="description">Описание</label>
@@ -209,11 +212,11 @@
             </div>
             <div class="modal__field">
                 <label>Иконка</label>
-                <select name="icon"></select>
+                <select name="icon" required></select>
             </div>
             <div class="modal__field">
                 <label>Дорога</label>
-                <select name="path_id"></select>
+                <select name="path_id" required></select>
             </div>
             <input name="event_id" type="hidden" value="">
             <input class="modal__button" type="submit" value="Редактировать">
@@ -249,7 +252,7 @@
             </div>
             <div class="modal__field">
                 <label>Введите имя профиля</label>
-                <input type="text" name="name" value="">
+                <input type="text" name="name" value="" required>
             </div>
             <div class="modal__field">
                 <label>Удалить выбранный профиль</label>

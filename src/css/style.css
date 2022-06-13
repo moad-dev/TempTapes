@@ -270,7 +270,7 @@ Side menu
 }
 
 #sidemenu__details .text {
-    text-align: justify;
+    text-align: left;
     size: 20px;
     margin-top: 15px;
 }
@@ -279,6 +279,11 @@ Side menu
     text-align: center;
     size: 20px;
     margin-top: 15px;
+}
+
+#sidemenu__details form {
+    display: flex;
+    margin-top: 10px;
 }
 
 /*~~~~~~~~~~~~~~

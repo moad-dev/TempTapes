@@ -10,7 +10,7 @@ const {ipcRenderer} = require("electron");
  * ID элементов, которые явдяются общими контейнерами,
  * предсталвяющими собой разные боковые меню
 */
-const menuOptions = ["sidemenu__details"];
+const menuOptions = ["sidemenu__details", "sidemenu__searchByTag"];
 
 /**
  * Внутренняя функция модуля. Вычисление хэш-суммы с помощью алгоритма djb2 (Bernstein hash).
