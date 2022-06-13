@@ -45,13 +45,27 @@ function pickColor(str) {
  * @param {name} str - название тэга.
  * @returns {HTMLElement} - DOM элемент тэга.
  */
-function createTagElement(name) {
-    var tag = document.createElement("span");
-    tag.className = "tag";
-    tag.textContent = name;
-    tag.style.background = pickColor(name);
+function createTagElement(name, event_id) {
+    const tagElement = document.createElement("div");
+          tagElement.className = "tagElement";
+    const tag = document.createElement("span");
+          tag.className = "tag";
+          tag.textContent = name;
+          tag.style.background = pickColor(name);
+    const deleteTag = document.createElement("img");
+          deleteTag.className = "tag__cross";
+          deleteTag.src = '../../storage/svg/delete_cross.svg';
 
-    return tag;
+    deleteTag.addEventListener("click", function(event) {
+        ipcRenderer.send(
+            "unset event tag", JSON.stringify({event_id: event_id, tag: name})
+        );
+    });
+
+    tagElement.appendChild(tag);
+    tagElement.appendChild(deleteTag);
+
+    return tagElement;
 }
 
 /** Открывает боковое меню. */
@@ -98,7 +112,7 @@ ipcRenderer.on("send event tags", (event, reply) => {
     tagsContainer.innerHTML = "";
     for (var tag of reply["tags"]) {
         tagsContainer.appendChild(
-            createTagElement(tag),
+            createTagElement(tag, reply["event_id"]),
         );
     }
 });

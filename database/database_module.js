@@ -220,6 +220,23 @@ function setEventTag(event_id, tag, callback) {
     );
 }
 
+function unsetEventTag(event_id, tag, callback) {
+    db.all(
+        `
+        DELETE FROM bind_event_tag
+        WHERE event_id = ?1
+              AND
+              tag_id = (SELECT tag_id from tags where name = ?2);
+        `,
+        {
+            1: event_id,
+            2: tag
+        },
+        function (err) { callback(err); }
+    );
+}
+
+
 function makePath(name, color, icon = null, parent_id = null, callback) {
     db.run(
         `
@@ -352,6 +369,7 @@ module.exports = {
     getEventTags: getEventTags,
     makeTagIfNotExists: makeTagIfNotExists,
     setEventTag: setEventTag,
+    unsetEventTag: unsetEventTag,
 
     makePath: makePath,
     deletePath: deletePath,

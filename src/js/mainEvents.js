@@ -266,6 +266,15 @@ function run(database, ipcMain) {
         });
     });
 
+    ipcMain.on("unset event tag", (event, request) =>
+    {
+        request = JSON.parse(request);
+        database.unsetEventTag(request["event_id"], request["tag"],
+            function (err) {
+                sendEventTags(event, request["event_id"]);
+            });
+    });
+
     /*
      * Изображения
     */

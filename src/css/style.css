@@ -413,10 +413,26 @@ Side menu
     border-radius: 0.25em;
     color: white;
     background-color: firebrick;
-    margin: 5px;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 3px;
     /* TODO: remove */
+}
+
+.tagElement {
+    display: inline-block;
+    margin: 5px;
 }
 
 .tag:empty {
     display: none;
+}
+
+.tag__cross {
+    width: 16px;
+    height: 16px;
+    margin: auto;
+    vertical-align: middle;
+    cursor: pointer;
 }

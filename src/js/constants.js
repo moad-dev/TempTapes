@@ -1,5 +1,6 @@
 module.exports = {
     projectName: "TempTapes",
     profilesDir: "database/profiles",
-    imagesDir: "storage/img"
+    imagesDir: "storage/img",
+    svgsDir: "storage/svg"
 }
