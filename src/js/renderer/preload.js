@@ -25,7 +25,6 @@ const {
     setStackClickHandler
 } = require("./setup");
 const {getScale} = require("./timescale");
-const sideMenu = require("./view/sideMenu");
 const {getLastValue, setLastValue} = require("./view/horizontallScrollBar");
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -53,7 +52,7 @@ window.addEventListener("DOMContentLoaded", () => {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
     //      Side menu
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
-    const sideMenu = require("./view/sideMenu");
+    const sideMenu = require("./view/sideMenu.js");
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Инициализация приложения
@@ -278,4 +277,16 @@ window.addEventListener("DOMContentLoaded", () => {
                     setLastValue(currentScrollValue);
                 }
             });
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Окно фильтров
+    //~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    document
+        .getElementById("searchByTagBtn")
+        .addEventListener("click", () => {
+            sideMenu.show();
+            sideMenu.showSearchByTag();
+        });
+
 });

@@ -29,7 +29,8 @@ let cache =
     events_day: {},
     events_month: {},
     events_year: {},
-    profile: ""
+    profile: "",
+    filters: []
 };
 
 // ~~~ Проверить идёт ли передача событий из базы в данный момент (экспорт)

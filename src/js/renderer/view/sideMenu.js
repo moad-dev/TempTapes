@@ -4,6 +4,7 @@
  * @module view/sideMenu
  */
 const cacheModule = require("../cacheModule.js");
+const cache = cacheModule.getCache();
 const {ipcRenderer} = require("electron");
 
 /*
@@ -42,7 +43,8 @@ function pickColor(str) {
 /**
  * Внутренняя функция модуля.
  * Создание DOM элемента для тэга
- * @param {name} str - название тэга.
+ * @param {name} str - название тэга,
+ * @param {name} event_id - id события.
  * @returns {HTMLElement} - DOM элемент тэга.
  */
 function createTagElement(name, event_id) {
@@ -126,6 +128,60 @@ window.addEventListener('keyup', function (e) {
     };
 }, false);
 
+/**
+ * Блок работы с фильтрами
+ *
+ */
+
+/**
+ * Внутренняя функция модуля.
+ * Создание DOM элемента для фильтра
+ * @param {name} str - название фильтра,
+ * @returns {HTMLElement} - DOM элемент тэга.
+*/
+function createFilterElement(name) {
+    console.log(cache["filters"]);
+    const tagElement = document.createElement("div");
+       tagElement.className = "tagElement";
+    const tag = document.createElement("span");
+       tag.className = "tag";
+       tag.textContent = name;
+       tag.style.background = pickColor(name);
+    const deleteTag = document.createElement("img");
+       deleteTag.className = "tag__cross";
+       deleteTag.src = '../../storage/svg/delete_cross.svg';
+
+    deleteTag.addEventListener("click", function(event) {
+     tagElement.remove();
+     cache["filters"] = cache["filters"].filter(item => item !== name);
+    });
+
+    tagElement.appendChild(tag);
+    tagElement.appendChild(deleteTag);
+
+    return tagElement;
+}
+
+function showSearchByTag() {
+    const sideMenu = document.getElementById("sidemenu__searchByTag");
+    sideMenu.style.display = "";
+}
+
+document.getElementById("sidemenu__searchByTag")
+        .querySelector("input[name=addFilter]")
+        .addEventListener('click', function(e) {
+            const filter = document.getElementById("sidemenu__searchByTag")
+                                   .querySelector("input[name=filter]").value;
+            const tagsContainer = document.getElementById("sidemenu__searchByTag")
+                                          .querySelector("div[class=tagsContainer]");
+            if(!cache["filters"].includes(filter)) {
+                cache["filters"].push(filter);
+                const filterElement = createFilterElement(filter);
+                tagsContainer.appendChild(filterElement);
+            }
+        });
+
 module.exports.showEventDetails = showEventDetails;
+module.exports.showSearchByTag = showSearchByTag;
 module.exports.show = show;
 module.exports.close = close;

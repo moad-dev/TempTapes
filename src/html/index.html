@@ -40,7 +40,11 @@
                 <div class="text tagsContainer"></div>
             </div>
             <div id="sidemenu__searchByTag">
-
+                <div style="display:flex; margin: 5px;">
+                    <input type="text" name="filter" placeholder="фильтр">
+                    <input type="submit" value="добавить" name="addFilter">
+                </div>
+                <div class="tagsContainer"></div>
             </div>
         </div>
     </div>
@@ -72,6 +76,7 @@
             <button class="js-open-modal btn dark-opaque" data-modal="pathAdd" id="makePathBtn"> Добавить дорогу </button>
             <button class="js-open-modal btn dark-opaque" data-modal="eventAdd" id="makeEventBtn"> Добавить событие </button>
             <button class="js-open-modal btn dark-opaque" data-modal="update profile" id="updateProfileBtn"> Обновить профиль </button>
+            <button class="btn dark-opaque" id="searchByTagBtn"> Фильтры </button>
         </div>
         <input id="scrollBar" style="position: absolute; bottom: 4em; left: 0; visibility: hidden" type="range" min="0" max="12">
     </div>

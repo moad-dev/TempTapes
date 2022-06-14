@@ -16,7 +16,6 @@ const {
 } = require("./timeline.js");
 
 const {checkBarVisibility, getLastValue, setLastValue} = require('./view/horizontallScrollBar');
-const sideMenu = require("./view/sideMenu");
 const formsProcessing = require("./formsProcessing");
 
 const constants = require("../constants");
