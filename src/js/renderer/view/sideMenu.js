@@ -58,6 +58,11 @@ function createTagElement(name, event_id) {
           deleteTag.className = "tag__cross";
           deleteTag.src = '../../storage/svg/delete_cross.svg';
 
+    tag.addEventListener("click", function(event) {
+        addFilter(name);
+        show();
+        showSearchByTag();
+    });
     deleteTag.addEventListener("click", function(event) {
         ipcRenderer.send(
             "unset event tag", JSON.stringify({event_id: event_id, tag: name})
@@ -134,6 +139,15 @@ window.addEventListener('keyup', function (e) {
  */
 
 /**
+* Показывает интерфейс фильтров в боковом меню.
+* @param {Object} event - Объект события для показа.
+*/
+function showSearchByTag() {
+    const sideMenu = document.getElementById("sidemenu__searchByTag");
+    sideMenu.style.display = "";
+}
+
+/**
  * Внутренняя функция модуля.
  * Создание DOM элемента для фильтра
  * @param {name} str - название фильтра,
@@ -166,12 +180,21 @@ function createFilterElement(name) {
 }
 
 /**
- * Показывает интерфейс фильтров в боковом меню.
- * @param {Object} event - Объект события для показа.
- */
-function showSearchByTag() {
-    const sideMenu = document.getElementById("sidemenu__searchByTag");
-    sideMenu.style.display = "";
+* Добавляет фильтр в кеш и на страницу
+* @param {str} filter - имя фильтра
+*/
+function addFilter(filter) {
+    const tagsContainer = document.getElementById("sidemenu__searchByTag")
+                                  .querySelector("div[class=tagsContainer]");
+    if(!cache["filters"].includes(filter)) {
+        cache["filters"].push(filter);
+        const filterElement = createFilterElement(filter);
+        tagsContainer.appendChild(filterElement);
+
+        // Получаем события по обновлённым фильтрам
+        cacheModule.force();
+        cacheModule.getEvents();
+    }
 }
 
 document.getElementById("sidemenu__searchByTag")
@@ -179,17 +202,8 @@ document.getElementById("sidemenu__searchByTag")
         .addEventListener('click', function(e) {
             const filter = document.getElementById("sidemenu__searchByTag")
                                    .querySelector("input[name=filter]").value;
-            const tagsContainer = document.getElementById("sidemenu__searchByTag")
-                                          .querySelector("div[class=tagsContainer]");
-            if(!cache["filters"].includes(filter)) {
-                cache["filters"].push(filter);
-                const filterElement = createFilterElement(filter);
-                tagsContainer.appendChild(filterElement);
 
-                // Получаем события по обновлённым фильтрам
-                cacheModule.force();
-                cacheModule.getEvents();
-            }
+            addFilter(filter);
         });
 
 module.exports.showEventDetails = showEventDetails;

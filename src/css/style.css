@@ -422,6 +422,7 @@ Side menu
     margin-bottom: 0;
     margin-left: 0;
     margin-right: 3px;
+    cursor: pointer;
     /* TODO: remove */
 }
 
