@@ -1,6 +1,7 @@
 const cacheModule = require("./cacheModule.js");
 let cache = cacheModule.getCache();
 let availableStacks = [];
+let availableEvents = [];
 //const material = new THREE.MeshBasicMaterial({map: loader.load('../../storage/img/instagram.png'), opacity: 1, transparent: true});
 
 const makeMaterialWithShader = require("./view/iconShader.js");
@@ -132,6 +133,7 @@ function createEvents(startDate, endDate, dateMode, road)
             )
             plane.name = "event " + events[0].event_id;
             scene.add( plane );
+            availableEvents.push(plane);
         }
     });
 }
@@ -183,20 +185,14 @@ function deleteEvent(id) {
 
 function deleteAllEvents()
 {
-    for (let road in cache["events_day"])
-    {
-        for(let date in cache["events_day"][road])
-        {
-            let events = cache["events_day"][road][date];
-            events.forEach(function (elem){
-                deleteObject(scene.getObjectByName("event " + elem.event_id));
-            })
-        }
-    }
+    availableEvents.forEach(function (event){
+        deleteObject(event);
+    });
+    availableEvents = [];
     availableStacks.forEach(function (stack){
         deleteObject(stack);
     });
-    availableStacks = []
+    availableStacks = [];
 }
 
 function stackClick(plane, scale)

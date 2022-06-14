@@ -5,6 +5,11 @@ var onEventsReady = null;
 function setOnEventsReady (func) {
     onEventsReady = func;
 }
+// Происходит перед тем как события загружены и готовы к отрисовке
+var beforeEventsReady = null;
+function setBeforeEventsReady (func) {
+    beforeEventsReady = func;
+}
 // Происходит когда дороги загружены и готовы к отрисовке
 var onRoadsReady = null;
 function setOnRoadsReady (func) {
@@ -38,13 +43,18 @@ function isEventsTransfering() {
     return events_watcher.any_running();
 }
 
-function getEvents(startDate, endDate, dateMode) {
+function getEvents(startDate = lastStartDate, endDate = lastEndDate, dateMode = lastDateMode) {
+
+    if(!startDate || !endDate || !dateMode)
+        return;
+
     if(startDate >= lastStartDate && endDate <= lastEndDate && lastDateMode == dateMode) {
-        if(onEventsReady) {
-            cache["roads"].forEach((road) => {
+        if(beforeEventsReady)
+            beforeEventsReady();
+        cache["roads"].forEach((road) => {
+            if(onEventsReady)
                 onEventsReady(road.path_id);
-            });
-        }
+        });
     }
     else {
 
@@ -73,6 +83,8 @@ function getEvents(startDate, endDate, dateMode) {
         cache["events_month"] = {};
         cache["events_year"] = {};
         events_watcher.set_status(true);
+        if(beforeEventsReady)
+            beforeEventsReady();
         cache["roads"].forEach(road => {
             ipcRenderer.send(
                 "get events",
@@ -234,6 +246,7 @@ module.exports = {
     setOnRoadsReady: setOnRoadsReady,
     setOnEventsReady: setOnEventsReady,
     setBeforeRoadsReady: setBeforeRoadsReady,
+    setBeforeEventsReady: setBeforeEventsReady,
     isEventsTransfering: isEventsTransfering,
     getEvents: getEvents,
     getRoads: getRoads,
