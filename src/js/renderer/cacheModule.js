@@ -21,9 +21,17 @@ function setBeforeRoadsReady (func) {
     beforeRoadsReady = func;
 }
 
+// Должны ли мы обновить кеш принудительно
+var isForce = false;
+function force() {
+    isForce = true;
+}
+
+// Объект для отслеживания состояния процесса передачи событий от базы кешу
 const Watcher = require("./multipleProcessWatcher.js");
 let events_watcher = null;
 
+// Последние критерии для запроса событий из базы
 let lastEndDate = undefined;
 let lastStartDate = undefined;
 let lastDateMode = undefined;
@@ -38,7 +46,7 @@ let cache =
     filters: []
 };
 
-// ~~~ Проверить идёт ли передача событий из базы в данный момент (экспорт)
+// Проверить идёт ли передача событий из базы в данный момент
 function isEventsTransfering() {
     return events_watcher.any_running();
 }
@@ -48,7 +56,7 @@ function getEvents(startDate = lastStartDate, endDate = lastEndDate, dateMode = 
     if(!startDate || !endDate || !dateMode)
         return;
 
-    if(startDate >= lastStartDate && endDate <= lastEndDate && lastDateMode == dateMode) {
+    if(startDate >= lastStartDate && endDate <= lastEndDate && lastDateMode == dateMode && isForce == false) {
         if(beforeEventsReady)
             beforeEventsReady();
         cache["roads"].forEach((road) => {
@@ -57,6 +65,8 @@ function getEvents(startDate = lastStartDate, endDate = lastEndDate, dateMode = 
         });
     }
     else {
+
+        isForce = false;
 
         const pullSize = 12;
 
@@ -82,19 +92,36 @@ function getEvents(startDate = lastStartDate, endDate = lastEndDate, dateMode = 
         cache["events_day"] = {};
         cache["events_month"] = {};
         cache["events_year"] = {};
+
         events_watcher.set_status(true);
+
         if(beforeEventsReady)
             beforeEventsReady();
-        cache["roads"].forEach(road => {
-            ipcRenderer.send(
-                "get events",
-                JSON.stringify({
-                    path_id: road.path_id,
-                    first_date: startDate.formatted(),
-                    end_date: endDate.formatted()
-                })
-            );
-        });
+
+        if(cache["filters"].length == 0) {
+            cache["roads"].forEach(road => {
+                ipcRenderer.send(
+                    "get events",
+                    JSON.stringify({
+                        path_id: road.path_id,
+                        first_date: startDate.formatted(),
+                        end_date: endDate.formatted()
+                    })
+                );
+            });
+        } else {
+            cache["roads"].forEach(road => {
+                ipcRenderer.send(
+                    "get events by tags",
+                    JSON.stringify({
+                        path_id: road.path_id,
+                        first_date: startDate.formatted(),
+                        end_date: endDate.formatted(),
+                        tags: cache["filters"]
+                    })
+                );
+            });
+        }
     }
 }
 
@@ -250,5 +277,6 @@ module.exports = {
     isEventsTransfering: isEventsTransfering,
     getEvents: getEvents,
     getRoads: getRoads,
-    findPathById: findPathById
+    findPathById: findPathById,
+    force: force,
 }

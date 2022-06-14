@@ -140,7 +140,6 @@ window.addEventListener('keyup', function (e) {
  * @returns {HTMLElement} - DOM элемент тэга.
 */
 function createFilterElement(name) {
-    console.log(cache["filters"]);
     const tagElement = document.createElement("div");
        tagElement.className = "tagElement";
     const tag = document.createElement("span");
@@ -153,7 +152,11 @@ function createFilterElement(name) {
 
     deleteTag.addEventListener("click", function(event) {
      tagElement.remove();
+     // Убираем из кеша фильтр, относящийся к удалённому элементу
      cache["filters"] = cache["filters"].filter(item => item !== name);
+     // Получаем события по обновлённым фильтрам
+     cacheModule.force();
+     cacheModule.getEvents();
     });
 
     tagElement.appendChild(tag);
@@ -162,6 +165,10 @@ function createFilterElement(name) {
     return tagElement;
 }
 
+/**
+ * Показывает интерфейс фильтров в боковом меню.
+ * @param {Object} event - Объект события для показа.
+ */
 function showSearchByTag() {
     const sideMenu = document.getElementById("sidemenu__searchByTag");
     sideMenu.style.display = "";
@@ -178,6 +185,10 @@ document.getElementById("sidemenu__searchByTag")
                 cache["filters"].push(filter);
                 const filterElement = createFilterElement(filter);
                 tagsContainer.appendChild(filterElement);
+
+                // Получаем события по обновлённым фильтрам
+                cacheModule.force();
+                cacheModule.getEvents();
             }
         });
 

@@ -227,6 +227,7 @@ function stackClick(plane, scale)
         let eventObj = scene.getObjectByName("event " + event.event_id);
         if (eventObj)
         {
+            availableEvents.splice(availableEvents.indexOf(eventObj), 1);
             deleteObject(eventObj);
         }
         else
@@ -251,7 +252,7 @@ function stackClick(plane, scale)
             );
             plane.name = "event " + event.event_id;
             scene.add( plane );
-
+            availableEvents.push(plane);
         }
         axisOffset++;
     });

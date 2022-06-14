@@ -15,9 +15,7 @@ function run(database, ipcMain) {
      * Дороги
     */
 
-    ipcMain.on("get root roads", (event, request) =>
-    {
-        request = JSON.parse(request);
+    function sendRootPaths(event) {
         var reply = {roads: []};
         database.getRootPaths((err, rows) => {
             rows.forEach(row => {
@@ -33,6 +31,12 @@ function run(database, ipcMain) {
             reply.profile = database.getCurrentProfile();
             event.reply("send root roads", JSON.stringify(reply));
         });
+    }
+
+    ipcMain.on("get root roads", (event, request) =>
+    {
+        request = JSON.parse(request);
+        sendRootPaths(event);
     });
 
     ipcMain.on("get all roads", (event, request) =>
@@ -137,22 +141,20 @@ function run(database, ipcMain) {
             );
     });
 
-    ipcMain.on("get events one day", (event, request) =>
+    ipcMain.on("get events by tags", (event, request) =>
     {
         request = JSON.parse(request);
-        var reply = {events: []};
-        database.getDB().all(
-                `SELECT * FROM events WHERE path_id = ? AND date = ?`,
-                request["path_id"],
-                request["date"],
-                (err, rows) => {
+        var reply = {events: [], path_id: request["path_id"]};
+        database.getEventIDsByTags(request["tags"], function (err, ids) {
+            database.getEventsByIDs(request["path_id"], request["first_date"], request["end_date"], ids,
+                function (err, rows) {
                     reply["events"] = rows;
                     event.reply(
-                        "send events one day",
+                        "send events",
                         JSON.stringify(reply)
                     );
-                }
-            );
+                });
+        });
     });
 
     ipcMain.on("make event", (event, request) =>
@@ -317,20 +319,7 @@ function run(database, ipcMain) {
         }
         database.Init(function() {
             var reply = {roads: []};
-            database.getRootPaths((err, rows) => {
-                rows.forEach(row => {
-                    road = {
-                        path_id: row.path_id,
-                        name: row.name,
-                        color: row.color,
-                        parent_id: row.parent_id,
-                        icon: row.icon
-                    };
-                    reply["roads"].push(road);
-                });
-                reply.profile = database.getCurrentProfile();
-                event.reply("send root roads", JSON.stringify(reply));
-            });
+            sendRootPaths(event);
         }, request["delete"] ? null : request["name"]);
     });
 

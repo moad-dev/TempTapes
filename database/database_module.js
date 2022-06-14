@@ -183,6 +183,31 @@ function getEventsByPath(path_id, callback) {
     });
 }
 
+function getEventIDsByTags (tags, callback) {
+    db.all(
+        `SELECT bind_event_tag.event_id
+        FROM bind_event_tag
+        JOIN tags ON bind_event_tag.tag_id = tags.tag_id
+        WHERE tags.name IN (${ tags.map(() => "?").join(", ") })`,
+        tags,
+        function(err, rows) {
+            callback(err, rows.map((obj) => obj.event_id));
+        }
+    );
+}
+
+function getEventsByIDs(path_id, first_date, end_date, ids, callback) {
+    ids.unshift(end_date);
+    ids.unshift(first_date);
+    ids.unshift(path_id);
+    db.all(
+        `SELECT * FROM events WHERE path_id == ? AND date BETWEEN ? AND ? AND event_id IN (${ "?,".repeat(ids.length-3).slice(0,-1) })`,
+        ids,
+        function(err, rows) {
+            callback(err, rows);
+        }
+    );
+}
 
 function getEventTags(event_id, callback) {
     db.all(
@@ -366,6 +391,8 @@ module.exports = {
     getRootPaths: getRootPaths,
     getPathsByParent: getPathsByParent,
     getEventsByPath: getEventsByPath,
+    getEventIDsByTags: getEventIDsByTags,
+    getEventsByIDs: getEventsByIDs,
     getEventTags: getEventTags,
     makeTagIfNotExists: makeTagIfNotExists,
     setEventTag: setEventTag,
