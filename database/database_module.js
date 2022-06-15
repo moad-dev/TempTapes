@@ -1,16 +1,25 @@
-// Модуль базы данных: инициализация и интерфейсы для доступа к БД
-//
-//
+/**
+ * Модуль базы данных
+ *  1.  инициализация базы данных
+ *  2.  интерфейсы для доступа к БД
+ *  3.  инициализация профилей
+ */
 
 const sqlite3 = require("sqlite3");
 const path = require("path");
 const fs = require("fs");
-
 const constants = require(path.join(process.cwd(), "src/js/constants.js"));
 
+/**
+ * Текущая активная база данных.
+ */
 var db;
 
+/**
+ * Текущий активный профиль.
+ */
 var currentProfile;
+
 function getCurrentProfile() {
     return currentProfile;
 }
@@ -46,7 +55,7 @@ function Init(startup, filename = null) {
                 return;
             } else if (err) {
                 console.log("SQLITE DB OPEN ERROR: " + err);
-                exit(1);
+                process.exit(1);
             } else {
                 startup();
             }
@@ -61,7 +70,7 @@ function createDatabase(startup) {
         err => {
             if (err) {
                 console.log("SQLITE DB CREATE ERROR: " + err);
-                exit(1);
+                process.exit(1);
             }
             createTables(db, startup);
         }
@@ -129,22 +138,17 @@ function createTables(db, startup) {
 
     create index idx_events_path_date on events(path_id, date);
 
-    /*
-    //
-    // DEBUG
-    */
-
     insert into paths (name, color, parent_id, icon)
-        values ('path1', '#FF0000', null, 'picture.png'),
-               ('path2', '#00FF00', null, 'picture.png'),
-               ('path3', '#0000FF', null, 'picture.png'),
-               ('path4', '#00FFFF', null, 'picture.png');
+        values ('дорога 1', '#FF0000', null, 'picture.png'),
+               ('дорога 2', '#00FF00', null, 'picture.png'),
+               ('дорога 3', '#0000FF', null, 'picture.png'),
+               ('дорога 4', '#00FFFF', null, 'picture.png');
 
         `,
         err => {
             if (err != null) {
                 console.log(err);
-                exit(1);
+                process.exit(1);
             }
             startup();
         }
@@ -155,18 +159,34 @@ function createTables(db, startup) {
 //    интерфейсы
 //~~~~~~~~~~~~~~~~~~
 
+/*
+ * Получить объект текущей базы данных
+*/
+function getDB() {
+    return db;
+}
+
+/*
+ * Получить все дороги, хранящиеся в базе данных
+*/
 function getAllPaths(callback) {
     db.all(`SELECT * FROM paths`, (err, rows) => {
         callback(err, rows);
     });
 }
 
+/*
+ * Получить дороги верхнего уровня (не вложенные)
+*/
 function getRootPaths(callback) {
     db.all(`SELECT * FROM paths WHERE parent_id is NULL`, (err, rows) => {
         callback(err, rows);
     });
 }
 
+/*
+ * Получить дороги по внешней дороге
+*/
 function getPathsByParent(parent_id, callback) {
     db.all(
         `SELECT * FROM paths WHERE parent_id == ?`,
@@ -177,6 +197,9 @@ function getPathsByParent(parent_id, callback) {
     );
 }
 
+/*
+ * Получить события по id дороги
+*/
 function getEventsByPath(path_id, callback) {
     db.all(`SELECT * FROM events WHERE path_id == ?`, path_id, (err, rows) => {
         callback(err, rows);
@@ -184,74 +207,8 @@ function getEventsByPath(path_id, callback) {
 }
 
 /*
- * Ошабка БД и краш проги при большом кол-ве событий
-*/
-// function getEventIDsByTagsAny (tags, callback) {
-//     db.all(
-//         `SELECT bind_event_tag.event_id
-//         FROM bind_event_tag
-//         JOIN tags ON bind_event_tag.tag_id = tags.tag_id
-//         WHERE tags.name IN (${ tags.map(() => "?").join(", ") })`,
-//         tags,
-//         function(err, rows) {
-//             callback(err, rows.map((obj) => obj.event_id));
-//         }
-//     );
-// }
-/*
- * Очень медленно
-*/
-// function getEventsByTagsAny (path_id, first_date, end_date, tags, callback) {
-//     tags.unshift(end_date);
-//     tags.unshift(first_date);
-//     tags.unshift(path_id);
-//     db.all(
-//         `SELECT DISTINCT events.*
-//         FROM bind_event_tag
-//         JOIN tags ON bind_event_tag.tag_id = tags.tag_id
-//         JOIN events ON bind_event_tag.event_id = events.event_id
-//         WHERE   events.path_id = ?
-//             AND events.date BETWEEN ? AND ?
-//             AND tags.name IN (${ "?,".repeat(tags.length-3).slice(0,-1) })`,
-//         tags,
-//         function(err, rows) {
-//             callback(err, rows);
-//         }
-//     );
-// }
-/*
- * медленно
-*/
-// function getEventIDsByTagsAll (tags, callback) {
-//     db.all(
-//         `SELECT bind_event_tag.event_id, COUNT(*) AS cnt
-//         FROM bind_event_tag
-//         JOIN tags ON bind_event_tag.tag_id = tags.tag_id
-//         WHERE tags.name IN (${ tags.map(() => "?").join(", ") })
-//         GROUP BY bind_event_tag.event_id`,
-//         tags,
-//         function(err, rows) {
-//             rows = rows.filter(row => row.cnt == tags.length);
-//             rows = rows.map(row => row.event_id);
-//             callback(err, rows);
-//         }
-//     );
-// }
-// function getEventsByIDs(path_id, first_date, end_date, ids, callback) {
-//     ids.unshift(end_date);
-//     ids.unshift(first_date);
-//     ids.unshift(path_id);
-//     db.all(
-//         `SELECT * FROM events WHERE path_id = ? AND date BETWEEN ? AND ? AND event_id IN (${ "?,".repeat(ids.length-3).slice(0,-1) })`,
-//         ids,
-//         function(err, rows) {
-//             callback(err, rows);
-//         }
-//     );
-// }
-
-/*
- * Работает?
+ * Получить дороги по id дороги, промежутку времени и тегам
+ * Если хотя бы один из полученных тегов присвоен событию, оно возвращается
 */
 function getEventsByTagsAny (path_id, first_date, end_date, tags, callback) {
     tags.unshift(end_date);
@@ -275,8 +232,10 @@ function getEventsByTagsAny (path_id, first_date, end_date, tags, callback) {
         }
     );
 }
+
 /*
- * Лучше, но хочется быстрее
+ * Получить дороги по id дороги, промежутку времени и тегам
+ * Если все полученные теги присвоены событию, оно возвращается
 */
 function getEventsByTagsAll (path_id, first_date, end_date, tags, callback) {
     tags.unshift(end_date);
@@ -303,6 +262,11 @@ function getEventsByTagsAll (path_id, first_date, end_date, tags, callback) {
         }
     );
 }
+
+/*
+ *
+ * Работа с тегами
+*/
 
 function getEventTags(event_id, callback) {
     db.all(
@@ -356,6 +320,10 @@ function unsetEventTag(event_id, tag, callback) {
     );
 }
 
+/*
+ *
+ * Работа с дорогами
+*/
 
 function makePath(name, color, icon = null, parent_id = null, callback) {
     db.run(
@@ -411,6 +379,11 @@ function editPath(name, color, icon, parent_id, path_id, callback) {
         }
     );
 }
+
+/*
+ *
+ * Работа с событиями
+*/
 
 function makeEvent(name, color, icon, date, description, path_id, callback) {
     db.run(
@@ -473,10 +446,6 @@ function deleteEvent(event_id, callback) {
     );
 }
 
-function getDB() {
-    return db;
-}
-
 module.exports = {
     db: db,
     getDB: getDB,
@@ -485,12 +454,11 @@ module.exports = {
     getAllPaths: getAllPaths,
     getRootPaths: getRootPaths,
     getPathsByParent: getPathsByParent,
+
     getEventsByPath: getEventsByPath,
-    // getEventIDsByTagsAny: getEventIDsByTagsAny,
-    // getEventIDsByTagsAll: getEventIDsByTagsAll,
-    // getEventsByIDs: getEventsByIDs,
     getEventsByTagsAny: getEventsByTagsAny,
     getEventsByTagsAll: getEventsByTagsAll,
+
     getEventTags: getEventTags,
     makeTagIfNotExists: makeTagIfNotExists,
     setEventTag: setEventTag,

@@ -1,3 +1,12 @@
+/**
+ * Клиентский модуль.
+ * Кеш событий и дорог
+ *  1.  интерфейсы для запроса событий и дорог от сервера
+ *  2.  интерфейсы для редактирования кеша
+ *  3.  интерфейся для поиска по кешу
+ *  4.  интерфейся для итерации по кешу
+ */
+
 const {ipcRenderer} = require("electron");
 
 // Происходит когда события загружены и готовы к отрисовке
@@ -54,6 +63,11 @@ function isEventsTransfering() {
     return events_watcher.any_running();
 }
 
+/**
+ * Функция-интерфейс
+ * получить события от сервера по заданным критериям
+ * учитывает состояния фильтров
+*/
 function getEvents(startDate = lastStartDate, endDate = lastEndDate, dateMode = lastDateMode) {
 
     if(startDate === undefined || endDate === undefined || dateMode === undefined || isEventsTransfering())
@@ -145,12 +159,20 @@ function getEvents(startDate = lastStartDate, endDate = lastEndDate, dateMode = 
     }
 }
 
+/**
+ * Функция-интерфейс
+ * получить внешние дороги от сервера
+*/
 function getRoads() {
     ipcRenderer.send(
         "get root roads", "{}"
     );
 }
 
+/**
+ * Обработчик события получения данных от сервера.
+ * сервер вернул события, занесём их в кеш и уведомим визуальную часть
+*/
 ipcRenderer.on("send events", (event, reply) =>
 {
     reply = JSON.parse(reply);
@@ -168,6 +190,10 @@ ipcRenderer.on("send events", (event, reply) =>
     events_watcher.process_complete([index]);
 });
 
+/**
+ * Обработчик события получения данных от сервера.
+ * сервер вернул дороги, занесём их в кеш и уведомим визуальную часть
+*/
 ipcRenderer.on("send root roads", (event, reply) =>
 {
     if(beforeRoadsReady)
@@ -185,6 +211,11 @@ ipcRenderer.on("send root roads", (event, reply) =>
     if(onRoadsReady)
         onRoadsReady();
 });
+
+/**
+ * Внутрення функция модуля.
+ * Добавляем событие в кеш.
+*/
 function addEventToCache(event) {
     let date_tokens = event.date.split('-');
     let month = date_tokens[0] + '-' + date_tokens[1];
@@ -199,22 +230,18 @@ function addEventToCache(event) {
         cache["events_year"][event.path_id][year] = [];
     cache["events_year"][event.path_id][year].push(event);
 }
-function findEventInCache(id) {
-    for (var road in cache["events_day"]) {
-        for(var date in cache["events_day"][road]) {
-            let selected_event = cache["events_day"][road][date]
-                .filter(obj => { return obj.event_id == id; })[0];
-            if(selected_event) {
-                return selected_event;
-            }
-        }
-    }
-    return null;
-}
+/**
+ * Внутрення функция модуля.
+ * Редактируем событие в кеше.
+*/
 function editEventInCache(id, event) {
     removeEventFromCache(id);
     addEventToCache(event);
 }
+/**
+ * Внутрення функция модуля.
+ * Удаляем событие из кеша.
+*/
 function removeEventFromCache(id) {
     for (var road in cache["events_day"]) {
         for(var date in cache["events_day"][road]) {
@@ -254,6 +281,11 @@ function removeEventFromCache(id) {
     }
     return -1;
 }
+
+/**
+ * Интерфейсы для других модулей.
+ * Итерируем даты в кеше.
+*/
 function iterateDays(path_id, callback) {
     for(let date in cache["events_day"][path_id])
     {
@@ -272,31 +304,62 @@ function iterateYears(path_id, callback) {
         callback(date);
     }
 }
+
+/**
+ * Интерфейс для других модулей.
+ * Получить объект кеша.
+*/
 function getCache() {
     return cache;
 }
 
+/**
+ * Внутрення функция модуля.
+ * Ищем событие в кеше.
+*/
+function findEventInCache(id) {
+    for (var road in cache["events_day"]) {
+        for(var date in cache["events_day"][road]) {
+            let selected_event = cache["events_day"][road][date]
+                .filter(obj => { return obj.event_id == id; })[0];
+            if(selected_event) {
+                return selected_event;
+            }
+        }
+    }
+    return null;
+}
+/**
+ * Интерфейс для других модулей.
+ * Получить дорогу по path_id
+*/
 function findPathById(id) {
-    // return cache["roads"][cache["roads"].map( el => el.path_id ).indexOf(id)];
     return cache["roads"].filter( path => { return path.path_id == id; } )[0];
 }
 
 module.exports = {
+
     addEventToCache: addEventToCache,
-    findEventInCache: findEventInCache,
     editEventInCache: editEventInCache,
     removeEventFromCache: removeEventFromCache,
-    getCache: getCache,
-    iterateDays: iterateDays,
-    iterateMonths: iterateMonths,
-    iterateYears: iterateYears,
+    findEventInCache: findEventInCache,
+    findPathById: findPathById,
+
     setOnRoadsReady: setOnRoadsReady,
     setOnEventsReady: setOnEventsReady,
     setBeforeRoadsReady: setBeforeRoadsReady,
     setBeforeEventsReady: setBeforeEventsReady,
-    isEventsTransfering: isEventsTransfering,
+
     getEvents: getEvents,
     getRoads: getRoads,
-    findPathById: findPathById,
+
+    iterateDays: iterateDays,
+    iterateMonths: iterateMonths,
+    iterateYears: iterateYears,
+
     force: force,
+
+    isEventsTransfering: isEventsTransfering,
+
+    getCache: getCache,
 }

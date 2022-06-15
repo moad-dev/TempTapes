@@ -1,13 +1,15 @@
-// Модуль взаимодействия между фронтом и бэком
-// обращение к базе тоже здесь
-//
+/**
+ * Серверный модуль общения с клиентом
+ * Связующее звено между клиентом и базой данных
+ *  1.  Связь с клиентом посредством ipcMain
+ *  2.  Работа с базой данных и обработка её ответов
+ */
 
 const fs = require('fs');
 
 const path = require("path");
 const database = require(path.join(process.cwd(), "database/database_module"));
-
-constants = require("./constants");
+const constants = require("./constants");
 
 function run(database, ipcMain) {
 
@@ -15,6 +17,10 @@ function run(database, ipcMain) {
      * Дороги
     */
 
+    /**
+     * Внутренняя функция модуля.
+     * Отправка верхних дорог клиенту.
+    */
     function sendRootPaths(event) {
         var reply = {roads: []};
         database.getRootPaths((err, rows) => {
@@ -33,12 +39,20 @@ function run(database, ipcMain) {
         });
     }
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * Отправка верхних дорог клиенту.
+    */
     ipcMain.on("get root roads", (event, request) =>
     {
         request = JSON.parse(request);
         sendRootPaths(event);
     });
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * Отправка всех дорог клиенту.
+    */
     ipcMain.on("get all roads", (event, request) =>
     {
         request = JSON.parse(request);
@@ -49,6 +63,10 @@ function run(database, ipcMain) {
         });
     });
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * Попытка создания дороги и уведомление клиента при успехе.
+    */
     ipcMain.on("make path", (event, request) =>
     {
         request = JSON.parse(request);
@@ -76,6 +94,10 @@ function run(database, ipcMain) {
         );
     });
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * Попытка редакторования дороги и уведомление клиента при успехе
+    */
     ipcMain.on("edit path", (event, request) =>
     {
         request = JSON.parse(request);
@@ -104,6 +126,10 @@ function run(database, ipcMain) {
         );
     });
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * Попытка удаления дороги и уведомление клиента при успехе
+    */
     ipcMain.on("delete path", (event, request) =>
     {
         request = JSON.parse(request);
@@ -117,9 +143,16 @@ function run(database, ipcMain) {
     });
 
     /*
+     *
      * События
     */
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * Возврат клиенту событий, удовлетворяющий следующим параметрам:
+     * 1. id дороги события
+     * 2. промежуток времени, в котором должно лежать событие
+    */
     ipcMain.on("get events", (event, request) =>
     {
         request = JSON.parse(request);
@@ -141,6 +174,13 @@ function run(database, ipcMain) {
             );
     });
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * Возврат клиенту событий, удовлетворяющий следующим параметрам:
+     * 1. id дороги события
+     * 2. промежуток времени, в котором должно лежать событие
+     * 3. хотя бы один тег из переданных клиентом должен быть присвоен событию
+    */
     ipcMain.on("get events by tags any", (event, request) =>
     {
         request = JSON.parse(request);
@@ -159,6 +199,13 @@ function run(database, ipcMain) {
             });
     });
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * Возврат клиенту событий, удовлетворяющий следующим параметрам:
+     * 1. id дороги события
+     * 2. промежуток времени, в котором должно лежать событие
+     * 3. Все теги, переданные клиентом, должен быть присвоен событию
+    */
     ipcMain.on("get events by tags all", (event, request) =>
     {
         request = JSON.parse(request);
@@ -177,6 +224,10 @@ function run(database, ipcMain) {
             });
     });
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * Попытка создать событие и уведомление клиента при успехе.
+    */
     ipcMain.on("make event", (event, request) =>
     {
         request = JSON.parse(request);
@@ -208,6 +259,10 @@ function run(database, ipcMain) {
         );
     });
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * Попытка редактировать событие и уведомление клиента при успехе.
+    */
     ipcMain.on("edit event", (event, request) =>
     {
         request = JSON.parse(request);
@@ -240,6 +295,10 @@ function run(database, ipcMain) {
         );
     });
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * Попытка удалить событие и уведомление клиента при успехе.
+    */
     ipcMain.on("delete event", (event, request) =>
     {
         request = JSON.parse(request);
@@ -256,6 +315,10 @@ function run(database, ipcMain) {
      * Теги
     */
 
+    /**
+     * Внутренняя функция модуля.
+     * Отправить клиенту все теги, соответствующие указанному событию.
+    */
     function sendEventTags(event, event_id) {
         var reply = {event_id: event_id, tags: []};
         database.getEventTags(event_id, (err, rows) => {
@@ -266,12 +329,21 @@ function run(database, ipcMain) {
         });
     }
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * Отправить клиенту все теги, соответствующие указанному событию.
+    */
     ipcMain.on("get event tags", (event, request) =>
     {
         request = JSON.parse(request);
         sendEventTags(event, request["event_id"]);
     });
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * попытка добавить тег событию и, в случае успеха,
+     * отправить клиенту все теги, соответствующие указанному событию.
+    */
     ipcMain.on("set event tag", (event, request) =>
     {
         request = JSON.parse(request);
@@ -288,6 +360,11 @@ function run(database, ipcMain) {
         });
     });
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * попытка удалить тег события и, в случае успеха,
+     * отправить клиенту все теги, соответствующие указанному событию.
+    */
     ipcMain.on("unset event tag", (event, request) =>
     {
         request = JSON.parse(request);
@@ -298,9 +375,14 @@ function run(database, ipcMain) {
     });
 
     /*
+     *
      * Изображения
     */
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * отправить клиенту имена всех иконок
+    */
     ipcMain.on("get images", (event, request) =>
     {
         request = JSON.parse(request);
@@ -315,9 +397,14 @@ function run(database, ipcMain) {
     });
 
     /*
+     *
      * Профили
     */
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * отправить клиенту имена всех профилей
+    */
     ipcMain.on("get profiles", (event, request) =>
     {
         request = JSON.parse(request);
@@ -331,6 +418,10 @@ function run(database, ipcMain) {
         );
     });
 
+    /**
+     * Обработчик события получения сообщения от клиента.
+     * Обновить текущий профиль базы данных
+    */
     ipcMain.on("update profile", (event, request) =>
     {
         request = JSON.parse(request);

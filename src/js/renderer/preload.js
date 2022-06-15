@@ -1,6 +1,8 @@
-// Главный модуль фронтенд части, js код для работы с html элементами
-//
-//
+/**
+ * Главный модуль фронтенд части
+ *  1.  js код для работы с html элементами
+ *  2.  Установка обработчиков событий интерфейса 3d модулей
+ */
 
 const {ipcRenderer} = require("electron");
 const {
@@ -74,7 +76,7 @@ window.addEventListener("DOMContentLoaded", () => {
     // Обработчики событий html
     //~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    // ~~~~~~~~~~~~~~~~ Скролл событий
+    // Скролл событий
 
     window.addEventListener("wheel", onScroll, false);
     let lastScrollTop = 0;
@@ -113,13 +115,13 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // ~~~~~~~~~ Обработчики событий элементов управления событиями и дорогами
+    // Обработчики событий элементов управления событиями и дорогами
 
     setStackClickHandler(function (event, obj){
         stackClick(obj, getScale());
     });
 
-    // ~~~~~~~~~ Для окна управления профилями
+    // Для окна управления профилями
 
     document
         .querySelector("form[data-action='update profile']")
@@ -144,9 +146,8 @@ window.addEventListener("DOMContentLoaded", () => {
             }, form);
         });
 
-    // ~~~~~~~~~~~~~ Обработчики событий для вызова контекстного меню
+    // контекстное меню дороги
 
-    // меню дороги
     setPathClickHandler(function (event, id) {
         let selected_path = cacheModule.findPathById(id);
         if((event || window.event).which == 3) // если ПКМ
@@ -168,7 +169,8 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // меню события
+    // контекстное меню события
+
     setEventClickHandler(function (event, id) {
         let selected_event = cacheModule.findEventInCache(id);
         if((event || window.event).which == 3) // если ПКМ
@@ -202,7 +204,7 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // ~~~~~~~~~~~~~~~ Обработчики событий для timeline
+    // Обработчики событий для timeline
 
     document
         .getElementById("timelineStart")
@@ -256,9 +258,8 @@ window.addEventListener("DOMContentLoaded", () => {
             selectScale("Г", 0);
         });
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //         Горизонтальный скролл
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Горизонтальный скролл
+
     document
         .getElementById("scrollBar")
         .addEventListener("input",
@@ -278,9 +279,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~
     // Окно фильтров
-    //~~~~~~~~~~~~~~~~~~~~~~~~~
 
     document
         .getElementById("searchByTagBtn")
