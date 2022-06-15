@@ -141,11 +141,27 @@ function run(database, ipcMain) {
             );
     });
 
-    ipcMain.on("get events by tags", (event, request) =>
+    ipcMain.on("get events by tags any", (event, request) =>
     {
         request = JSON.parse(request);
         var reply = {events: [], path_id: request["path_id"]};
-        database.getEventIDsByTags(request["tags"], function (err, ids) {
+        database.getEventIDsByTagsAny(request["tags"], function (err, ids) {
+            database.getEventsByIDs(request["path_id"], request["first_date"], request["end_date"], ids,
+                function (err, rows) {
+                    reply["events"] = rows;
+                    event.reply(
+                        "send events",
+                        JSON.stringify(reply)
+                    );
+                });
+        });
+    });
+
+    ipcMain.on("get events by tags all", (event, request) =>
+    {
+        request = JSON.parse(request);
+        var reply = {events: [], path_id: request["path_id"]};
+        database.getEventIDsByTagsAll(request["tags"], function (err, ids) {
             database.getEventsByIDs(request["path_id"], request["first_date"], request["end_date"], ids,
                 function (err, rows) {
                     reply["events"] = rows;

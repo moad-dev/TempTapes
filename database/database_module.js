@@ -183,7 +183,7 @@ function getEventsByPath(path_id, callback) {
     });
 }
 
-function getEventIDsByTags (tags, callback) {
+function getEventIDsByTagsAny (tags, callback) {
     db.all(
         `SELECT bind_event_tag.event_id
         FROM bind_event_tag
@@ -192,6 +192,23 @@ function getEventIDsByTags (tags, callback) {
         tags,
         function(err, rows) {
             callback(err, rows.map((obj) => obj.event_id));
+        }
+    );
+}
+
+function getEventIDsByTagsAll (tags, callback) {
+    db.all(
+        `SELECT bind_event_tag.event_id, COUNT(*) AS cnt
+        FROM bind_event_tag
+        JOIN tags ON bind_event_tag.tag_id = tags.tag_id
+        WHERE tags.name IN (${ tags.map(() => "?").join(", ") })
+        GROUP BY bind_event_tag.event_id`,
+        tags,
+        function(err, rows) {
+            console.log("start", tags.length)
+            rows = rows.filter(row => row.cnt == tags.length);
+            rows = rows.map(row => row.event_id);
+            callback(err, rows);
         }
     );
 }
@@ -391,7 +408,8 @@ module.exports = {
     getRootPaths: getRootPaths,
     getPathsByParent: getPathsByParent,
     getEventsByPath: getEventsByPath,
-    getEventIDsByTags: getEventIDsByTags,
+    getEventIDsByTagsAny: getEventIDsByTagsAny,
+    getEventIDsByTagsAll: getEventIDsByTagsAll,
     getEventsByIDs: getEventsByIDs,
     getEventTags: getEventTags,
     makeTagIfNotExists: makeTagIfNotExists,

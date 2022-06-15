@@ -43,7 +43,10 @@ let cache =
     events_month: {},
     events_year: {},
     profile: "",
-    filters: []
+    filter: {
+        filters: [],
+        mode: "any",
+    },
 };
 
 // Проверить идёт ли передача событий из базы в данный момент
@@ -98,7 +101,7 @@ function getEvents(startDate = lastStartDate, endDate = lastEndDate, dateMode = 
         if(beforeEventsReady)
             beforeEventsReady();
 
-        if(cache["filters"].length == 0) {
+        if(cache["filter"]["filters"].length == 0) {
             cache["roads"].forEach(road => {
                 ipcRenderer.send(
                     "get events",
@@ -110,17 +113,34 @@ function getEvents(startDate = lastStartDate, endDate = lastEndDate, dateMode = 
                 );
             });
         } else {
-            cache["roads"].forEach(road => {
-                ipcRenderer.send(
-                    "get events by tags",
-                    JSON.stringify({
-                        path_id: road.path_id,
-                        first_date: startDate.formatted(),
-                        end_date: endDate.formatted(),
-                        tags: cache["filters"]
-                    })
-                );
-            });
+            switch (cache["filter"]["mode"]) {
+                case "any":
+                    cache["roads"].forEach(road => {
+                        ipcRenderer.send(
+                            "get events by tags any",
+                            JSON.stringify({
+                                path_id: road.path_id,
+                                first_date: startDate.formatted(),
+                                end_date: endDate.formatted(),
+                                tags: cache["filter"]["filters"]
+                            })
+                        );
+                    });
+                break;
+                case "all":
+                    cache["roads"].forEach(road => {
+                        ipcRenderer.send(
+                            "get events by tags all",
+                            JSON.stringify({
+                                path_id: road.path_id,
+                                first_date: startDate.formatted(),
+                                end_date: endDate.formatted(),
+                                tags: cache["filter"]["filters"]
+                            })
+                        );
+                    });
+                break;
+            }
         }
     }
 }

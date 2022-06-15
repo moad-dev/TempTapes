@@ -167,7 +167,7 @@ function createFilterElement(name) {
     deleteTag.addEventListener("click", function(event) {
      tagElement.remove();
      // Убираем из кеша фильтр, относящийся к удалённому элементу
-     cache["filters"] = cache["filters"].filter(item => item !== name);
+     cache["filter"]["filters"] = cache["filter"]["filters"].filter(item => item !== name);
      // Получаем события по обновлённым фильтрам
      cacheModule.force();
      cacheModule.getEvents();
@@ -186,8 +186,8 @@ function createFilterElement(name) {
 function addFilter(filter) {
     const tagsContainer = document.getElementById("sidemenu__searchByTag")
                                   .querySelector("div[class=tagsContainer]");
-    if(!cache["filters"].includes(filter)) {
-        cache["filters"].push(filter);
+    if(!cache["filter"]["filters"].includes(filter)) {
+        cache["filter"]["filters"].push(filter);
         const filterElement = createFilterElement(filter);
         tagsContainer.appendChild(filterElement);
 
@@ -197,6 +197,7 @@ function addFilter(filter) {
     }
 }
 
+// Добавляем поведение кнопке добавления фильтра
 document.getElementById("sidemenu__searchByTag")
         .querySelector("input[name=addFilter]")
         .addEventListener('click', function(e) {
@@ -205,6 +206,20 @@ document.getElementById("sidemenu__searchByTag")
 
             addFilter(filter);
         });
+
+// Добавляем поведение кнопкам выбора режима
+document.getElementById("sidemenu__searchByTag")
+        .querySelectorAll("input[name=mode]").forEach(function(input) {
+            input.addEventListener('change', function(e){
+                if(input.checked) {
+                    cache["filter"]["mode"] = input.value;
+                    // Получаем события по обновлённым фильтрам
+                    cacheModule.force();
+                    cacheModule.getEvents();
+                }
+            });
+        });
+
 
 module.exports.showEventDetails = showEventDetails;
 module.exports.showSearchByTag = showSearchByTag;
