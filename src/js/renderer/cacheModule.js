@@ -56,7 +56,7 @@ function isEventsTransfering() {
 
 function getEvents(startDate = lastStartDate, endDate = lastEndDate, dateMode = lastDateMode) {
 
-    if(startDate === undefined || endDate === undefined || dateMode === undefined)
+    if(startDate === undefined || endDate === undefined || dateMode === undefined || isEventsTransfering())
         return;
 
     if(startDate >= lastStartDate && endDate <= lastEndDate && lastDateMode == dateMode && isForce == false) {

@@ -145,32 +145,36 @@ function run(database, ipcMain) {
     {
         request = JSON.parse(request);
         var reply = {events: [], path_id: request["path_id"]};
-        database.getEventIDsByTagsAny(request["tags"], function (err, ids) {
-            database.getEventsByIDs(request["path_id"], request["first_date"], request["end_date"], ids,
-                function (err, rows) {
-                    reply["events"] = rows;
-                    event.reply(
-                        "send events",
-                        JSON.stringify(reply)
-                    );
-                });
-        });
+        database.getEventsByTagsAny(
+            request["path_id"],
+            request["first_date"],
+            request["end_date"],
+            request["tags"],
+            function (err, rows) {
+                reply["events"] = rows;
+                event.reply(
+                    "send events",
+                    JSON.stringify(reply)
+                );
+            });
     });
 
     ipcMain.on("get events by tags all", (event, request) =>
     {
         request = JSON.parse(request);
         var reply = {events: [], path_id: request["path_id"]};
-        database.getEventIDsByTagsAll(request["tags"], function (err, ids) {
-            database.getEventsByIDs(request["path_id"], request["first_date"], request["end_date"], ids,
-                function (err, rows) {
-                    reply["events"] = rows;
-                    event.reply(
-                        "send events",
-                        JSON.stringify(reply)
-                    );
-                });
-        });
+        database.getEventsByTagsAll(
+            request["path_id"],
+            request["first_date"],
+            request["end_date"],
+            request["tags"],
+            function (err, rows) {
+                reply["events"] = rows;
+                event.reply(
+                    "send events",
+                    JSON.stringify(reply)
+                );
+            });
     });
 
     ipcMain.on("make event", (event, request) =>

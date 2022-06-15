@@ -183,43 +183,121 @@ function getEventsByPath(path_id, callback) {
     });
 }
 
-function getEventIDsByTagsAny (tags, callback) {
-    db.all(
-        `SELECT bind_event_tag.event_id
-        FROM bind_event_tag
-        JOIN tags ON bind_event_tag.tag_id = tags.tag_id
-        WHERE tags.name IN (${ tags.map(() => "?").join(", ") })`,
-        tags,
-        function(err, rows) {
-            callback(err, rows.map((obj) => obj.event_id));
-        }
-    );
-}
+/*
+ * Ошабка БД и краш проги при большом кол-ве событий
+*/
+// function getEventIDsByTagsAny (tags, callback) {
+//     db.all(
+//         `SELECT bind_event_tag.event_id
+//         FROM bind_event_tag
+//         JOIN tags ON bind_event_tag.tag_id = tags.tag_id
+//         WHERE tags.name IN (${ tags.map(() => "?").join(", ") })`,
+//         tags,
+//         function(err, rows) {
+//             callback(err, rows.map((obj) => obj.event_id));
+//         }
+//     );
+// }
+/*
+ * Очень медленно
+*/
+// function getEventsByTagsAny (path_id, first_date, end_date, tags, callback) {
+//     tags.unshift(end_date);
+//     tags.unshift(first_date);
+//     tags.unshift(path_id);
+//     db.all(
+//         `SELECT DISTINCT events.*
+//         FROM bind_event_tag
+//         JOIN tags ON bind_event_tag.tag_id = tags.tag_id
+//         JOIN events ON bind_event_tag.event_id = events.event_id
+//         WHERE   events.path_id = ?
+//             AND events.date BETWEEN ? AND ?
+//             AND tags.name IN (${ "?,".repeat(tags.length-3).slice(0,-1) })`,
+//         tags,
+//         function(err, rows) {
+//             callback(err, rows);
+//         }
+//     );
+// }
+/*
+ * медленно
+*/
+// function getEventIDsByTagsAll (tags, callback) {
+//     db.all(
+//         `SELECT bind_event_tag.event_id, COUNT(*) AS cnt
+//         FROM bind_event_tag
+//         JOIN tags ON bind_event_tag.tag_id = tags.tag_id
+//         WHERE tags.name IN (${ tags.map(() => "?").join(", ") })
+//         GROUP BY bind_event_tag.event_id`,
+//         tags,
+//         function(err, rows) {
+//             rows = rows.filter(row => row.cnt == tags.length);
+//             rows = rows.map(row => row.event_id);
+//             callback(err, rows);
+//         }
+//     );
+// }
+// function getEventsByIDs(path_id, first_date, end_date, ids, callback) {
+//     ids.unshift(end_date);
+//     ids.unshift(first_date);
+//     ids.unshift(path_id);
+//     db.all(
+//         `SELECT * FROM events WHERE path_id = ? AND date BETWEEN ? AND ? AND event_id IN (${ "?,".repeat(ids.length-3).slice(0,-1) })`,
+//         ids,
+//         function(err, rows) {
+//             callback(err, rows);
+//         }
+//     );
+// }
 
-function getEventIDsByTagsAll (tags, callback) {
+/*
+ * Работает?
+*/
+function getEventsByTagsAny (path_id, first_date, end_date, tags, callback) {
+    tags.unshift(end_date);
+    tags.unshift(first_date);
+    tags.unshift(path_id);
     db.all(
-        `SELECT bind_event_tag.event_id, COUNT(*) AS cnt
-        FROM bind_event_tag
-        JOIN tags ON bind_event_tag.tag_id = tags.tag_id
-        WHERE tags.name IN (${ tags.map(() => "?").join(", ") })
-        GROUP BY bind_event_tag.event_id`,
+        `SELECT *
+        FROM events
+        WHERE path_id = ?
+            AND date BETWEEN ? AND ?
+            AND event_id IN (
+                SELECT bind_event_tag.event_id
+                FROM bind_event_tag
+                JOIN tags ON bind_event_tag.tag_id = tags.tag_id
+                WHERE tags.name IN (${ "?,".repeat(tags.length-3).slice(0,-1) })
+            )
+        `,
         tags,
         function(err, rows) {
-            console.log("start", tags.length)
-            rows = rows.filter(row => row.cnt == tags.length);
-            rows = rows.map(row => row.event_id);
             callback(err, rows);
         }
     );
 }
-
-function getEventsByIDs(path_id, first_date, end_date, ids, callback) {
-    ids.unshift(end_date);
-    ids.unshift(first_date);
-    ids.unshift(path_id);
+/*
+ * Лучше, но хочется быстрее
+*/
+function getEventsByTagsAll (path_id, first_date, end_date, tags, callback) {
+    tags.unshift(end_date);
+    tags.unshift(first_date);
+    tags.unshift(path_id);
     db.all(
-        `SELECT * FROM events WHERE path_id == ? AND date BETWEEN ? AND ? AND event_id IN (${ "?,".repeat(ids.length-3).slice(0,-1) })`,
-        ids,
+        `SELECT *
+        FROM events
+        WHERE path_id = ?
+            AND date BETWEEN ? AND ?
+            AND event_id IN (
+                SELECT event_id FROM (
+                    SELECT bind_event_tag.event_id, COUNT(*) AS cnt
+                    FROM bind_event_tag
+                    JOIN tags ON bind_event_tag.tag_id = tags.tag_id
+                    WHERE tags.name IN (${ "?,".repeat(tags.length-3).slice(0,-1) })
+                    GROUP BY bind_event_tag.event_id
+                ) WHERE cnt = ${tags.length-3}
+            )
+        `,
+        tags,
         function(err, rows) {
             callback(err, rows);
         }
@@ -408,9 +486,11 @@ module.exports = {
     getRootPaths: getRootPaths,
     getPathsByParent: getPathsByParent,
     getEventsByPath: getEventsByPath,
-    getEventIDsByTagsAny: getEventIDsByTagsAny,
-    getEventIDsByTagsAll: getEventIDsByTagsAll,
-    getEventsByIDs: getEventsByIDs,
+    // getEventIDsByTagsAny: getEventIDsByTagsAny,
+    // getEventIDsByTagsAll: getEventIDsByTagsAll,
+    // getEventsByIDs: getEventsByIDs,
+    getEventsByTagsAny: getEventsByTagsAny,
+    getEventsByTagsAll: getEventsByTagsAll,
     getEventTags: getEventTags,
     makeTagIfNotExists: makeTagIfNotExists,
     setEventTag: setEventTag,
