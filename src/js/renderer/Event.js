@@ -1,11 +1,43 @@
+/**
+ * Модуль для работы отрисовкой событий
+ *  1.  Создание, удаление, редактирование событий
+ *  2.  Обработка клика на стек событий
+ *  3.  Обработка выделения событий
+ * @module Event
+ */
+
 const cacheModule = require("./cacheModule.js");
+
+
+/**
+ * Внешняя переменная модуля. Кэш событий на все деления на дорожку, а также на такое же расстояние перед и за ней.
+ * @constant {number}
+ */
 let cache = cacheModule.getCache();
+
+
+/**
+ * Внутренняя переменная модуля. Видимые стеки событий.
+ */
 let availableStacks = [];
+
+
+/**
+ * Внутренняя переменная модуля. Видимые события.
+ */
 let availableEvents = [];
-//const material = new THREE.MeshBasicMaterial({map: loader.load('../../storage/img/instagram.png'), opacity: 1, transparent: true});
 
 const makeMaterialWithShader = require("./view/iconShader.js");
 
+
+/**
+ * Внутренняя функция модуля. Используется для создания объекта plane события и,
+ * если это стек записать данные событий в него.
+ * @param {Date} startDate - Начальная дата на дорожке.
+ * @param {Date} endDate - Конечная возможная дата для отслеживания конца итерирования цикла.
+ * @param {Number} dateMode - Выбранный масштаб на дорожке.
+ * @param {Number} road - Выбранная дорога для отрисвоки событий на ней.
+ */
 function createEvents(startDate, endDate, dateMode, road)
 {
     let selectedGroup = scene.getObjectByName("Dates");
@@ -138,6 +170,15 @@ function createEvents(startDate, endDate, dateMode, road)
     });
 }
 
+
+/**
+ * Внутренняя функция модуля. Используется для редактирования объекта plane события
+ * @param {Number} id - Идентификатор события.
+ * @param {String} ico - Названия иконки события.
+ * @param {String} color - Цвет события в 16ричной форме.
+ * @param {String} groupName - Название выбранной дороги для редактирования событий на ней.
+ * @param {String} whichLine - Название выбранной засечки для редактирования событий на ней.
+ */
 function editEvent(id, ico, color,  groupName, whichLine)
 {
     const loader = new THREE.TextureLoader();
@@ -156,6 +197,15 @@ function editEvent(id, ico, color,  groupName, whichLine)
     selectedPlane.position.set(scene.getObjectByName(groupName).position.x, tr.y + 1, tr.z)
 }
 
+
+/**
+ * Внутренняя функция модуля. Используется для удаления объекта plane события
+ * @param {Number} id - Идентификатор события.
+ * @param {String} ico - Названия иконки события.
+ * @param {String} color - Цвет события в 16ричной форме.
+ * @param {String} groupName - Название выбранной дороги для редактирования событий на ней.
+ * @param {String} whichLine - Название выбранной засечки для редактирования событий на ней.
+ */
 function deleteObject(object)
 {
     if(object) {
@@ -179,10 +229,19 @@ function deleteObject(object)
     }
 }
 
+
+/**
+ * Внутренняя функция модуля. Используется для удаления объекта plane события.
+ * @param {Number} id - Идентификатор события.
+ */
 function deleteEvent(id) {
     deleteObject(scene.getObjectByName("event " + id));
 }
 
+
+/**
+ * Внутренняя функция модуля. Используется для удаления всех видимых событий и стеков.
+ */
 function deleteAllEvents()
 {
     availableEvents.forEach(function (event){
@@ -195,6 +254,12 @@ function deleteAllEvents()
     availableStacks = [];
 }
 
+
+/**
+ * Внутренняя функция модуля. Используется для обработки события клик на стек.
+ * @param {Object} plane - Ссылка на стек, по которому щёлкнули.
+ * @param {Number} scale - Выбранный мастшаб.
+ */
 function stackClick(plane, scale)
 {
     let selectedStack = null;
