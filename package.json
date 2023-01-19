@@ -28,16 +28,25 @@
     "linux": {}
   },
   "scripts": {
-    "start": "electron .",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "electron:start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
-  "main": "src/js/index.js",
+  "main": "main.js",
   "dependencies": {
+    "three": "^0.134.0",
+    "troisjs": "^0.3.3",
+    "vue": "^3.2.20",
     "sqlite3": "^5.0.6"
   },
   "devDependencies": {
-    "electron": "^19.0.3",
+    "@vitejs/plugin-vue": "^1.9.4",
+    "@vue/compiler-sfc": "^3.2.20",
+    "electron": "^22.0.3",
+    "vite": "^2.6.14",
     "electron-builder": "^23.0.3"
   }
 }

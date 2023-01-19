@@ -1,6 +1,8 @@
-# Project exclude paths
-/node_modules/
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
 /database/profiles/database.db
 /database/profiles/*
 /package-lock.json
-/dist
