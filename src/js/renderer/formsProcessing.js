@@ -39,6 +39,8 @@ function setup() {
                 JSON.stringify(request)
             );
             modalWindow.closeParentModal(form);
+
+            console.log(request);
         });
     });
 }

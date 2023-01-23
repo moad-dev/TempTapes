@@ -37,7 +37,7 @@ let axisCenter;
 
 function getEvents()
 {
-    cacheModule.getEvents(getCurrentDate(true), getVisibleDate(true), Dates.mode);
+    cacheModule.getEvents(getCurrentDate(true), getVisibleDate(true));
 }
 
 function getRoads() {
@@ -79,15 +79,21 @@ cacheModule.setOnRoadsReady(function () {
     document.querySelector("title").innerHTML = constants.projectName + " — " + cache["profile"];
 });
 
-cacheModule.setBeforeEventsReady(function() {
+//cacheModule.setBeforeEventsReady(function() {
+//    eventModule.deleteAllEvents();
+//    Dates.deleteDates();
+//    Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
+//    Dates.createDates(axisCenter + 1);
+//});
+
+cacheModule.setOnEventsReady(function ( events ) {
     eventModule.deleteAllEvents();
     Dates.deleteDates();
     Dates = new DateLines(getCurrentDate(), getEndDate(), getScale());
     Dates.createDates(axisCenter + 1);
-});
 
-cacheModule.setOnEventsReady(function (path_id) {
-    eventModule.createEvents(getCurrentDate(false), getVisibleDate(false),  Dates.mode, path_id);
+    eventModule.createEvents(getCurrentDate(false), getVisibleDate(false),
+                                Dates.mode, events);
 });
 
 ipcRenderer.on("path added", (event, reply) =>

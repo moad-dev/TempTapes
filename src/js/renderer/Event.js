@@ -8,6 +8,16 @@
 
 const cacheModule = require("./cacheModule.js");
 
+/**
+ * Внутренняя функция модуля
+ * позволяет сгрппировать массив объектов по ключу
+ */
+var groupBy = function(xs, key) {
+  return xs.reduce(function(rv, x) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+};
 
 /**
  * Внешняя переменная модуля. Кэш событий на все деления на дорожку, а также на такое же расстояние перед и за ней.
@@ -38,19 +48,15 @@ const makeMaterialWithShader = require("./view/iconShader.js");
  * @param {Number} dateMode - Выбранный масштаб на дорожке.
  * @param {Number} road - Выбранная дорога для отрисвоки событий на ней.
  */
-function createEvents(startDate, endDate, dateMode, road)
+function createEvents(startDate, endDate, dateMode, events)
 {
     let selectedGroup = scene.getObjectByName("Dates");
     let whichLine = null;
-    let iterateBy = null;
     let findLine  = null;
     let dateValidation = null;
-    let cachename = null;
 
     switch (dateMode){
         case 0:
-            iterateBy = cacheModule.iterateYears;
-            cachename = "events_year";
             findLine = function (dd, mm, yy, i) {
                 selectedGroup.traverse(function (child) {
                     if (yy == child.name)
@@ -68,8 +74,6 @@ function createEvents(startDate, endDate, dateMode, road)
             }
             break;
         case 1:
-            iterateBy = cacheModule.iterateMonths;
-            cachename = "events_month";
             findLine = function (dd, mm, yy, i) {
                 selectedGroup.traverse(function (child) {
                     if ((mm + '.' + yy) == child.name)
@@ -87,8 +91,6 @@ function createEvents(startDate, endDate, dateMode, road)
             }
             break;
         case 2:
-            iterateBy = cacheModule.iterateDays;
-            cachename = "events_day";
             findLine = function (dd, mm, yy, i) {
                 selectedGroup.traverse(function (child) {
                     if ((dd + '.' + mm + '.' + yy) == child.name)
@@ -107,67 +109,73 @@ function createEvents(startDate, endDate, dateMode, road)
             break;
     }
 
-    iterateBy(road, function(date) {
+    grouped_events_path = groupBy(events, "path_id");
 
-        let events = cache[cachename][road][date];
-        let date_tokens = date.split('-');
-        let yy = date_tokens[0], mm = date_tokens[1], dd = date_tokens[2];
-        let i = -1;
+    for (let road in grouped_events_path) {
 
-        if(!dateValidation(dd, mm, yy))
-            return;
+        grouped_events_date = groupBy(grouped_events_path[road], "date")
 
-        findLine(dd, mm, yy, i);
+        for (let date in grouped_events_date) {
 
-        const loader = new THREE.TextureLoader();
-        const geometry = new THREE.PlaneGeometry( 0.75, 0.75 );
-        let color = cacheModule.findPathById(road).color;
+            let events = grouped_events_date[date];
+            let date_tokens = date.split('-');
+            let yy = date_tokens[0], mm = date_tokens[1], dd = date_tokens[2];
+            let i = -1;
 
-        if (events.length > 1)
-        {
-            const material = makeMaterialWithShader('../../storage/img/stack.png', color, loader);
-            // const material = new THREE.MeshBasicMaterial({color: color, map: loader.load('../../storage/img/stack.png')});
-            const plane = new THREE.Mesh( geometry, material );
-            let tr = new THREE.Vector3();
-            scene.getObjectByName(whichLine).getWorldPosition(tr);
-            plane.position.set(
-                scene.getObjectByName("group " + road).position.x,
-                tr.y + 1,
-                tr.z
-            )
-            plane.name = "stack";
-            plane.about = {
-                path_id: road,
-                date: date
+            if(!dateValidation(dd, mm, yy))
+                continue;
+
+            findLine(dd, mm, yy, i);
+
+            const loader = new THREE.TextureLoader();
+            const geometry = new THREE.PlaneGeometry( 0.75, 0.75 );
+            let color = cacheModule.findPathById(road).color;
+
+            if (events.length > 1)
+            {
+                const material = makeMaterialWithShader('../../storage/img/stack.png', color, loader);
+                const plane = new THREE.Mesh( geometry, material );
+                let tr = new THREE.Vector3();
+                scene.getObjectByName(whichLine).getWorldPosition(tr);
+                plane.position.set(
+                    scene.getObjectByName("group " + road).position.x,
+                    tr.y + 1,
+                    tr.z
+                )
+                plane.name = "stack";
+                plane.about = {
+                    path_id: road,
+                    date: date
             };
             scene.add( plane );
             availableStacks.push(plane);
-        }
-        else
-        {
-            let material = null;
-            if (events[0].color == null)
-            {
-                material = new THREE.MeshBasicMaterial({map: loader.load('../../storage/img/' + events[0].icon), opacity: 1, transparent: true});
             }
             else
             {
-                material = makeMaterialWithShader(events[0].icon, events[0].color, loader);
-                // material = new THREE.MeshBasicMaterial({color: events[0].color, map: loader.load('../../storage/img/' + events[0].icon)});
+                let material = null;
+                if (events[0].color == null)
+                {
+                    material = new THREE.MeshBasicMaterial({map: loader.load('../../storage/img/' + events[0].icon), opacity: 1, transparent: true});
+                }
+                else
+                {
+                    material = makeMaterialWithShader(events[0].icon, events[0].color, loader);
+                    // material = new THREE.MeshBasicMaterial({color: events[0].color, map: loader.load('../../storage/img/' + events[0].icon)});
+                }
+                const plane = new THREE.Mesh( geometry, material );
+                let tr = new THREE.Vector3();
+                scene.getObjectByName(whichLine).getWorldPosition(tr);
+                plane.position.set(
+                    scene.getObjectByName("group " + road).position.x,
+                    tr.y + 1,
+                    tr.z
+                )
+                plane.name = "event " + events[0].event_id;
+                scene.add( plane );
+                availableEvents.push(plane);
             }
-            const plane = new THREE.Mesh( geometry, material );
-            let tr = new THREE.Vector3();
-            scene.getObjectByName(whichLine).getWorldPosition(tr);
-            plane.position.set(
-                scene.getObjectByName("group " + road).position.x,
-                tr.y + 1,
-                tr.z
-            )
-            plane.name = "event " + events[0].event_id;
-            scene.add( plane );
-            availableEvents.push(plane);
         }
-    });
+    }
 }
 
 
@@ -269,20 +277,9 @@ function stackClick(plane, scale)
            selectedStack = stack;
        }
     });
-    let dateTokens = selectedStack.about["date"].split('-');
-    let events = null;
-    switch (scale)
-    {
-        case 0:
-            events = cache["events_year"][selectedStack.about["path_id"]][dateTokens[0]];
-            break
-        case 1:
-            events = cache["events_month"][selectedStack.about["path_id"]][dateTokens[0] + '-' + dateTokens[1]];
-            break;
-        case 2:
-            events = cache["events_day"][selectedStack.about["path_id"]][selectedStack.about["date"]];
-            break;
-    }
+
+    let events = cacheModule.findEventsByDate(selectedStack.about["date"], scale).filter(event => event.path_id == selectedStack.about.path_id);
+
     let axisOffset = 0;
     let step = {x: 0.85, y: 1};
     let side = Math.ceil(Math.sqrt(events.length));
@@ -307,7 +304,6 @@ function stackClick(plane, scale)
             else
             {
                 material = makeMaterialWithShader(event.icon, event.color, loader);
-                // material = new THREE.MeshBasicMaterial({color: event.color, map: loader.load('../../storage/img/' + event.icon)});
             }
             const plane = new THREE.Mesh( geometry, material );
             plane.position.set(

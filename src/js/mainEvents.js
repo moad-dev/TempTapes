@@ -156,7 +156,8 @@ function run(database, ipcMain) {
     ipcMain.on("get events", (event, request) =>
     {
         request = JSON.parse(request);
-        var reply = {events: [], path_id: request["path_id"]};
+        var reply = request;
+        reply.events = [];
         database
             .getDB()
             .all(
@@ -184,7 +185,8 @@ function run(database, ipcMain) {
     ipcMain.on("get events by tags any", (event, request) =>
     {
         request = JSON.parse(request);
-        var reply = {events: [], path_id: request["path_id"]};
+        var reply = request;
+        reply.events = [];
         database.getEventsByTagsAny(
             request["path_id"],
             request["first_date"],
@@ -209,7 +211,8 @@ function run(database, ipcMain) {
     ipcMain.on("get events by tags all", (event, request) =>
     {
         request = JSON.parse(request);
-        var reply = {events: [], path_id: request["path_id"]};
+        var reply = request;
+        reply.events = [];
         database.getEventsByTagsAll(
             request["path_id"],
             request["first_date"],
@@ -269,7 +272,7 @@ function run(database, ipcMain) {
         var reply = {};
         database.editEvent(
                 request["name"],
-                request["color"],
+                request["transparent"] ? null : request["color"],
                 request["icon"],
                 request["date"],
                 request["description"],
