@@ -40,4 +40,15 @@ module.exports =
                 console.log("error: process watcher, wrong index");
             }
         }
+        process_incomplete(index)
+        {
+            try
+            {
+                this.flags[index] = true;
+            }
+            catch
+            {
+                console.log("error: process watcher, wrong index");
+            }
+        }
     };
