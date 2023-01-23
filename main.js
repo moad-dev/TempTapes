@@ -1,73 +1,36 @@
-// Главный модуль приложения, инициализация электрона и БД
-// Копия src/js/index.js. Этот файл был создан на основе этого гайда https://learnvue.co/tutorials/vue-and-electron-desktop-apps
-//
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//         Для Windows
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-const {ipcMain} = require("electron");
-const {app, BrowserWindow} = require("electron");
-
+const { app, BrowserWindow } = require("electron");
 const path = require("path");
-const database = require("./database/database_module");
 
-function main() {
-    window = new BrowserWindow({
+function createWindow() {
+    const win = new BrowserWindow({
         width: 800,
         height: 600,
-        minHeight: 600,
-        minWidth: 800,
         webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-            preload: path.join(process.cwd(), "src/js/renderer/preload.js")
+            preload: path.join(__dirname, "preload.js"),
         },
-        icon: path.join(process.cwd(), "storage/favicon.png")
     });
-    window.loadFile(path.join(process.cwd(), "src/html/index.html"));
-    window.removeMenu(true)
+    if (!app.isPackaged) {
+        win.loadURL(`http://localhost:3001/`);
+        win.webContents.openDevTools({mode: 'undocked'});
+    } else {
+        win.loadURL(`file://dist/index.html`);
+    }
 
-    runEventsListeners = require(path.join(
-        process.cwd(),
-        "src/js/mainEvents.js"
-    ));
-    runEventsListeners(database, ipcMain);
+    // win.loadFile("dist/index.html");
 }
-database.Init(main);
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//         Для Linux
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+app.whenReady().then(() => {
+    createWindow();
 
-// const {ipcMain} = require("electron");
-// const {app, BrowserWindow} = require("electron");
-//
-// const path = require("path");
-// const database = require(path.join(process.cwd(), "database/database_module"));
-//
-// function main() {
-//     function createWindow() {
-//         window = new BrowserWindow({
-//             width: 800,
-//             height: 600,
-//             webPreferences: {
-//                 nodeIntegration: true,
-//                 contextIsolation: false,
-//                 preload: path.join(process.cwd(), "src/js/renderer/preload.js")
-//             },
-//             icon: path.join(process.cwd(), "storage/favicon.png")
-//         });
-//         window.loadFile(path.join(process.cwd(), "src/html/index.html"));
-//         window.removeMenu(true);
-//     }
-//
-//     runEventsListeners = require(path.join(
-//         process.cwd(),
-//         "src/js/mainEvents.js"
-//     ));
-//     runEventsListeners(database, ipcMain);
-//
-//     app.on("ready", createWindow);
-// }
-// database.Init(main);
+    app.on("activate", () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+            createWindow();
+        }
+    });
+});
+
+app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
+        app.quit();
+    }
+});

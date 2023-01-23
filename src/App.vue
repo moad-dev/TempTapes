@@ -1,10 +1,9 @@
 <template>
-  <Renderer ref="rendererC" antialias :orbit-ctrl="{ enableDamping: true }" resize="window">
-    <Camera :position="{ z: 10 }" />
-    <Scene>
-      <PointLight :position="{ y: 50, z: 50 }" />
-      <Box :size="1" ref="meshC" :rotation="{ y: Math.PI / 4, z: Math.PI / 4 }">
-        <LambertMaterial />
+  <Renderer ref="rendererC" antialias resize="window">
+    <Camera ref="camera" :fov="75" :aspect="width / height" :position="{ y: 2, z: 4 }" :far="1000" :lookAt="{ y: 1.5, z: 0 }"/>
+    <Scene ref="scene" :background="'white'">
+      <Box :size="1" ref="meshC" :position="{x: 1, y: 0, z: -1}">
+        <BasicMaterial color="green"/>
       </Box>
     </Scene>
   </Renderer>
@@ -12,16 +11,25 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { Box, Camera, LambertMaterial, PointLight, Renderer, Scene } from 'troisjs'
+import { Box, Camera, BasicMaterial, Renderer, Scene } from 'troisjs'
+import * as THREE from 'three'
+
+let parentElement = document.getElementById("app");
+let width = parentElement.offsetWidth;
+let height = parentElement.offsetHeight;
+
 const rendererC = ref()
 const meshC = ref()
-onMounted(() => {
-  const renderer = rendererC.value
-  const mesh = meshC.value.mesh
-  renderer.onBeforeRender(() => {
-    mesh.rotation.x += 0.01
-  })
-})
+const cameraC = ref()
+const scene = ref()
+</script>
+
+<script>
+export default {
+  mounted() {
+    this.$refs.scene.scene.fog = new THREE.Fog(0xFFFFFF, 10, 16)
+  }
+}
 </script>
 
 <style>

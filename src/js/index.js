@@ -1,5 +1,5 @@
 // Главный модуль приложения, инициализация электрона и БД
-//
+// Копия src/js/index.js. Этот файл был создан на основе этого гайда https://learnvue.co/tutorials/vue-and-electron-desktop-apps
 //
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -10,7 +10,7 @@ const {ipcMain} = require("electron");
 const {app, BrowserWindow} = require("electron");
 
 const path = require("path");
-const database = require("../../database/database_module");
+const database = require("./database/database_module");
 
 function main() {
     window = new BrowserWindow({
