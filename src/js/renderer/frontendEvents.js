@@ -73,6 +73,7 @@ cacheModule.setOnRoadsReady(function () {
     Dates.createDates(axisCenter + 1);
     setScale(2);
     document.getElementById("select-scale").innerHTML = "Д";
+    cacheModule.force();
     getEvents();
     ipcRenderer.send("get all roads", "{}");
     ipcRenderer.send("get profiles", "{}");
