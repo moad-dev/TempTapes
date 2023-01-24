@@ -72,6 +72,10 @@ function createEvents(startDate, endDate, dateMode, events)
                     return false;
                 return true;
             }
+            events.forEach((obj, idx, array) => {
+                let tokens = obj.date.split('-');
+                events[idx].date = tokens[0];
+            });
             break;
         case 1:
             findLine = function (dd, mm, yy, i) {
@@ -89,6 +93,10 @@ function createEvents(startDate, endDate, dateMode, events)
                     return false;
                 return true;
             }
+            events.forEach((obj, idx, array) => {
+                let tokens = obj.date.split('-');
+                events[idx].date = tokens[0] + "-" + tokens[1];
+            });
             break;
         case 2:
             findLine = function (dd, mm, yy, i) {
@@ -108,6 +116,7 @@ function createEvents(startDate, endDate, dateMode, events)
             }
             break;
     }
+
 
     grouped_events_path = groupBy(events, "path_id");
 
