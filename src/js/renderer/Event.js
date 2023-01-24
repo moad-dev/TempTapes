@@ -74,7 +74,7 @@ function createEvents(startDate, endDate, dateMode, events)
             }
             events.forEach((obj, idx, array) => {
                 let tokens = obj.date.split('-');
-                events[idx].date = tokens[0];
+                events[idx].visual_date = tokens[0];
             });
             break;
         case 1:
@@ -95,7 +95,7 @@ function createEvents(startDate, endDate, dateMode, events)
             }
             events.forEach((obj, idx, array) => {
                 let tokens = obj.date.split('-');
-                events[idx].date = tokens[0] + "-" + tokens[1];
+                events[idx].visual_date = tokens[0] + "-" + tokens[1];
             });
             break;
         case 2:
@@ -114,6 +114,9 @@ function createEvents(startDate, endDate, dateMode, events)
                     return false;
                 return true;
             }
+            events.forEach((obj, idx, array) => {
+                events[idx].visual_date = obj.date;
+            });
             break;
     }
 
@@ -122,7 +125,7 @@ function createEvents(startDate, endDate, dateMode, events)
 
     for (let road in grouped_events_path) {
 
-        grouped_events_date = groupBy(grouped_events_path[road], "date")
+        grouped_events_date = groupBy(grouped_events_path[road], "visual_date")
 
         for (let date in grouped_events_date) {
 
