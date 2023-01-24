@@ -239,6 +239,7 @@ window.addEventListener("DOMContentLoaded", () => {
             timescale.setScale(scale);
             updateRange();
             adjustDate();
+            cacheModule.force();
             frontendEvents.getEvents();
         }
     }
