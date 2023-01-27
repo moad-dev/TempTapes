@@ -213,6 +213,77 @@ function InitEvents(startDate, endDate) {
 
 }
 
+
+/*
+ * метод, который выравнивает текущий список страниц по последним запрошенным датам
+ * @param {Number} first_page - индекс левой активной страницы
+ * @param {Number} last_page - индекс правой активной страницы
+ */
+function adjustPages(first_page, last_page) {
+    /* 
+     * Блок, отвечающий за динамическую подгрузку страниц во время скроллинга.
+     * Если в процессе прокрутки левая и правая части списка страниц отличаются на 2 страницы или более,
+     *  лишние страницы должны быть убраны, в противоположную часть списка должны быть добавлены новые страницы
+     *  и должен быть отправлен запрос серверу о их заполнении.
+     *
+     * Так как мы не блокируем прокрутку во время подгрузки новых страниц, то в теории про очень быстром плавном
+     *  скроллинге страница может не успеть загрузиться, но на практике вряд ли, особенно если страниц 5 или больше
+     *
+     * З.Ы. Для хранения страниц было бы уместно использовать двусвязный список, но я использовал js массив
+     *  может быть потом переделаю.
+     * */
+
+    let left_pages = first_page;
+    let right_pages = PAGES_COUNT-last_page-1;
+    let difference = left_pages - right_pages;
+    let direction = difference > 0 ? true : false;
+    difference = Math.abs(difference);
+
+    if (difference > 1) {
+        difference -= 1;
+        if (direction) {
+            for (let i = 0; i < difference; i++) {
+                cache.pages.shift();
+            }
+            for (let i = 0; i < difference; i++) {
+                let new_page = {
+                    events: [],
+                    startDate: cache.pages[cache.pages.length-1].endDate.addDays(1),
+                    endDate: cache.pages[cache.pages.length-1].endDate.addDays(pageLen+1),
+                    watcher: new Watcher(cache.roads.length)
+                };
+                new_page.watcher.set_status(true);
+                cache.pages.push(new_page);
+            }
+            for (let i = PAGES_COUNT-1; i > PAGES_COUNT-1-difference; i--) {
+                // Мы не устанавливаем флаг, что страница находится в состоянии загрузки,
+                // значит прокрутка не будет блокирована 
+                //pages_watcher.process_incomplete(i);
+                getPage(i);
+            }
+        } else {
+            for (let i = 0; i < difference; i++) {
+                cache.pages.pop();
+            }
+            for (let i = 0; i < difference; i++) {
+                let new_page = {
+                    events: [],
+                    startDate: cache.pages[0].startDate.addDays(-pageLen-1),
+                    endDate: cache.pages[0].startDate.addDays(-1),
+                    watcher: new Watcher(cache.roads.length)
+                };
+                new_page.watcher.set_status(true);
+                cache.pages.unshift(new_page);
+            }
+            for (let i = 0; i < difference; i++) {
+                //    pages_watcher.process_incomplete(i);
+                getPage(i);
+            }
+        }
+    }
+}
+
+
 /**
  * Функция-интерфейс
  * получить события от сервера по заданным критериям
@@ -263,69 +334,11 @@ function getEvents(startDate = lastStartDate, endDate = lastEndDate) {
         for (let i = first_page; i <= last_page; i++) {
             events = events.concat(cache.pages[i].events);
         }
+
         onEventsReady(events);
 
-        /* 
-         * Блок, отвечающий за динамическую подгрузку страниц во время скроллинга.
-         * Если в процессе прокрутки левая и правая части списка страниц отличаются на 2 страницы или более,
-         *  лишние страницы должны быть убраны, в противоположную часть списка должны быть добавлены новые страницы
-         *  и должен быть отправлен запрос серверу о их заполнении.
-         *
-         * Так как мы не блокируем прокрутку во время подгрузки новых страниц, то в теории про очень быстром плавном
-         *  скроллинге страница может не успеть загрузиться, но на практике вряд ли, особенно если страниц 5 или больше
-         *
-         * З.Ы. Для хранения страниц было бы уместно использовать двусвязный список, но я использовал js массив
-         *  может быть потом переделаю.
-         * */
+        adjustPages(first_page, last_page);
 
-        let left_pages = first_page;
-        let right_pages = PAGES_COUNT-last_page-1;
-        let difference = left_pages - right_pages;
-        let direction = difference > 0 ? true : false;
-        difference = Math.abs(difference);
-
-        if (difference > 1) {
-            difference -= 1;
-            if (direction) {
-                for (let i = 0; i < difference; i++) {
-                    cache.pages.shift();
-                }
-                for (let i = 0; i < difference; i++) {
-                    let new_page = {
-                        events: [],
-                        startDate: cache.pages[cache.pages.length-1].endDate.addDays(1),
-                        endDate: cache.pages[cache.pages.length-1].endDate.addDays(pageLen+1),
-                        watcher: new Watcher(cache.roads.length)
-                    };
-                    new_page.watcher.set_status(true);
-                    cache.pages.push(new_page);
-                }
-                for (let i = PAGES_COUNT-1; i > PAGES_COUNT-1-difference; i--) {
-                    // Мы не устанавливаем флаг, что страница находится в состоянии загрузки,
-                    // значит прокрутка не будет блокирована 
-                    //pages_watcher.process_incomplete(i);
-                    getPage(i);
-                }
-            } else {
-                for (let i = 0; i < difference; i++) {
-                    cache.pages.pop();
-                }
-                for (let i = 0; i < difference; i++) {
-                    let new_page = {
-                        events: [],
-                        startDate: cache.pages[0].startDate.addDays(-pageLen-1),
-                        endDate: cache.pages[0].startDate.addDays(-1),
-                        watcher: new Watcher(cache.roads.length)
-                    };
-                    new_page.watcher.set_status(true);
-                    cache.pages.unshift(new_page);
-                }
-                for (let i = 0; i < difference; i++) {
-                //    pages_watcher.process_incomplete(i);
-                    getPage(i);
-                }
-            }
-        }
     } else {
         InitEvents(startDate, endDate);
     }
@@ -368,38 +381,23 @@ function findPathById(id) {
  */
 function findEventsByDate(date, scale) {
 
-    let dateTokens = date.split('-'); // Y-M-D
     let cmp = undefined;
 
     switch (scale) {
         case 0:
-            cmp = function (Y, M, D, date) {
-                let tokens = date.split('-'); 
-                return Y == tokens[0];
-            }
+            cmp = "date_year";
             break;
         case 1:
-            cmp = function (Y, M, D, date) {
-                let tokens = date.split('-'); 
-                return Y == tokens[0] && M == tokens[1];
-            }
+            cmp = "date_month";
             break;
         case 2:
-            cmp = function (Y, M, D, date) {
-                let tokens = date.split('-'); 
-                return Y == tokens[0] && M == tokens[1] && D == tokens[2];
-            }
+            cmp = "date_day";
             break;
     }
 
     events = [];
-
-    cache.pages.forEach(function (page) {
-        page.events.forEach( function (event) {
-            if ( cmp(dateTokens[0], dateTokens[1], dateTokens[2], event.date) ) {
-                events.push(event);
-            }
-        });
+    cache.pages.forEach(page => {
+        events = events.concat(page.events.filter(event => event[cmp] == date));
     });
 
     return events;
@@ -491,6 +489,13 @@ ipcRenderer.on("send events", (event, reply) =>
         cache.pages[reply["page_index"]].watcher.process_complete(index);
 
         if (!cache.pages[reply["page_index"]].watcher.any_running()) {
+            cache.pages[reply["page_index"]]["events"].forEach(function (obj, idx, arr) {
+                let event = cache.pages[reply["page_index"]]["events"][idx];
+                let tokens = event.date.split('-');
+                event.date_year = tokens[0];
+                event.date_month = tokens[0] + "-" + tokens[1];
+                event.date_day = event.date;
+            });
             pages_watcher.process_complete(reply["page_index"]);
         }
         if (!pages_watcher.any_running()) {

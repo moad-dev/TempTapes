@@ -54,6 +54,7 @@ function createEvents(startDate, endDate, dateMode, events)
     let whichLine = null;
     let findLine  = null;
     let dateValidation = null;
+    let visual_date = null;
 
     switch (dateMode){
         case 0:
@@ -72,10 +73,7 @@ function createEvents(startDate, endDate, dateMode, events)
                     return false;
                 return true;
             }
-            events.forEach((obj, idx, array) => {
-                let tokens = obj.date.split('-');
-                events[idx].visual_date = tokens[0];
-            });
+            visual_date = "date_year";
             break;
         case 1:
             findLine = function (dd, mm, yy, i) {
@@ -93,10 +91,7 @@ function createEvents(startDate, endDate, dateMode, events)
                     return false;
                 return true;
             }
-            events.forEach((obj, idx, array) => {
-                let tokens = obj.date.split('-');
-                events[idx].visual_date = tokens[0] + "-" + tokens[1];
-            });
+            visual_date = "date_month";
             break;
         case 2:
             findLine = function (dd, mm, yy, i) {
@@ -114,9 +109,7 @@ function createEvents(startDate, endDate, dateMode, events)
                     return false;
                 return true;
             }
-            events.forEach((obj, idx, array) => {
-                events[idx].visual_date = obj.date;
-            });
+            visual_date = "date_day";
             break;
     }
 
@@ -125,7 +118,7 @@ function createEvents(startDate, endDate, dateMode, events)
 
     for (let road in grouped_events_path) {
 
-        grouped_events_date = groupBy(grouped_events_path[road], "visual_date")
+        grouped_events_date = groupBy(grouped_events_path[road], visual_date)
 
         for (let date in grouped_events_date) {
 
