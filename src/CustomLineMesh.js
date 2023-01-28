@@ -11,13 +11,6 @@ export default {
         createLine() {
            return createLine({ x: this.x, y: this.y, z: this.z }) // если передавать параметры напрямую, то они будут undefined
         }
-    },
-    mounted() {
-        let scene = this.$root.$refs.scene.scene
-
-        this.$root.$refs.lines.forEach(function(line) {
-            scene.add(line.createLine())
-        });
     }
 }
 
