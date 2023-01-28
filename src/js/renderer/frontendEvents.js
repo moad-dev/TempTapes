@@ -137,15 +137,16 @@ ipcRenderer.on("send images", (event, reply) =>
 ipcRenderer.on("send profiles", (event, reply) =>
 {
     reply = JSON.parse(reply);
-    let profiles_select = document.querySelector("form[data-action='update profile']")
-                                  .querySelector("select[name=profileSelector]");
+    let profiles_update_selector = document.querySelector("form[data-action='update profile']").querySelector("select[name=profileSelector]");
+    let profiles_delete_selector = document.querySelector("form[data-action='delete profile']").querySelector("select[name=name]");
 
     // Добавляем опции select тегов
     let values = [];
     reply["profiles"].forEach(function(profile) {
         values.push({text: profile, value: profile})
     });
-    formsProcessing.fillSelectTag(profiles_select, values);
+    formsProcessing.fillSelectTag(profiles_update_selector, values);
+    formsProcessing.fillSelectTag(profiles_delete_selector, values);
 });
 
 ipcRenderer.on("send all roads", (event, reply) =>
