@@ -428,13 +428,22 @@ function run(database, ipcMain) {
     ipcMain.on("update profile", (event, request) =>
     {
         request = JSON.parse(request);
-        if(request["delete"]) {
-            fs.unlinkSync(path.join(process.cwd(), constants.profilesDir, request["name"].toString()));
-        }
         database.Init(function() {
-            var reply = {roads: []};
             sendRootPaths(event);
-        }, request["delete"] ? null : request["name"]);
+        }, request["name"]);
+    });
+
+    /**
+     * Обработчик события получения сообщения от клиента
+     * удалить один из профилей БД
+     */
+    ipcMain.on("delete profile", (event, request) =>
+    {
+        request = JSON.parse(request);
+        fs.unlinkSync(path.join(process.cwd(), constants.profilesDir, request["name"].toString()));
+        database.Init(function() {
+            sendRootPaths(event);
+        });
     });
 
 }
