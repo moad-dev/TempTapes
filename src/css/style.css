@@ -1,444 +1,452 @@
-html {
-    height: 100%;
-    overflow: hidden;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-body {
-    height: 100%;
-    font-family: sans-serif;
-}
+@layer base {
 
-.N {
-    position: relative;
-    top: 0;
-    left: 50%;
-    right: 50%;
-}
+    html {
+        height: 100%;
+        overflow: hidden;
+    }
 
-.S {
-    position: relative;
-    bottom: 0;
-    left: 50%;
-    right: 50%;
-}
+    body {
+        height: 100%;
+        font-family: sans-serif;
+    }
 
-.W {
-    position: relative;
-    left: 0;
-    top: 50%;
-    bottom: 50%;
-}
+    .N {
+        position: relative;
+        top: 0;
+        left: 50%;
+        right: 50%;
+    }
 
-.E {
-    position: relative;
-    right: 0;
-    top: 50%;
-    bottom: 50%;
-}
+    .S {
+        position: relative;
+        bottom: 0;
+        left: 50%;
+        right: 50%;
+    }
 
-.NW {
-    position: relative;
-    top: 0;
-    left: 0;
-}
+    .W {
+        position: relative;
+        left: 0;
+        top: 50%;
+        bottom: 50%;
+    }
 
-.NE {
-    position: relative;
-    top: 0;
-    right: 0;
-}
+    .E {
+        position: relative;
+        right: 0;
+        top: 50%;
+        bottom: 50%;
+    }
 
-.SE {
-    position: relative;
-    bottom: 0;
-    right: 0;
-}
+    .NW {
+        position: relative;
+        top: 0;
+        left: 0;
+    }
 
-.SW {
-    position: relative;
-    bottom: 0;
-    left: 0;
-}
+    .NE {
+        position: relative;
+        top: 0;
+        right: 0;
+    }
 
-/*~~~~~~~~~~~~~~
-Кнопки
-~~~~~~~~~~~~~~*/
-.dark-opaque {
-    background-color: rgba(0, 0, 0, 0.8);
-    color: lightgray;
-}
+    .SE {
+        position: relative;
+        bottom: 0;
+        right: 0;
+    }
 
-.btn {
-    border: none;
-    border-radius: 15px;
-    text-align: center;
-    padding: 1em;
-    cursor: pointer;
-}
+    .SW {
+        position: relative;
+        bottom: 0;
+        left: 0;
+    }
 
-.btn-row {
-    display: flex;
-}
+    /*~~~~~~~~~~~~~~
+    Кнопки
+    ~~~~~~~~~~~~~~*/
+    .dark-opaque {
+        background-color: rgba(0, 0, 0, 0.8);
+        color: lightgray;
+    }
 
-.btn-row>.btn:first-child {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-right: 1px solid #252525;
-}
+    .btn {
+        border: none;
+        border-radius: 15px;
+        text-align: center;
+        padding: 1em;
+        cursor: pointer;
+    }
 
-.btn-row>.btn:not(:last-child):not(:first-child) {
-    border-radius: 0;
-    margin: 0;
-    border-right: 1px solid #252525;
-}
+    .btn-row {
+        display: flex;
+    }
 
-.btn-row>.btn:last-child {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-}
+    .btn-row>.btn:first-child {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right: 1px solid #252525;
+    }
 
-/*~~~~~~~~~~~~~~
-timeline
-~~~~~~~~~~~~~~*/
-#timeline {
-    width: 100%;
-}
+    .btn-row>.btn:not(:last-child):not(:first-child) {
+        border-radius: 0;
+        margin: 0;
+        border-right: 1px solid #252525;
+    }
 
-#timeline input[type="range"] {
-    width: 100%;
-}
+    .btn-row>.btn:last-child {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
 
-#timeline .container input {}
+    /*~~~~~~~~~~~~~~
+    timeline
+    ~~~~~~~~~~~~~~*/
+    #timeline {
+        width: 100%;
+    }
 
-#timeline .container {
-    display: flex;
-    justify-content: space-between;
-}
+    #timeline input[type="range"] {
+        width: 100%;
+    }
 
-/*~~~~~~~~~~~~~~~~~~~~
-Горизонтальный скролл
-~~~~~~~~~~~~~~~~~~~~~*/
-/* БАЗА обнуление дефолтного стиля */
-#scrollBar {
-    -webkit-appearance: none;
-    width: 100%;
-    background: transparent;
-}
+    #timeline .container input {}
 
-#scrollBar:focus {
-    outline: none;
-}
+    #timeline .container {
+        display: flex;
+        justify-content: space-between;
+    }
 
-#scrollBar::-ms-track {
-    width: 100%;
-    cursor: pointer;
-    /* Hides the slider so custom styles can be added */
-    background: transparent;
-    border-color: transparent;
-    color: transparent;
-}
+    /*~~~~~~~~~~~~~~~~~~~~
+    Горизонтальный скролл
+    ~~~~~~~~~~~~~~~~~~~~~*/
+    /* БАЗА обнуление дефолтного стиля */
+    #scrollBar {
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent;
+    }
 
-/* Стилизация пальчика */
-#scrollBar::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    border: 1px solid #000000;
-    height: 36px;
-    width: 16px;
-    border-radius: 3px;
-    background: #ffffff;
-    cursor: pointer;
-    margin-top: -14px;
-    /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-    /* Add cool effects to your sliders! */
-}
+    #scrollBar:focus {
+        outline: none;
+    }
 
-/* Стилизация дороги для пальчика */
-#scrollBar::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 8.4px;
-    cursor: pointer;
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-    background: #3071a9;
-    border-radius: 1.3px;
-    border: 0.2px solid #010101;
-}
+    #scrollBar::-ms-track {
+        width: 100%;
+        cursor: pointer;
+        /* Hides the slider so custom styles can be added */
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+    }
 
-#scrollBar:focus::-webkit-slider-runnable-track {
-    background: #367ebd;
-}
+    /* Стилизация пальчика */
+    #scrollBar::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        border: 1px solid #000000;
+        height: 36px;
+        width: 16px;
+        border-radius: 3px;
+        background: #ffffff;
+        cursor: pointer;
+        margin-top: -14px;
+        /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+        box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+        /* Add cool effects to your sliders! */
+    }
 
-/*~~~~~~~~~~~~~~
-Выпадающий список
-~~~~~~~~~~~~~~*/
-/* Кнопка выпадающего списка */
-.dropbtn {
-    background-color: #4CAF50;
-    color: white;
-    padding: 8px;
-    font-size: 16px;
-    border: none;
-}
+    /* Стилизация дороги для пальчика */
+    #scrollBar::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 8.4px;
+        cursor: pointer;
+        box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+        background: #3071a9;
+        border-radius: 1.3px;
+        border: 0.2px solid #010101;
+    }
 
-/* Контейнер <div> - необходим для размещения выпадающего содержимого */
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
+    #scrollBar:focus::-webkit-slider-runnable-track {
+        background: #367ebd;
+    }
 
-/* Выпадающее содержимое (скрыто по умолчанию) */
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f1f1f1;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-}
+    /*~~~~~~~~~~~~~~
+    Выпадающий список
+    ~~~~~~~~~~~~~~*/
+    /* Кнопка выпадающего списка */
+    .dropbtn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px;
+        font-size: 16px;
+        border: none;
+    }
 
-/* Ссылки внутри выпадающего списка */
-.dropdown-content .elem {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
+    /* Контейнер <div> - необходим для размещения выпадающего содержимого */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
 
-/* Изменение цвета выпадающих ссылок при наведении курсора */
-.dropdown-content a:hover {
-    background-color: #ddd;
-}
+    /* Выпадающее содержимое (скрыто по умолчанию) */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f1f1f1;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
 
-/* Показать выпадающее меню при наведении курсора */
-.dropdown:hover .dropdown-content {
-    display: block;
-}
+    /* Ссылки внутри выпадающего списка */
+    .dropdown-content .elem {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
 
-/* Изменение цвета фона кнопки раскрывающегося списка при отображении содержимого раскрывающегося списка */
-.dropdown:hover .dropbtn {
-    background-color: #3e8e41;
-}
+    /* Изменение цвета выпадающих ссылок при наведении курсора */
+    .dropdown-content a:hover {
+        background-color: #ddd;
+    }
 
-/*~~~~~~~~~~~~~~~~~
-Side menu
-~~~~~~~~~~~~~~~~~~~*/
-.canvas-container {
-    height: 100%;
-}
+    /* Показать выпадающее меню при наведении курсора */
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
 
-.left {
-    width: 15%;
-    background-color: rgb(230, 230, 230);
-}
+    /* Изменение цвета фона кнопки раскрывающегося списка при отображении содержимого раскрывающегося списка */
+    .dropdown:hover .dropbtn {
+        background-color: #3e8e41;
+    }
 
-.right {
-    width: 85%;
-    position: relative;
-}
+    /*~~~~~~~~~~~~~~~~~
+    Side menu
+    ~~~~~~~~~~~~~~~~~~~*/
+    .canvas-container {
+        height: 100%;
+    }
 
-.left,
-.right {
-    float: left;
-}
+    .left {
+        width: 15%;
+        background-color: rgb(230, 230, 230);
+    }
 
-#sideMenu {
-    overflow-y: auto;
-    height: 100vh;
-}
+    .right {
+        width: 85%;
+        position: relative;
+    }
 
-#sidemenu__details {
-    padding: 10px;
-    margin: auto;
-    width: 90%;
-}
+    .left,
+    .right {
+        float: left;
+    }
 
-#sidemenu__details .image {
-    width: 75px;
-    height: 75px;
-    margin: auto;
-}
+    #sideMenu {
+        overflow-y: auto;
+        height: 100vh;
+    }
 
-#sidemenu__details .image img {
-    width: 75px;
-    height: 75px;
-}
+    #sidemenu__details {
+        padding: 10px;
+        margin: auto;
+        width: 90%;
+    }
 
-#sidemenu__details .head {
-    text-align: center;
-    size: 30px;
-    font-weight: bold;
-    margin-top: 15px;
-}
+    #sidemenu__details .image {
+        width: 75px;
+        height: 75px;
+        margin: auto;
+    }
 
-#sidemenu__details .text {
-    text-align: left;
-    size: 20px;
-    margin-top: 15px;
-}
+    #sidemenu__details .image img {
+        width: 75px;
+        height: 75px;
+    }
 
-#sidemenu__details .date {
-    text-align: center;
-    size: 20px;
-    margin-top: 15px;
-}
+    #sidemenu__details .head {
+        text-align: center;
+        size: 30px;
+        font-weight: bold;
+        margin-top: 15px;
+    }
 
-#sidemenu__details form {
-    display: flex;
-    margin-top: 10px;
-}
+    #sidemenu__details .text {
+        text-align: left;
+        size: 20px;
+        margin-top: 15px;
+    }
 
-/*~~~~~~~~~~~~~~
-Модальные окна
-~~~~~~~~~~~~~~*/
-/* Стили для подложки */
-.overlay {
-    /* Скрываем подложку  */
-    opacity: 0;
-    visibility: hidden;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, .5);
-    z-index: 20;
-    transition: .3s all;
-}
+    #sidemenu__details .date {
+        text-align: center;
+        size: 20px;
+        margin-top: 15px;
+    }
 
-/* Стили для модальных окон */
-.modal {
-    /* Скрываем окна  */
-    opacity: 0;
-    visibility: hidden;
-    /*  Установаем ширину окна  */
-    width: 100%;
-    max-width: 500px;
-    /*  Центрируем и задаем z-index */
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 30;
-    /* Должен быть выше чем у подложки*/
-    /*  Побочные стили   */
-    box-shadow: 0 3px 10px -.5px rgba(0, 0, 0, .2);
-    padding: 30px;
-    border-radius: 3px;
-    background-color: #fff;
-    transition: 0.3s all;
-}
+    #sidemenu__details form {
+        display: flex;
+        margin-top: 10px;
+    }
 
-.modal__warning {
-    background-color: #f00;
-    color: #fff;
-}
+    /*~~~~~~~~~~~~~~
+    Модальные окна
+    ~~~~~~~~~~~~~~*/
+    /* Стили для подложки */
+    .overlay {
+        /* Скрываем подложку  */
+        opacity: 0;
+        visibility: hidden;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, .5);
+        z-index: 20;
+        transition: .3s all;
+    }
 
-/* Стили для активных классов подложки и окна */
-.modal.active,
-.overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
+    /* Стили для модальных окон */
+    .modal {
+        /* Скрываем окна  */
+        opacity: 0;
+        visibility: hidden;
+        /*  Установаем ширину окна  */
+        width: 100%;
+        max-width: 500px;
+        /*  Центрируем и задаем z-index */
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 30;
+        /* Должен быть выше чем у подложки*/
+        /*  Побочные стили   */
+        box-shadow: 0 3px 10px -.5px rgba(0, 0, 0, .2);
+        padding: 30px;
+        border-radius: 3px;
+        background-color: #fff;
+        transition: 0.3s all;
+    }
 
-/* Стили для кнопки закрытия */
-.modal__cross {
-    width: 15px;
-    height: 15px;
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    fill: #444;
-    cursor: pointer;
-}
+    .modal__warning {
+        background-color: #f00;
+        color: #fff;
+    }
 
-.modal__title {
-    text-align: center;
-}
+    /* Стили для активных классов подложки и окна */
+    .modal.active,
+    .overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
 
-.modal__field {
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
+    /* Стили для кнопки закрытия */
+    .modal__cross {
+        width: 15px;
+        height: 15px;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        fill: #444;
+        cursor: pointer;
+    }
 
-.modal__button {
-    border-radius: 10px;
-    border-width: 2px;
-    background: none;
-    font-size: 15px;
-    cursor: pointer;
-}
+    .modal__title {
+        text-align: center;
+    }
 
-.modal__button_warning {
-    border-color: #fff;
-    color: #fff;
-}
+    .modal__field {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Контекстное меню для событий
-~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-.context-menu {
-    display: none;
-    position: absolute;
-    z-index: 10;
-    overflow: hidden;
-    background-color: white;
-    border-radius: 10px;
-}
+    .modal__button {
+        border-radius: 10px;
+        border-width: 2px;
+        background: none;
+        font-size: 15px;
+        cursor: pointer;
+    }
 
-.context-menu__items {
-    padding-left: 20px;
-    padding-right: 20px;
-}
+    .modal__button_warning {
+        border-color: #fff;
+        color: #fff;
+    }
 
-.context-menu__item {
-    cursor: pointer;
-    padding-bottom: 2px;
-    padding-top: 2px;
-}
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Контекстное меню для событий
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    .context-menu {
+        display: none;
+        position: absolute;
+        z-index: 10;
+        overflow: hidden;
+        background-color: white;
+        border-radius: 10px;
+    }
 
-.context-menu__item::marker {
-    content: none;
-}
+    .context-menu__items {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
 
-.context-menu--active {
-    display: block;
-}
+    .context-menu__item {
+        cursor: pointer;
+        padding-bottom: 2px;
+        padding-top: 2px;
+    }
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Тэги
-~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-.tag {
-    display: inline-block;
-    padding: 0.35em 0.65em;
-    font-size: 0.75em;
-    font-weight: 700;
-    line-height: 1;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-    border-radius: 0.25em;
-    color: white;
-    background-color: firebrick;
-    margin-top: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-    margin-right: 3px;
-    cursor: pointer;
-    /* TODO: remove */
-}
+    .context-menu__item::marker {
+        content: none;
+    }
 
-.tagElement {
-    display: inline-block;
-    margin: 5px;
-}
+    .context-menu--active {
+        display: block;
+    }
 
-.tag:empty {
-    display: none;
-}
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Тэги
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    .tag {
+        display: inline-block;
+        padding: 0.35em 0.65em;
+        font-size: 0.75em;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25em;
+        color: white;
+        background-color: firebrick;
+        margin-top: 0;
+        margin-bottom: 0;
+        margin-left: 0;
+        margin-right: 3px;
+        cursor: pointer;
+        /* TODO: remove */
+    }
 
-.tag__cross {
-    width: 16px;
-    height: 16px;
-    margin: auto;
-    vertical-align: middle;
-    cursor: pointer;
+    .tagElement {
+        display: inline-block;
+        margin: 5px;
+    }
+
+    .tag:empty {
+        display: none;
+    }
+
+    .tag__cross {
+        width: 16px;
+        height: 16px;
+        margin: auto;
+        vertical-align: middle;
+        cursor: pointer;
+    }
+
 }
