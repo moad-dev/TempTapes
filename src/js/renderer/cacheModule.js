@@ -480,6 +480,9 @@ function findEventInCache(id) {
  * */
 ipcRenderer.on("send events", (event, reply) =>
     {
+
+        let prevent_update = !pages_watcher.any_running();
+
         reply = JSON.parse(reply);
 
         cache.pages[reply["page_index"]]["events"] =
@@ -498,7 +501,7 @@ ipcRenderer.on("send events", (event, reply) =>
             });
             pages_watcher.process_complete(reply["page_index"]);
         }
-        if (!pages_watcher.any_running()) {
+        if (!pages_watcher.any_running() && !prevent_update) {
             getEvents();
         }
     });
