@@ -307,20 +307,20 @@ function getEvents(startDate = lastStartDate, endDate = lastEndDate) {
     // first_page - last_page -- это промежуток
     if (cache.pages.length > 0) {
         for (var i = 0; i < PAGES_COUNT; i++) {
-            if (startDate < cache.pages[i].endDate) {
+            if (startDate <= cache.pages[i].endDate) {
                 first_page = i;
                 break;
             }
         }
         for (var i = PAGES_COUNT-1; i >= 0; i--) {
-            if (endDate > cache.pages[i].startDate) {
+            if (endDate >= cache.pages[i].startDate) {
                 last_page = i;
                 break;
             }
         }
     }
 
-    if (first_page && last_page && !isForce) {
+    if (first_page !== undefined && last_page !== undefined && !isForce) {
 
         // Если нужные страницы были найдены в кэше, выдаём их
         
