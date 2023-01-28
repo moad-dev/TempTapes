@@ -409,6 +409,10 @@ function findEventsByDate(date, scale) {
  * @param {Object} event
  */
 function addEventToCache(event) {
+    let tokens = event.date.split('-');
+    event.date_year = tokens[0];
+    event.date_month = tokens[0] + "-" + tokens[1];
+    event.date_day = event.date;
     cache.pages.forEach(function (page) {
         if (event.date >= page.startDate.formatted() && event.date <= page.endDate.formatted()) {
             page.events.push(event);
