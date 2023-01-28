@@ -28,7 +28,7 @@
     "linux": {}
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 3001",
     "build": "vite build",
     "serve": "vite preview",
     "electron:start": "electron .",

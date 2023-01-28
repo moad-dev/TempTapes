@@ -15,7 +15,6 @@ export default {
     mounted() {
         let scene = this.$root.$refs.scene.scene
 
-        scene.fog = new Fog(0xFFFFFF, 10, 16)
         this.$root.$refs.lines.forEach(function(line) {
             scene.add(line.createLine())
         });
