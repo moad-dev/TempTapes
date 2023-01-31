@@ -1,9 +1,9 @@
 <template>
-  <Renderer ref="rendererC" antialias resize="window">
+  <Renderer ref="rendererC" antialias :orbit-ctrl="{ enableDamping: true }" resize="window">
     <Camera ref="camera" :fov="75" :aspect="width / height" :position="{ y: 2, z: 4 }" :far="1000" :lookAt="{ y: 1.5, z: 0 }"/>
     <Scene ref="scene" :background="'white'">
       <!--   Road.vue   -->
-      <Road/>
+      <Road color="#aaaaaa"/>
       <!--   Road.vue   -->
     </Scene>
   </Renderer>
@@ -31,6 +31,8 @@ export default {
     let scene = this.$refs.scene.scene
 
     scene.fog = new Fog(0xFFFFFF, 10, 16)
+
+    console.log(this.$refs.rendererC.renderer)
   }
 }
 </script>
