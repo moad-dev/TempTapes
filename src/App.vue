@@ -31,8 +31,6 @@ export default {
     let scene = this.$refs.scene.scene
 
     scene.fog = new Fog(0xFFFFFF, 10, 16)
-
-    console.log(this.$refs.rendererC.renderer)
   }
 }
 </script>

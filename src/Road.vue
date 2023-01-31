@@ -1,6 +1,6 @@
 <!-- NOTE: In order to pass this.props to BasicMaterial need to use :<child-prop>="$props.<parent-prop>", over-wise it's undefined -->
 <template>
-  <Group>
+  <Group ref="group">
     <Box v-for="i in 2" :size="1" ref="groupMesh" :position="{x: 0, y: 0, z: -i+1}">
       <BasicMaterial :color="$props.color"/>
     </Box>
@@ -37,26 +37,17 @@ export default {
       default: "01.png"
     }
   },
-  created() {
-    // console.log(this.$refs.groupMesh[0].material)
-  },
   mounted() {
     // cannot use this.$refs.lines in CustomLineMesh.js because this component is not defined yet
-    console.log(this.$refs.groupMesh[0].material)
-
     let scene = this.$root.$refs.scene.scene
 
     this.$refs.lines.forEach(function(line) {
       scene.add(line.createLine())
     });
 
-    let frontCubeMaterial = this.$refs.groupMesh[0].material;
-    this.$refs.groupMesh[0].material.dispose();
     const loader = new TextureLoader();
-    let basicMaterial = new MeshBasicMaterial({color: '#9a2c2c'});
-    this.$refs.groupMesh[0].material = [basicMaterial, basicMaterial, basicMaterial, basicMaterial, makeMaterialWithShader('../../storage/img/' + this.ico, this.color, loader), basicMaterial];
-    console.log(this.$refs.groupMesh[0].material)
-    this.$refs.groupMesh[0].material.needsUpdate = true;
+    let basicMaterial = new MeshBasicMaterial({color: this.color});
+    this.$refs.groupMesh[0].mesh.material = [basicMaterial, basicMaterial, basicMaterial, basicMaterial, makeMaterialWithShader('../../storage/img/' + this.ico, this.color, loader), basicMaterial];
   }
 }
 </script>
